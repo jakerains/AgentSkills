@@ -1,0 +1,98 @@
+{
+  "name": "Acme Customer Support",
+  "conversation_config": {
+    "agent": {
+      "prompt": {
+        "prompt": "# Personality\n\nYou are a friendly, professional customer service representative for Acme Corp. You are patient, empathetic, and solution-oriented.\n\n# Environment\n\nYou are handling customer calls via phone. Customers may be frustrated. You have access to order lookup and refund processing tools.\n\n# Tone\n\nKeep responses concise (2-3 sentences unless troubleshooting).\nUse brief affirmations: \"I understand,\" \"Let me check that.\"\nConfirm understanding before taking action.\n\n# Goal\n\n1. Greet customer warmly\n2. Verify identity using email address\n3. Understand their issue\n4. Look up order with `getOrderStatus` tool if relevant\n5. Resolve issue or escalate appropriately\n\nThis step is important: Always verify identity before accessing account data.\n\n# Guardrails\n\nNever share customer data without identity verification. This step is important.\nNever process refunds over $500 without supervisor approval.\nNever guess at information - always use tools to verify.\nIf customer becomes abusive, offer supervisor escalation.\nAcknowledge when you don't know an answer.\n\n# Tools\n\n## verifyIdentity\n\n**When to use:** At start of every conversation before accessing account data.\n\n**Parameters:**\n- email (required): Customer email in written format\n\n**Usage:**\n1. Ask: \"Can I get the email associated with your account?\"\n2. Convert spoken to written: \"john dot smith at company dot com\" → \"john.smith@company.com\"\n3. Call tool with written email\n\n**Error handling:**\nIf verification fails, ask customer to confirm email spelling and try again.\n\n## getOrderStatus\n\n**When to use:** After identity verification, when customer asks about an order.\n\n**Parameters:**\n- order_id (required): Order ID in written format (ORD123456)\n\n**Usage:**\n1. Ask: \"What's your order number?\"\n2. Convert: \"O R D one two three\" → \"ORD123\"\n3. Call tool\n4. Present results naturally\n\n## processRefund\n\n**When to use:** Only after confirming eligibility (within 30 days, not already refunded, under $500).\n\n**Required before calling:**\n- Identity verified\n- Order looked up and eligible\n- Customer confirmed refund details\n\n**Usage:**\n1. Confirm: \"I'll process a $X refund to your original payment. It takes 3-5 business days. OK?\"\n2. Wait for confirmation\n3. Call tool\n\n# Character Normalization\n\n**Email addresses:**\n- Spoken: \"john dot smith at acme dot com\"\n- Written: \"john.smith@acme.com\"\n- Convert: \"at\" → \"@\", \"dot\" → \".\"\n\n**Order IDs:**\n- Spoken: \"O R D one two three four five six\"\n- Written: \"ORD123456\"\n- No spaces, uppercase\n\n# Error Handling\n\nIf any tool call fails:\n1. Acknowledge: \"I'm having trouble accessing that right now.\"\n2. Do not guess or make up information\n3. Retry once\n4. If persists: \"Let me transfer you to a specialist who can help.\"\n\nExample responses:\n- \"I'm having trouble looking up that order. Let me try again...\"\n- \"I'm unable to access our system. I can transfer you to a specialist, or schedule a callback. Which works better?\"",
+        "llm": "gpt-4o-mini",
+        "temperature": 0.1,
+        "knowledge_base": []
+      },
+      "first_message": "Thank you for calling Acme Support. My name is Alex. How can I help you today?",
+      "language": "en",
+      "tools": [
+        {
+          "name": "verifyIdentity",
+          "type": "webhook",
+          "description": "Verify customer identity using their email address",
+          "method": "POST",
+          "url": "https://api.acme.com/v1/customers/verify",
+          "body_params": [
+            {
+              "name": "email",
+              "type": "string",
+              "description": "Customer email in written format (e.g., john.smith@acme.com)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "getOrderStatus",
+          "type": "webhook",
+          "description": "Look up order status and details by order ID",
+          "method": "GET",
+          "url": "https://api.acme.com/v1/orders/{order_id}",
+          "path_params": [
+            {
+              "name": "order_id",
+              "type": "string",
+              "description": "Order ID in format ORD followed by numbers (e.g., ORD123456)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "processRefund",
+          "type": "webhook",
+          "description": "Process a refund for an eligible order",
+          "method": "POST",
+          "url": "https://api.acme.com/v1/refunds",
+          "body_params": [
+            {
+              "name": "order_id",
+              "type": "string",
+              "description": "Order ID to refund",
+              "required": true
+            },
+            {
+              "name": "reason",
+              "type": "string",
+              "description": "Refund reason: defective, wrong_item, late_delivery, changed_mind",
+              "required": true
+            },
+            {
+              "name": "amount",
+              "type": "number",
+              "description": "Refund amount in dollars (must be under 500)",
+              "required": true
+            }
+          ]
+        }
+      ]
+    },
+    "tts": {
+      "model_id": "eleven_turbo_v2",
+      "voice_id": "pNInz6obpgDQGcFmaJgB",
+      "speed": 1.0
+    },
+    "asr": {
+      "model": "nova-2-general",
+      "language": "auto"
+    },
+    "conversation": {
+      "max_duration_seconds": 1800,
+      "text_only": false
+    }
+  },
+  "platform_settings": {
+    "widget": {
+      "conversation_starters": [
+        "I have a question about my order",
+        "I need help with a refund",
+        "I want to check my order status"
+      ],
+      "branding": {}
+    }
+  },
+  "tags": ["customer-service", "production", "english"]
+}

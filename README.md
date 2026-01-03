@@ -6,6 +6,7 @@ A personal library of Claude Code skills for easy installation and use.
 
 | Skill | Description | Install |
 |-------|-------------|---------|
+| [elevenlabs-voice-agents](skills/elevenlabs-voice-agents/) | Create and deploy ElevenLabs conversational voice agents, phone bots, and voice assistants | `cp -r skills/elevenlabs-voice-agents ~/.claude/skills/` |
 | [skill-seekers](skills/skill-seekers/) | Convert documentation websites, GitHub repos, and PDFs into Claude skills | `cp -r skills/skill-seekers ~/.claude/skills/` |
 | [shot-list](skills/shot-list/) | Generate professional shot lists from screenplays and scripts | `cp -r skills/shot-list ~/.claude/skills/` |
 
@@ -42,6 +43,21 @@ ln -s $(pwd)/skills/shot-list ~/.claude/skills/shot-list
 ```
 
 ## Skill Details
+
+### elevenlabs-voice-agents
+
+Create and deploy ElevenLabs conversational voice agents using the CLI and API.
+
+**Use when:**
+- Building voice agents, phone bots, customer service agents
+- Creating voice assistants or conversational AI
+- Setting up telephony integrations (Twilio, SIP)
+
+**Files:**
+- `SKILL.md` - CLI commands, configuration, workflows
+- `scripts/generate_agent.py` - Agent config generator
+- `references/` - Config schema and prompting guide
+- `assets/` - Example configurations
 
 ### skill-seekers
 
