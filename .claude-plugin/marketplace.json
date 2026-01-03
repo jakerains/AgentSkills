@@ -1,0 +1,11 @@
+{
+  "name": "claude-skills-collection",
+  "owner": {
+    "name": "Jake Rains"
+  },
+  "metadata": {
+    "description": "Personal Claude Code skills library",
+    "version": "1.0.0"
+  },
+  "plugins": []
+}
