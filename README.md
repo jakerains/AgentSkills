@@ -1,39 +1,129 @@
-# Agent Skills Collection
+# Agent Skills
 
-A library of skills for AI coding agents.
+**Supercharge your AI coding agent with powerful skills.**
+
+Skills are modular packages that give AI agents specialized knowledge, workflows, and capabilities. Install them once, use them everywhere.
+
+---
+
+## Quick Start
+
+```bash
+# Install a skill (works instantly via npx)
+npx add-skill jakerains/AgentSkills --skill vercel-workflow
+```
 
 ## Supported Agents
 
-Works with **Claude Code**, **OpenCode**, **Codex**, and **Cursor**.
+| Agent | Project Location | Global Location |
+|-------|------------------|-----------------|
+| **Claude Code** | `.claude/skills/` | `~/.claude/skills/` |
+| **OpenCode** | `.opencode/skill/` | `~/.config/opencode/skill/` |
+| **Codex** | `.codex/skills/` | `~/.codex/skills/` |
+| **Cursor** | `.cursor/skills/` | `~/.cursor/skills/` |
 
-## Installation
+---
+
+## Available Skills
+
+### vercel-workflow
+> Build durable, long-running workflows with Vercel's Workflow DevKit
+
+**Use for:** Background jobs, AI agents, webhooks, scheduled tasks, retry logic, multi-step workflows in Next.js
 
 ```bash
-# List available skills
-npx add-skill jakerains/AgentSkills --list
-
-# Install a specific skill
-npx add-skill jakerains/AgentSkills --skill elevenlabs-voice-agents
-npx add-skill jakerains/AgentSkills --skill skill-seekers
-npx add-skill jakerains/AgentSkills --skill shot-list
 npx add-skill jakerains/AgentSkills --skill vercel-workflow
-
-# Install all skills
-npx add-skill jakerains/AgentSkills
-
-# Install globally (available in all projects)
-npx add-skill jakerains/AgentSkills --skill vercel-workflow -g
 ```
 
-## Skills
+---
 
-| Skill | Description |
-|-------|-------------|
-| [elevenlabs-voice-agents](skills/elevenlabs-voice-agents/) | Create and deploy ElevenLabs conversational voice agents, phone bots, and voice assistants |
-| [skill-seekers](skills/skill-seekers/) | Convert documentation websites, GitHub repos, and PDFs into Claude skills |
-| [shot-list](skills/shot-list/) | Generate professional shot lists from screenplays and scripts |
-| [vercel-workflow](skills/vercel-workflow/) | Build durable workflows with Vercel Workflow DevKit - long-running tasks, AI agents, webhooks, retries in Next.js |
+### elevenlabs-voice-agents
+> Create and deploy conversational voice AI
+
+**Use for:** Voice agents, phone bots, voice assistants, conversational AI with ElevenLabs
+
+```bash
+npx add-skill jakerains/AgentSkills --skill elevenlabs-voice-agents
+```
+
+---
+
+### skill-seekers
+> Convert any documentation into an agent skill
+
+**Use for:** Turning docs websites, GitHub repos, and PDFs into installable skills
+
+```bash
+npx add-skill jakerains/AgentSkills --skill skill-seekers
+```
+
+---
+
+### shot-list
+> Generate professional shot lists from scripts
+
+**Use for:** Film/video production planning, screenplay breakdowns, shot planning
+
+```bash
+npx add-skill jakerains/AgentSkills --skill shot-list
+```
+
+---
+
+## Installation Options
+
+```bash
+# List all available skills
+npx add-skill jakerains/AgentSkills --list
+
+# Install a specific skill to current project
+npx add-skill jakerains/AgentSkills --skill <skill-name>
+
+# Install globally (available in all projects)
+npx add-skill jakerains/AgentSkills --skill <skill-name> -g
+
+# Install all skills at once
+npx add-skill jakerains/AgentSkills
+
+# Non-interactive mode (for CI/CD)
+npx add-skill jakerains/AgentSkills --skill <skill-name> -y
+```
+
+---
+
+## What Are Skills?
+
+Skills extend AI coding agents with:
+
+- **Specialized Knowledge** — Domain expertise the agent can reference
+- **Workflows** — Step-by-step processes for complex tasks
+- **Tools & Scripts** — Executable code for deterministic operations
+- **Best Practices** — Patterns and conventions for specific technologies
+
+Once installed, your agent automatically loads relevant skills based on context.
+
+---
+
+## Contributing
+
+Have a skill idea? PRs welcome! Each skill needs:
+
+```
+skills/your-skill/
+├── SKILL.md              # Main skill file with YAML frontmatter
+└── references/           # Optional: detailed docs loaded on-demand
+```
+
+See [CLAUDE.md](CLAUDE.md) for the full skill creation guide.
+
+---
 
 ## License
 
 MIT
+
+---
+
+<p align="center">
+  <a href="https://add-skill.org">Powered by add-skill</a>
+</p>
