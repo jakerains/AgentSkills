@@ -9,8 +9,8 @@ Skills are modular packages that give AI agents specialized knowledge, workflows
 ## Quick Start
 
 ```bash
-# Install a skill (works instantly via npx)
-npx add-skill jakerains/AgentSkills --skill vercel-workflow
+# Install all skills (works instantly via npx)
+npx add-skill jakerains/AgentSkills
 ```
 
 ## Supported Agents
