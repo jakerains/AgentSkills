@@ -10,7 +10,7 @@ Skills are modular packages that give AI agents specialized knowledge, workflows
 
 ```bash
 # Install all skills (works instantly via npx)
-npx add-skill jakerains/AgentSkills
+npx skill jakerains/AgentSkills
 ```
 
 ## Supported Agents
@@ -32,7 +32,7 @@ npx add-skill jakerains/AgentSkills
 **Use for:** Background jobs, AI agents, webhooks, scheduled tasks, retry logic, multi-step workflows in Next.js
 
 ```bash
-npx add-skill jakerains/AgentSkills --skill vercel-workflow
+npx skill jakerains/AgentSkills --skill vercel-workflow
 ```
 
 ---
@@ -43,7 +43,7 @@ npx add-skill jakerains/AgentSkills --skill vercel-workflow
 **Use for:** Voice agents, phone bots, voice assistants, conversational AI with ElevenLabs
 
 ```bash
-npx add-skill jakerains/AgentSkills --skill elevenlabs-voice-agents
+npx skill jakerains/AgentSkills --skill elevenlabs-voice-agents
 ```
 
 ---
@@ -54,7 +54,7 @@ npx add-skill jakerains/AgentSkills --skill elevenlabs-voice-agents
 **Use for:** Turning docs websites, GitHub repos, and PDFs into installable skills
 
 ```bash
-npx add-skill jakerains/AgentSkills --skill skill-seekers
+npx skill jakerains/AgentSkills --skill skill-seekers
 ```
 
 ---
@@ -65,7 +65,7 @@ npx add-skill jakerains/AgentSkills --skill skill-seekers
 **Use for:** Film/video production planning, screenplay breakdowns, shot planning
 
 ```bash
-npx add-skill jakerains/AgentSkills --skill shot-list
+npx skill jakerains/AgentSkills --skill shot-list
 ```
 
 ---
@@ -76,7 +76,7 @@ npx add-skill jakerains/AgentSkills --skill shot-list
 **Use for:** Creating .docx files, tracked changes, comments, redlining workflows, document review, text extraction from Word documents
 
 ```bash
-npx add-skill jakerains/AgentSkills --skill docxmakebetter
+npx skill jakerains/AgentSkills --skill docxmakebetter
 ```
 
 ---
@@ -85,19 +85,19 @@ npx add-skill jakerains/AgentSkills --skill docxmakebetter
 
 ```bash
 # List all available skills
-npx add-skill jakerains/AgentSkills --list
+npx skill jakerains/AgentSkills --list
 
 # Install a specific skill to current project
-npx add-skill jakerains/AgentSkills --skill <skill-name>
+npx skill jakerains/AgentSkills --skill <skill-name>
 
 # Install globally (available in all projects)
-npx add-skill jakerains/AgentSkills --skill <skill-name> -g
+npx skill jakerains/AgentSkills --skill <skill-name> -g
 
 # Install all skills at once
-npx add-skill jakerains/AgentSkills
+npx skill jakerains/AgentSkills
 
 # Non-interactive mode (for CI/CD)
-npx add-skill jakerains/AgentSkills --skill <skill-name> -y
+npx skill jakerains/AgentSkills --skill <skill-name> -y
 ```
 
 ---
