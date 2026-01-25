@@ -1,6 +1,15 @@
 # Vercel Workflow DevKit - API Deep Dive
 
-## workflow Package Complete Reference
+## Table of Contents
+
+1. [workflow Package](#workflow-package)
+2. [workflow/api Package](#workflowapi-package)
+3. [workflow/next Package](#workflownext-package)
+4. [@workflow/ai Package](#workflowai-package)
+
+---
+
+## workflow Package
 
 ### sleep(duration)
 
@@ -20,7 +29,7 @@ await sleep("2w");     // weeks (14 days)
 // Numeric (milliseconds)
 await sleep(5000);
 
-// Date object
+// Date object - sleep until specific time
 await sleep(new Date("2025-01-01T00:00:00Z"));
 await sleep(new Date(Date.now() + 60_000)); // 1 minute from now
 ```
@@ -39,7 +48,7 @@ HTTP requests with automatic serialization and retry semantics.
 ```typescript
 import { fetch } from "workflow";
 
-// Basic usage
+// Basic usage in workflow
 const response = await fetch("https://api.example.com/data");
 const data = await response.json();
 
@@ -49,12 +58,20 @@ const response = await fetch("https://api.example.com/users", {
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ name: "Alice" })
 });
+
+// CRITICAL: For AI SDK and other libraries that use fetch internally
+export async function chatWorkflow(messages: UIMessage[]) {
+  "use workflow";
+  globalThis.fetch = fetch; // Enable fetch for libraries
+
+  // Now AI SDK generateText, streamText, etc. will work
+}
 ```
 
 **Rules:**
-- Special step function - call directly in workflows
-- Returns standard Response object
+- Use directly in workflows (it's a special step function)
 - Automatically serializes response for replay
+- For libraries that use fetch internally, assign to `globalThis.fetch`
 
 ---
 
@@ -80,11 +97,6 @@ async function validateInput(data: unknown) {
 }
 ```
 
-**Constructor:**
-```typescript
-new FatalError(message: string)
-```
-
 **Use when:**
 - Input validation fails
 - Resource doesn't exist (404)
@@ -99,11 +111,12 @@ new FatalError(message: string)
 Marks a step for explicit retry with configurable delay.
 
 ```typescript
-import { RetryableError } from "workflow";
+import { RetryableError, getStepMetadata } from "workflow";
 
 async function callExternalAPI() {
   "use step";
 
+  const { attempt } = getStepMetadata();
   const response = await fetch("https://api.example.com/data");
 
   if (response.status === 429) {
@@ -113,9 +126,10 @@ async function callExternalAPI() {
     });
   }
 
-  if (response.status === 503) {
-    throw new RetryableError("Service unavailable", {
-      retryAfter: "30s"
+  if (response.status >= 500) {
+    // Exponential backoff using attempt number
+    throw new RetryableError("Server error", {
+      retryAfter: (attempt ** 2) * 1000
     });
   }
 
@@ -123,17 +137,27 @@ async function callExternalAPI() {
 }
 ```
 
-**Constructor:**
-```typescript
-new RetryableError(message: string, options?: {
-  retryAfter?: string | number | Date
-})
-```
-
 **retryAfter formats:**
 - Duration string: `"5m"`, `"30s"`, `"1h"`
 - Milliseconds: `5000`
 - Date object: `new Date(Date.now() + 60000)`
+
+---
+
+### Step maxRetries Property
+
+Customize retry count per step function:
+
+```typescript
+async function callApi(endpoint: string) {
+  "use step";
+  // ... step logic
+}
+
+callApi.maxRetries = 5; // Retry up to 5 times (6 total attempts)
+// Default is 3 (4 total attempts)
+// Set to 0 for no retries (1 attempt only)
+```
 
 ---
 
@@ -153,8 +177,10 @@ interface ApprovalPayload {
 export async function approvalWorkflow(documentId: string) {
   "use workflow";
 
-  // Create typed hook
-  const hook = createHook<ApprovalPayload>();
+  // Create typed hook with custom token for deterministic recovery
+  const hook = createHook<ApprovalPayload>({
+    token: `approval:${documentId}` // Optional: custom token
+  });
 
   // Access the token to share with external system
   await notifyReviewer(documentId, hook.token);
@@ -164,23 +190,14 @@ export async function approvalWorkflow(documentId: string) {
 
   if (approval.approved) {
     await publishDocument(documentId);
-  } else {
-    await rejectDocument(documentId, approval.comment);
   }
 }
 
-// Custom token for deterministic identification
-const hook = createHook<PaymentResult>({
-  token: `payment:${orderId}:${customerId}`
-});
-
-// Waiting for multiple payloads
+// Multiple events with AsyncIterable
 const hook = createHook<Message>();
-const messages: Message[] = [];
-
 for await (const message of hook) {
-  messages.push(message);
   if (message.type === "END") break;
+  await processMessage(message);
 }
 ```
 
@@ -196,7 +213,7 @@ interface HookOptions {
 
 ### defineHook(schema)
 
-Type-safe hook definition with optional runtime validation.
+Type-safe hook definition with runtime validation.
 
 ```typescript
 import { defineHook } from "workflow";
@@ -220,8 +237,7 @@ export async function paymentWorkflow(orderId: string) {
     token: `payment:${orderId}`
   });
 
-  const result = await hook;
-  // result is fully typed!
+  const result = await hook; // Fully typed!
 
   if (result.status === "success") {
     await fulfillOrder(orderId, result.transactionId);
@@ -231,10 +247,7 @@ export async function paymentWorkflow(orderId: string) {
 // Resume from API route with validation
 export async function POST(request: Request) {
   const { token, ...payload } = await request.json();
-
-  // Validates payload against schema before resuming
   const result = await paymentHook.resume(token, payload);
-
   return Response.json({ runId: result.runId });
 }
 ```
@@ -253,13 +266,13 @@ export async function githubPRWorkflow(repoId: string) {
 
   const webhook = createWebhook();
 
-  // Register webhook with GitHub
-  await registerGitHubWebhook(repoId, webhook.token);
+  // Register webhook URL with GitHub
+  await registerGitHubWebhook(repoId, webhook.url);
 
   // Wait for webhook request
   const request = await webhook;
 
-  // Process in step
+  // Process in step (must call respondWith!)
   await handlePREvent(request);
 }
 
@@ -269,7 +282,7 @@ async function handlePREvent(request: RequestWithResponse) {
   const event = request.headers.get("X-GitHub-Event");
   const payload = await request.json();
 
-  // Send response back to GitHub
+  // REQUIRED: Send response
   request.respondWith(
     Response.json({ received: true }, { status: 200 })
   );
@@ -277,7 +290,12 @@ async function handlePREvent(request: RequestWithResponse) {
   return { event, payload };
 }
 
-// Handle multiple webhook requests
+// Static response option
+const webhook = createWebhook({
+  respondWith: Response.json({ success: true })
+});
+
+// Multiple webhook events
 for await (const request of webhook) {
   const result = await processRequest(request);
   if (result.shouldStop) break;
@@ -293,7 +311,6 @@ Access the workflow's output stream for real-time data delivery.
 ```typescript
 import { getWritable } from "workflow";
 
-// Basic usage
 export async function progressWorkflow(items: string[]) {
   "use workflow";
 
@@ -306,6 +323,7 @@ export async function progressWorkflow(items: string[]) {
   await closeStream(writable);
 }
 
+// IMPORTANT: All stream operations must happen in steps
 async function processItem(
   item: string,
   writable: WritableStream,
@@ -316,16 +334,15 @@ async function processItem(
 
   const writer = writable.getWriter();
 
-  // Do work...
-  await someAsyncOperation(item);
-
-  // Write progress
-  await writer.write({
-    progress: ((index + 1) / total) * 100,
-    item
-  });
-
-  writer.releaseLock(); // Always release!
+  try {
+    await someAsyncOperation(item);
+    await writer.write({
+      progress: ((index + 1) / total) * 100,
+      item
+    });
+  } finally {
+    writer.releaseLock(); // Always release!
+  }
 }
 
 async function closeStream(writable: WritableStream) {
@@ -333,7 +350,7 @@ async function closeStream(writable: WritableStream) {
   await writable.close();
 }
 
-// Namespaced streams
+// Namespaced streams for separate channels
 const dataStream = getWritable({ namespace: "data" });
 const logsStream = getWritable({ namespace: "logs" });
 ```
@@ -361,12 +378,7 @@ export async function trackedWorkflow(input: string) {
   console.log("Started at:", metadata.workflowStartedAt);
   console.log("URL:", metadata.url);
 
-  await logToExternalService({
-    runId: metadata.workflowRunId,
-    input
-  });
-
-  return processInput(input);
+  // Use for logging, external tracking, etc.
 }
 ```
 
@@ -391,7 +403,7 @@ import { getStepMetadata } from "workflow";
 async function idempotentPayment(customerId: string, amount: number) {
   "use step";
 
-  const { stepId } = getStepMetadata();
+  const { stepId, attempt } = getStepMetadata();
 
   // stepId is stable across retries, unique per step invocation
   return stripe.charges.create({
@@ -406,7 +418,8 @@ async function idempotentPayment(customerId: string, amount: number) {
 **Returns:**
 ```typescript
 interface StepMetadata {
-  stepId: string;  // Unique, stable across retries
+  stepId: string;   // Unique, stable across retries
+  attempt: number;  // Current attempt number (useful for backoff)
 }
 ```
 
@@ -425,7 +438,7 @@ import { myWorkflow } from "@/workflows/my-workflow";
 // Basic
 const run = await start(myWorkflow);
 
-// With arguments
+// With arguments (must be array)
 const run = await start(myWorkflow, ["arg1", "arg2"]);
 
 // With options
@@ -434,9 +447,10 @@ const run = await start(myWorkflow, ["arg1"], {
 });
 
 // Access run properties
-console.log(run.id);          // Run ID
-console.log(run.status);      // Promise<RunStatus>
-console.log(run.readable);    // ReadableStream for output
+console.log(run.id);           // Run ID
+const status = await run.status; // Promise<RunStatus>
+const result = await run.returnValue; // Blocks until completion
+return new Response(run.readable); // Stream output
 ```
 
 **Important:** Returns immediately after enqueueing - doesn't wait for completion.
@@ -461,7 +475,7 @@ const readable = run.readable;
 // Get namespaced stream
 const logs = run.getReadable({ namespace: "logs" });
 
-// Resume from specific point
+// Resume from specific point (for reconnection)
 const resumed = run.getReadable({ startIndex: 50 });
 ```
 
@@ -476,12 +490,6 @@ import { resumeHook } from "workflow/api";
 
 // Basic
 const result = await resumeHook(token, { approved: true });
-
-// Typed
-const result = await resumeHook<ApprovalPayload>(token, {
-  approved: true,
-  comment: "Looks good!"
-});
 
 // Returns
 console.log(result.runId);  // ID of resumed workflow run
@@ -506,12 +514,8 @@ export async function POST(request: Request) {
     return Response.json({ error: "Missing token" }, { status: 400 });
   }
 
-  try {
-    // Returns the Response from the workflow's respondWith()
-    return resumeWebhook(token, request);
-  } catch (error) {
-    return Response.json({ error: "Webhook not found" }, { status: 404 });
-  }
+  // Returns the Response from the workflow's respondWith()
+  return resumeWebhook(token, request);
 }
 ```
 
@@ -548,11 +552,7 @@ import { withWorkflow } from "workflow/next";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Your existing config
   reactStrictMode: true,
-  experimental: {
-    // ...
-  }
 };
 
 export default withWorkflow(nextConfig);
@@ -569,78 +569,203 @@ This configures webpack/turbopack to transform `"use workflow"` and `"use step"`
 Build resilient AI agents with persistent state.
 
 ```typescript
-import { DurableAgent } from "@workflow/ai";
+import { DurableAgent } from "@workflow/ai/agent";
+import { getWritable, fetch } from "workflow";
 import { z } from "zod";
+import type { UIMessageChunk } from "ai";
 
-const agent = new DurableAgent({
-  model: "anthropic/claude-haiku-4.5",
-  system: "You are a helpful flight booking assistant.",
-  temperature: 0.7,
-  maxOutputTokens: 1000,
+export async function chatWorkflow(messages: UIMessage[]) {
+  "use workflow";
 
-  tools: {
-    searchFlights: {
-      description: "Search for available flights",
-      parameters: z.object({
-        origin: z.string().length(3),
-        destination: z.string().length(3),
-        date: z.string()
-      }),
-      execute: async ({ origin, destination, date }) => {
-        "use step";  // Auto-retry on failure
-        return await flightAPI.search(origin, destination, date);
+  // CRITICAL: Enable fetch for AI SDK
+  globalThis.fetch = fetch;
+
+  const agent = new DurableAgent({
+    model: "anthropic/claude-haiku-4.5", // Vercel AI Gateway format
+    system: "You are a helpful assistant.",
+    temperature: 0.7,
+    maxOutputTokens: 1000,
+
+    tools: {
+      searchWeb: {
+        description: "Search the web",
+        inputSchema: z.object({ query: z.string() }),
+        execute: async ({ query }) => {
+          "use step"; // Auto-retry on failure
+          return await searchAPI(query);
+        }
       }
     },
 
-    bookFlight: {
-      description: "Book a flight",
-      parameters: z.object({
-        flightId: z.string(),
-        passengers: z.number()
-      }),
-      execute: async ({ flightId, passengers }) => {
-        "use step";
-        return await flightAPI.book(flightId, passengers);
-      }
+    toolChoice: "auto" // or "required", "none", { type: "tool", toolName: "..." }
+  });
+
+  const writable = getWritable<UIMessageChunk>();
+
+  const result = await agent.stream({
+    messages,
+    writable,
+    maxSteps: 10, // IMPORTANT: Default is unlimited!
+
+    // Optional callbacks
+    onStepFinish: async (step) => {
+      console.log(`Step finished: ${step.finishReason}`);
+    },
+    onFinish: async ({ steps, messages }) => {
+      console.log(`Completed with ${steps.length} steps`);
+    },
+    onError: async ({ error }) => {
+      console.error("Stream error:", error);
     }
-  },
+  });
 
-  toolChoice: "auto"  // or "required", "none", { type: "tool", toolName: "..." }
-});
+  return result.messages;
+}
+```
 
-// Stream response
-const result = await agent.stream({
-  messages: conversationHistory,
-  writable: getWritable(),
-  maxSteps: 10,
+**Key DurableAgent Options:**
 
-  prepareStep: async (step) => {
-    // Modify settings before each LLM call
-    return {
-      ...step,
-      temperature: step.stepIndex > 0 ? 0.5 : 0.7
-    };
-  },
+| Option | Type | Description |
+|--------|------|-------------|
+| `model` | `string \| (() => Promise<LanguageModel>)` | Model provider (Vercel Gateway format or custom) |
+| `system` | `string` | System prompt |
+| `tools` | `ToolSet` | Available tools |
+| `toolChoice` | `"auto" \| "required" \| "none" \| {type, toolName}` | Tool choice strategy |
+| `temperature` | `number` | Sampling temperature |
+| `maxOutputTokens` | `number` | Max tokens to generate |
+| `topP` | `number` | Nucleus sampling |
+| `stopSequences` | `string[]` | Stop generation triggers |
 
-  onFinish: (result) => {
-    console.log("Agent finished:", result.finishReason);
-  },
+**Key Stream Options:**
 
-  onError: (error) => {
-    console.error("Agent error:", error);
+| Option | Type | Description |
+|--------|------|-------------|
+| `messages` | `UIMessage[]` | Conversation messages |
+| `writable` | `WritableStream` | Output stream |
+| `maxSteps` | `number` | Max LLM calls (default: unlimited!) |
+| `activeTools` | `string[]` | Limit available tools |
+| `prepareStep` | `(info) => PrepareStepResult` | Modify settings per step |
+| `collectUIMessages` | `boolean` | Accumulate UIMessage[] for persistence |
+| `experimental_output` | `OutputSpecification` | Structured output parsing |
+
+---
+
+### prepareStep Callback
+
+Modify settings dynamically before each LLM call:
+
+```typescript
+await agent.stream({
+  messages,
+  writable: getWritable<UIMessageChunk>(),
+  prepareStep: async ({ stepNumber, messages, steps }) => {
+    // Switch to stronger model for complex reasoning
+    if (stepNumber > 2 && messages.length > 10) {
+      return { model: "anthropic/claude-sonnet-4.5" };
+    }
+
+    // Trim context if too large
+    if (messages.length > 20) {
+      return {
+        messages: [
+          messages[0], // Keep system message
+          ...messages.slice(-10) // Keep last 10
+        ]
+      };
+    }
+
+    return {}; // No changes
   }
 });
+```
 
-// Access results
-console.log(result.messages);  // Full conversation
-console.log(result.steps);     // Individual LLM calls
+---
+
+### Structured Output
+
+Parse structured data from LLM responses:
+
+```typescript
+import { DurableAgent, Output } from "@workflow/ai/agent";
+
+const result = await agent.stream({
+  messages: [{ role: "user", content: "Analyze sentiment: 'I love this!'" }],
+  writable: getWritable<UIMessageChunk>(),
+  experimental_output: Output.object({
+    schema: z.object({
+      sentiment: z.enum(["positive", "negative", "neutral"]),
+      confidence: z.number().min(0).max(1),
+      reasoning: z.string()
+    })
+  })
+});
+
+// Access parsed output
+console.log(result.experimental_output);
+// { sentiment: "positive", confidence: 0.95, reasoning: "..." }
+```
+
+---
+
+### Collecting UI Messages
+
+Persist conversations without re-reading the stream:
+
+```typescript
+const result = await agent.stream({
+  messages,
+  writable: getWritable<UIMessageChunk>(),
+  collectUIMessages: true // Enable accumulation
+});
+
+// Access accumulated messages
+const uiMessages: UIMessage[] = result.uiMessages ?? [];
+await saveConversation(uiMessages);
+```
+
+---
+
+### Step-Level vs Workflow-Level Tools
+
+| Capability | Step-Level (`"use step"`) | Workflow-Level (no directive) |
+|------------|---------------------------|-------------------------------|
+| `getWritable()` | ✅ | ❌ |
+| Automatic retries | ✅ | ❌ |
+| Side-effects (API calls) | ✅ | ❌ |
+| `sleep()` | ❌ | ✅ |
+| `createWebhook()` | ❌ | ✅ |
+| `createHook()` | ❌ | ✅ |
+
+**Combine both levels:**
+
+```typescript
+tools: {
+  scheduleTask: {
+    description: "Schedule a task with delay",
+    inputSchema: z.object({ delaySeconds: z.number() }),
+    execute: async ({ delaySeconds }) => {
+      // NO "use step" - runs at workflow level
+      await sleep(`${delaySeconds}s`);
+      return `Slept for ${delaySeconds} seconds`;
+    }
+  },
+  fetchData: {
+    description: "Fetch data from API",
+    inputSchema: z.object({ url: z.string() }),
+    execute: async ({ url }) => {
+      "use step"; // Runs at step level with retries
+      const res = await fetch(url);
+      return res.json();
+    }
+  }
+}
 ```
 
 ---
 
 ### WorkflowChatTransport
 
-Reliable chat transport with automatic reconnection.
+Reliable chat transport with automatic reconnection:
 
 ```typescript
 import { useChat } from "@ai-sdk/react";
@@ -650,16 +775,13 @@ function ChatComponent() {
   const [runId, setRunId] = useState<string | null>(null);
 
   const { messages, sendMessage, isLoading } = useChat({
-    // Resume if we have a previous run ID
     resume: !!runId,
 
     transport: new WorkflowChatTransport({
-      api: "/api/chat",  // Default endpoint
+      api: "/api/chat",
+      maxConsecutiveErrors: 5,
 
-      maxConsecutiveErrors: 5,  // Retry attempts
-
-      onChatSendMessage: (response, options) => {
-        // Extract and store run ID for resumption
+      onChatSendMessage: (response) => {
         const workflowRunId = response.headers.get("x-workflow-run-id");
         if (workflowRunId) {
           setRunId(workflowRunId);
@@ -667,8 +789,7 @@ function ChatComponent() {
         }
       },
 
-      onChatEnd: ({ chatId, chunkIndex }) => {
-        console.log(`Chat ${chatId} finished with ${chunkIndex} chunks`);
+      onChatEnd: () => {
         setRunId(null);
         localStorage.removeItem("chat-run-id");
       },
@@ -679,19 +800,11 @@ function ChatComponent() {
           ...config.headers,
           "Authorization": `Bearer ${getToken()}`
         }
-      }),
-
-      prepareReconnectToStreamRequest: async (config) => ({
-        ...config,
-        headers: {
-          ...config.headers,
-          "Authorization": `Bearer ${getToken()}`
-        }
       })
     })
   });
 
-  // ...
+  return (/* UI */);
 }
 ```
 
