@@ -37,13 +37,13 @@ npx skill jakerains/AgentSkills --skill vercel-workflow
 
 ---
 
-### elevenlabs-voice-agents
-> Create and deploy conversational voice AI
+### elevenlabs
+> Complete ElevenLabs AI audio platform
 
-**Use for:** Voice agents, phone bots, voice assistants, conversational AI with ElevenLabs
+**Use for:** Text-to-speech, speech-to-text, voice cloning, sound effects, music generation, dubbing, voice agents, voice changer, and all ElevenLabs API/SDK/MCP features
 
 ```bash
-npx skill jakerains/AgentSkills --skill elevenlabs-voice-agents
+npx skill jakerains/AgentSkills --skill elevenlabs
 ```
 
 ---

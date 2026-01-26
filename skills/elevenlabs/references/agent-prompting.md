@@ -1,10 +1,10 @@
-# System Prompt Best Practices
+# Agent System Prompt Best Practices
 
 Production-grade prompt engineering for ElevenLabs voice agents.
 
 ## Prompt Structure
 
-Use markdown sections with clear headings. Models pay extra attention to section names like `# Guardrails`.
+Use markdown sections with clear headings. Models pay extra attention to specific section names.
 
 ```markdown
 # Personality
@@ -14,7 +14,7 @@ Use markdown sections with clear headings. Models pay extra attention to section
 [Context: phone call, web chat, etc.]
 
 # Tone
-[Concise guidelines for communication style]
+[Communication style guidelines]
 
 # Goal
 [Primary objectives as numbered steps]
@@ -35,14 +35,15 @@ Use markdown sections with clear headings. Models pay extra attention to section
 ## Core Principles
 
 ### 1. Separate Instructions into Clean Sections
+
 **Why:** Models prioritize certain headings. Clear boundaries prevent instruction bleed.
 
-❌ **Bad:**
+**Bad:**
 ```
 You are a customer service agent. Be polite and helpful. Never share sensitive data. You can look up orders and process refunds. Always verify identity first.
 ```
 
-✅ **Good:**
+**Good:**
 ```markdown
 # Personality
 You are a customer service agent.
@@ -60,24 +61,26 @@ Never share sensitive data without verification.
 ```
 
 ### 2. Be Concise
-**Why:** Every unnecessary word is potential misinterpretation. Claude is already smart.
 
-❌ **Bad:**
+**Why:** Every unnecessary word is potential misinterpretation.
+
+**Bad:**
 ```
-When you're talking to customers, you should try to be really friendly and approachable, making sure that you're speaking in a way that feels natural and conversational, kind of like how you'd talk to a friend, but still maintaining a professional demeanor.
+When you're talking to customers, you should try to be really friendly and approachable, making sure that you're speaking in a way that feels natural and conversational...
 ```
 
-✅ **Good:**
+**Good:**
 ```markdown
 # Tone
 Friendly, conversational, professional. Keep responses to 2-3 sentences unless detail requested.
 ```
 
 ### 3. Emphasize Critical Instructions
+
 **Why:** Complex prompts may cause models to overlook earlier instructions.
 
 - Add "This step is important." after critical lines
-- Repeat the 1-2 most critical rules twice in the prompt
+- Repeat 1-2 most critical rules twice in prompt
 
 ```markdown
 # Guardrails
@@ -86,14 +89,15 @@ Never process refunds over $500 without supervisor approval.
 ```
 
 ### 4. Normalize Inputs and Outputs
-**Why:** Voice agents misinterpret structured data (emails, IDs). Separate spoken from written format.
 
-❌ **Bad:**
+**Why:** Voice agents misinterpret structured data. Separate spoken from written format.
+
+**Bad:**
 ```
 When collecting email, repeat it back exactly as they said it, then use it in the tool.
 ```
 
-✅ **Good:**
+**Good:**
 ```markdown
 # Character Normalization
 
@@ -113,6 +117,7 @@ When collecting email, repeat it back exactly as they said it, then use it in th
 ```
 
 ### 5. Provide Clear Examples
+
 **Why:** Models follow patterns more reliably than abstract instructions.
 
 ```markdown
@@ -136,6 +141,7 @@ When collecting email, repeat it back exactly as they said it, then use it in th
 ```
 
 ### 6. Dedicate Guardrails Section
+
 **Why:** Models pay extra attention to `# Guardrails` heading.
 
 ```markdown
@@ -149,6 +155,7 @@ If customer becomes abusive, offer supervisor escalation.
 ```
 
 ### 7. Define Tool Error Handling
+
 **Why:** Tool failures are inevitable. Without handling, agents hallucinate.
 
 ```markdown
@@ -196,8 +203,8 @@ If customer becomes aggressive, remain calm and offer supervisor.
 
 **When to use:** Start of every conversation
 **Parameters:**
-- `order_id`: Written format (e.g., "ORD123456")
-- `email`: Written format (e.g., "user@company.com")
+- `order_id`: Written format (ORD123456)
+- `email`: Written format (user@company.com)
 
 **Usage:**
 1. "Can I get your order number?"
@@ -207,7 +214,7 @@ If customer becomes aggressive, remain calm and offer supervisor.
 ## getOrderDetails
 
 **When to use:** After identity verification
-**Returns:** Order date, items, total, eligibility status
+**Returns:** Order date, items, total, eligibility
 
 ## processRefund
 
@@ -215,11 +222,10 @@ If customer becomes aggressive, remain calm and offer supervisor.
 **Required before calling:**
 - Identity verified
 - Order within 30 days
-- Eligible status
 - Amount under $500
 
 **Usage:**
-1. Confirm with customer: "I'll process a $X refund. It will appear in 3-5 days. OK?"
+1. Confirm: "I'll process a $X refund. It takes 3-5 days. OK?"
 2. Wait for confirmation
 3. Call tool
 
@@ -248,7 +254,7 @@ Narrow scope = faster responses, clearer success criteria, easier debugging.
 
 ### Orchestrator + Specialist Pattern
 1. **Orchestrator**: Routes by intent classification
-2. **Specialists**: Billing, scheduling, tech support (each has focused prompt)
+2. **Specialists**: Billing, scheduling, tech support (focused prompts)
 3. **Human escalation**: Defined handoff criteria
 
 ### Handoff Criteria
@@ -269,8 +275,8 @@ Customer mentions: error, bug, issue, not working, broken
 
 ## Model Selection Tips
 
-| Use Case | Recommended Model | Temperature |
-|----------|-------------------|-------------|
+| Use Case | Model | Temperature |
+|----------|-------|-------------|
 | Customer service | GPT-4o-mini | 0.1 |
 | Complex reasoning | Claude Sonnet 4 | 0.2 |
 | High-frequency simple | Gemini Flash Lite | 0.1 |
