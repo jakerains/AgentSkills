@@ -70,6 +70,17 @@ npx skill jakerains/AgentSkills --skill shot-list
 
 ---
 
+### nextjs-pwa
+> Build Progressive Web Apps with Next.js
+
+**Use for:** PWA setup, service workers, offline support, caching strategies, push notifications, install prompts, Serwist/next-pwa configuration
+
+```bash
+npx skill jakerains/AgentSkills --skill nextjs-pwa
+```
+
+---
+
 ### docxmakebetter
 > Comprehensive Word document creation, editing, and analysis
 
