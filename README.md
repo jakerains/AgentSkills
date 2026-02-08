@@ -10,7 +10,7 @@ Skills are modular packages that give AI agents specialized knowledge, workflows
 
 ```bash
 # Install all skills (works instantly via npx)
-npx skill jakerains/AgentSkills
+npx skills add jakerains/AgentSkills
 ```
 
 ## Supported Agents
@@ -32,7 +32,7 @@ npx skill jakerains/AgentSkills
 **Use for:** Background jobs, AI agents, webhooks, scheduled tasks, retry logic, multi-step workflows in Next.js
 
 ```bash
-npx skill jakerains/AgentSkills --skill vercel-workflow
+npx skills add jakerains/AgentSkills --skill vercel-workflow
 ```
 
 ---
@@ -43,7 +43,7 @@ npx skill jakerains/AgentSkills --skill vercel-workflow
 **Use for:** Text-to-speech, speech-to-text, voice cloning, sound effects, music generation, dubbing, voice agents, voice changer, and all ElevenLabs API/SDK/MCP features
 
 ```bash
-npx skill jakerains/AgentSkills --skill elevenlabs
+npx skills add jakerains/AgentSkills --skill elevenlabs
 ```
 
 ---
@@ -54,7 +54,7 @@ npx skill jakerains/AgentSkills --skill elevenlabs
 **Use for:** Turning docs websites, GitHub repos, and PDFs into installable skills
 
 ```bash
-npx skill jakerains/AgentSkills --skill skill-seekers
+npx skills add jakerains/AgentSkills --skill skill-seekers
 ```
 
 ---
@@ -65,7 +65,7 @@ npx skill jakerains/AgentSkills --skill skill-seekers
 **Use for:** Film/video production planning, screenplay breakdowns, shot planning
 
 ```bash
-npx skill jakerains/AgentSkills --skill shot-list
+npx skills add jakerains/AgentSkills --skill shot-list
 ```
 
 ---
@@ -76,7 +76,7 @@ npx skill jakerains/AgentSkills --skill shot-list
 **Use for:** PWA setup, service workers, offline support, caching strategies, push notifications, install prompts, Serwist/next-pwa configuration
 
 ```bash
-npx skill jakerains/AgentSkills --skill nextjs-pwa
+npx skills add jakerains/AgentSkills --skill nextjs-pwa
 ```
 
 ---
@@ -87,7 +87,7 @@ npx skill jakerains/AgentSkills --skill nextjs-pwa
 **Use for:** SAM3 setup, Hugging Face checkpoint auth, image/video segmentation workflows, Python integration, fine-tuning, and SA-Co evaluation
 
 ```bash
-npx skill jakerains/AgentSkills --skill sam3
+npx skills add jakerains/AgentSkills --skill sam3
 ```
 
 ---
@@ -98,7 +98,7 @@ npx skill jakerains/AgentSkills --skill sam3
 **Use for:** Creating .docx files, tracked changes, comments, redlining workflows, document review, text extraction from Word documents
 
 ```bash
-npx skill jakerains/AgentSkills --skill docxmakebetter
+npx skills add jakerains/AgentSkills --skill docxmakebetter
 ```
 
 ---
@@ -107,19 +107,19 @@ npx skill jakerains/AgentSkills --skill docxmakebetter
 
 ```bash
 # List all available skills
-npx skill jakerains/AgentSkills --list
+npx skills add jakerains/AgentSkills --list
 
 # Install a specific skill to current project
-npx skill jakerains/AgentSkills --skill <skill-name>
+npx skills add jakerains/AgentSkills --skill <skill-name>
 
 # Install globally (available in all projects)
-npx skill jakerains/AgentSkills --skill <skill-name> -g
+npx skills add jakerains/AgentSkills --skill <skill-name> -g
 
 # Install all skills at once
-npx skill jakerains/AgentSkills
+npx skills add jakerains/AgentSkills
 
 # Non-interactive mode (for CI/CD)
-npx skill jakerains/AgentSkills --skill <skill-name> -y
+npx skills add jakerains/AgentSkills --skill <skill-name> -y
 ```
 
 ---
