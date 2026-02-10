@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
 
 ## Repository Purpose
 
-This is a personal Claude Code skills library. Skills are stored in `skills/` and can be installed to `~/.claude/skills/` for use across projects.
+This is a personal agent skills library compatible with multiple AI coding agents (Claude Code, Cursor, Codex, OpenCode, and more via [skills.sh](https://skills.sh)). Skills are stored in `skills/` and can be installed via `npx skills add jakerains/AgentSkills`.
 
 ## Repository Structure
 
@@ -62,7 +62,10 @@ When a user drops a `.skill` file (ZIP archive) into the repository root and ask
 ## Installation Commands
 
 ```bash
-# Copy skill to Claude
+# Install via npx (recommended — works for all supported agents)
+npx skills add jakerains/AgentSkills --skill skill-name
+
+# Or manually copy to Claude Code
 cp -r skills/skill-name ~/.claude/skills/
 
 # Or symlink for auto-updates
@@ -83,7 +86,7 @@ mkdir -p skills/new-skill
 
 ## What Are Skills?
 
-Skills are modular packages that provide Claude with specialized knowledge, workflows, and tools. A `.skill` file is a zip archive containing:
+Skills are modular packages that provide AI coding agents with specialized knowledge, workflows, and tools. A `.skill` file is a zip archive containing:
 
 - `SKILL.md` (required) - Instructions with YAML frontmatter
 - `scripts/` (optional) - Executable Python/Bash code
@@ -114,7 +117,7 @@ Instructions, workflows, examples, and references to bundled resources.
 | `name` | Yes | Kebab-case, lowercase, max 64 chars |
 | `description` | Yes | Max 1024 chars, no `<>`. Include WHEN to trigger. |
 
-**Critical:** The `description` is the ONLY thing Claude sees before loading the skill. Put all trigger conditions here, not in the body.
+**Critical:** The `description` is the ONLY thing the agent sees before loading the skill. Put all trigger conditions here, not in the body.
 
 ### Body Guidelines
 
