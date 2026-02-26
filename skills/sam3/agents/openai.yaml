@@ -1,3 +1,0 @@
-interface:
-  display_name: "SAM 3"
-  short_description: "Build and run Meta SAM 3 segmentation workflows"

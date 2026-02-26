@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROFILE_NAME="${MACOS_NOTARY_PROFILE:-${NOTARY_PROFILE:-LemonNotesApp-Notarize}}"
+TEAM_ID="${MACOS_TEAM_ID:-${TEAM_ID:-47347VQHQV}}"
+APPLE_ID="${MACOS_APPLE_ID:-${APPLE_ID:-}}"
+APP_SPECIFIC_PASSWORD="${MACOS_APP_SPECIFIC_PASSWORD:-${APP_SPECIFIC_PASSWORD:-}}"
+
+if xcrun notarytool history --keychain-profile "${PROFILE_NAME}" --output-format json >/dev/null 2>&1; then
+  echo "Notary profile '${PROFILE_NAME}' is already configured."
+  exit 0
+fi
+
+if [[ -z "${APPLE_ID}" ]]; then
+  APPLE_ID="$(defaults read MobileMeAccounts Accounts 2>/dev/null | awk -F'"' '/AccountID = / {print $2; exit}')"
+fi
+
+if [[ -z "${APPLE_ID}" ]]; then
+  echo "Unable to auto-detect Apple ID. Set MACOS_APPLE_ID (or APPLE_ID) and retry."
+  exit 1
+fi
+
+if [[ -z "${APP_SPECIFIC_PASSWORD}" ]]; then
+  if [[ -t 0 ]]; then
+    read -r -s -p "Enter app-specific password for ${APPLE_ID}: " APP_SPECIFIC_PASSWORD
+    echo
+  else
+    echo "Missing app-specific password. Set MACOS_APP_SPECIFIC_PASSWORD (or APP_SPECIFIC_PASSWORD) and retry."
+    exit 1
+  fi
+fi
+
+echo "Storing notary profile '${PROFILE_NAME}' for Apple ID '${APPLE_ID}'..."
+xcrun notarytool store-credentials "${PROFILE_NAME}" \
+  --apple-id "${APPLE_ID}" \
+  --team-id "${TEAM_ID}" \
+  --password "${APP_SPECIFIC_PASSWORD}"
+
+echo "Stored notary profile: ${PROFILE_NAME}"
