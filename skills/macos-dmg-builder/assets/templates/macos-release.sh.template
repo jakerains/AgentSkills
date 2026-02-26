@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+MACOS_DIR="${ROOT_DIR}/macos"
+PROJECT_PATH="${MACOS_DIR}/LemonNotes.xcodeproj"
+
+SCHEME="${SCHEME:-LemonNotesMac}"
+CONFIGURATION="${CONFIGURATION:-Release}"
+DESTINATION="${DESTINATION:-generic/platform=macOS}"
+DERIVED_DATA="${DERIVED_DATA:-${MACOS_DIR}/.release/build}"
+ARCHIVE_PATH="${ARCHIVE_PATH:-${MACOS_DIR}/.release/${SCHEME}.xcarchive}"
+OUTPUT_DIR="${OUTPUT_DIR:-${MACOS_DIR}/.release/output}"
+DMG_STAGING_DIR="${DMG_STAGING_DIR:-${MACOS_DIR}/.release/dmg-staging}"
+
+APP_NAME="${APP_NAME:-LemonNotes}"
+DMG_NAME="${DMG_NAME:-LemonNotes-macOS}"
+VOLUME_NAME="${VOLUME_NAME:-LemonNotes}"
+
+DEFAULT_SIGN_IDENTITY="Developer ID Application: Jacob RAINS (47347VQHQV)"
+DEFAULT_TEAM_ID="47347VQHQV"
+DEFAULT_NOTARY_PROFILE="LemonNotesApp-Notarize"
+
+APP_SIGN_IDENTITY="${MACOS_APP_SIGN_IDENTITY:-${APP_SIGN_IDENTITY:-${DEFAULT_SIGN_IDENTITY}}}"
+TEAM_ID="${MACOS_TEAM_ID:-${TEAM_ID:-${DEFAULT_TEAM_ID}}}"
+NOTARY_PROFILE="${MACOS_NOTARY_PROFILE:-${NOTARY_PROFILE:-${DEFAULT_NOTARY_PROFILE}}}"
+RESOLVED_SIGN_IDENTITY=""
+
+required_tools=(xcodegen xcodebuild xcrun codesign ditto hdiutil)
+for tool in "${required_tools[@]}"; do
+  command -v "${tool}" >/dev/null 2>&1 || { echo "Missing required tool: ${tool}"; exit 1; }
+done
+
+if ! xcrun notarytool history --keychain-profile "${NOTARY_PROFILE}" --output-format json >/dev/null 2>&1; then
+  echo "Missing notary profile '${NOTARY_PROFILE}'."
+  echo "Run: make macos-notary-setup"
+  exit 1
+fi
+
+if [[ "${APP_SIGN_IDENTITY}" =~ ^[A-Fa-f0-9]{40}$ ]]; then
+  RESOLVED_SIGN_IDENTITY="${APP_SIGN_IDENTITY}"
+else
+  mapfile -t identity_matches < <(security find-identity -v -p codesigning | awk -v identity="${APP_SIGN_IDENTITY}" '
+    {
+      hash=$2
+      line=$0
+      sub(/^[[:space:]]*[0-9]+\)[[:space:]]*/, "", line)
+      if (index(line, "\"" identity "\"") > 0) {
+        print hash
+      }
+    }
+  ')
+
+  [[ "${#identity_matches[@]}" -gt 0 ]] || { echo "No codesigning identity found matching: ${APP_SIGN_IDENTITY}"; exit 1; }
+  RESOLVED_SIGN_IDENTITY="${identity_matches[0]}"
+
+  if [[ "${#identity_matches[@]}" -gt 1 ]]; then
+    echo "Found ${#identity_matches[@]} matching identities for '${APP_SIGN_IDENTITY}', using SHA-1: ${RESOLVED_SIGN_IDENTITY}"
+  fi
+fi
+
+echo "==> Generating Xcode project"
+(cd "${MACOS_DIR}" && xcodegen generate)
+
+echo "==> Preparing release directories"
+rm -rf "${ARCHIVE_PATH}" "${OUTPUT_DIR}" "${DMG_STAGING_DIR}"
+mkdir -p "$(dirname "${ARCHIVE_PATH}")" "${OUTPUT_DIR}" "${DMG_STAGING_DIR}"
+
+echo "==> Building signed archive (${CONFIGURATION})"
+xcodebuild \
+  -project "${PROJECT_PATH}" \
+  -scheme "${SCHEME}" \
+  -configuration "${CONFIGURATION}" \
+  -destination "${DESTINATION}" \
+  -archivePath "${ARCHIVE_PATH}" \
+  -derivedDataPath "${DERIVED_DATA}" \
+  DEVELOPMENT_TEAM="${TEAM_ID}" \
+  CODE_SIGN_STYLE=Manual \
+  CODE_SIGN_IDENTITY="${RESOLVED_SIGN_IDENTITY}" \
+  ENABLE_HARDENED_RUNTIME=YES \
+  archive
+
+ARCHIVED_APP="${ARCHIVE_PATH}/Products/Applications/${SCHEME}.app"
+[[ -d "${ARCHIVED_APP}" ]] || { echo "Archive did not produce app: ${ARCHIVED_APP}"; exit 1; }
+
+APP_BUNDLE="${OUTPUT_DIR}/${APP_NAME}.app"
+APP_ZIP="${OUTPUT_DIR}/${APP_NAME}.zip"
+DMG_PATH="${OUTPUT_DIR}/${DMG_NAME}.dmg"
+
+echo "==> Exporting app bundle"
+ditto "${ARCHIVED_APP}" "${APP_BUNDLE}"
+
+codesign --verify --deep --strict --verbose=2 "${APP_BUNDLE}"
+
+echo "==> Notarizing app"
+rm -f "${APP_ZIP}"
+ditto -c -k --keepParent "${APP_BUNDLE}" "${APP_ZIP}"
+xcrun notarytool submit "${APP_ZIP}" --keychain-profile "${NOTARY_PROFILE}" --wait
+xcrun stapler staple "${APP_BUNDLE}"
+xcrun stapler validate "${APP_BUNDLE}"
+
+echo "==> Building and signing DMG"
+ditto "${APP_BUNDLE}" "${DMG_STAGING_DIR}/${APP_NAME}.app"
+ln -s /Applications "${DMG_STAGING_DIR}/Applications"
+hdiutil create -volname "${VOLUME_NAME}" -srcfolder "${DMG_STAGING_DIR}" -ov -format UDZO "${DMG_PATH}"
+codesign --force --timestamp --options runtime --sign "${RESOLVED_SIGN_IDENTITY}" "${DMG_PATH}"
+codesign --verify --verbose=2 "${DMG_PATH}"
+
+echo "==> Notarizing DMG"
+xcrun notarytool submit "${DMG_PATH}" --keychain-profile "${NOTARY_PROFILE}" --wait
+xcrun stapler staple "${DMG_PATH}"
+xcrun stapler validate "${DMG_PATH}"
+
+rm -rf "${DMG_STAGING_DIR}"
+rm -f "${APP_ZIP}"
+
+echo "Release artifacts created:"
+echo "  App: ${APP_BUNDLE}"
+echo "  DMG: ${DMG_PATH}"

@@ -129,6 +129,17 @@ npx skills add jakerains/AgentSkills --skill apple-foundation-models
 
 ---
 
+### macos-dmg-builder
+> Build, sign, notarize, and package native macOS apps into distributable DMGs
+
+**Use for:** SwiftUI/AppKit/Xcode release pipelines, Developer ID code signing, notarytool credential setup, DMG creation and notarization, debugging codesign/notarization failures
+
+```bash
+npx skills add jakerains/AgentSkills --skill macos-dmg-builder
+```
+
+---
+
 ## Installation Options
 
 ```bash
