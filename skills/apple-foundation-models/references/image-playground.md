@@ -1,5 +1,19 @@
 # Image Playground Reference
 
+## Table of Contents
+
+- [Scope](#scope)
+- [API Surface and Availability Snapshot](#api-surface-and-availability-snapshot)
+- [Integration Modes](#integration-modes)
+- [Availability Check Pattern](#availability-check-pattern)
+- [SwiftUI Sheet Pattern](#swiftui-sheet-pattern)
+- [UIKit/AppKit Pattern](#uikitappkit-pattern)
+- [Programmatic Pattern with ImageCreator](#programmatic-pattern-with-imagecreator)
+- [Styles and Content Inputs](#styles-and-content-inputs)
+- [iOS 26 Updates](#ios-26-updates)
+- [Error and UX Guidance](#error-and-ux-guidance)
+- [Sources](#sources)
+
 ## Scope
 
 Use this reference when integrating Apple's on-device image generation features.
@@ -68,20 +82,64 @@ for try await generated in creator.images(
 
 ## Styles and Content Inputs
 
+### Core Styles
+
 - Core style constants include `.animation`, `.illustration`, and `.sketch`.
-- `availableStyles` can be queried at runtime.
+- **Always query `availableStyles` at runtime** rather than hardcoding style constants, as available styles vary by OS version and device.
+
+```swift
+let available = ImagePlaygroundViewController.availableStyles
+// Use only styles present in this array
+```
+
 - Support optional source images to guide generation where appropriate.
 - Keep concept text concise and specific for better results.
+
+## iOS 26 Updates
+
+iOS 26 and iPadOS 26 introduce significant Image Playground enhancements:
+
+### ChatGPT Integration Styles
+
+New styles powered by ChatGPT integration. These extend the existing on-device styles with:
+
+- **Anime** — Japanese animation aesthetic
+- **Oil Painting** — Classical painterly style
+- **Vector** — Clean vector illustration look
+- **Print** — Printed/lithographic quality
+- **Watercolor** — Watercolor painting effect
+- **"Any Style" mode** — User-defined style via text description
+
+**Important:** ChatGPT-powered styles require an active network connection. The on-device styles (`.animation`, `.illustration`, `.sketch`) remain available offline.
+
+### Genmoji Creation
+
+Image Playground now supports creating custom Genmoji — personalized emoji generated from descriptions and optional photos.
+
+### Other Improvements
+
+- Improved generation quality across all styles.
+- Image labeling for accessibility metadata on generated images.
+- Extended style options may appear in system surfaces (Messages, Freeform, etc.).
+
+### Runtime Style Discovery
+
+Do not hardcode new iOS 26 style constants. Instead, always discover available styles at runtime:
+
+```swift
+// Correct — adapts to OS version and device capabilities
+let styles = ImagePlaygroundViewController.availableStyles
+
+// Incorrect — will crash on earlier OS versions
+// let style = .anime  // ❌ Don't hardcode new styles
+```
 
 ## Error and UX Guidance
 
 - Handle `ImageCreator.Error` cases and cancellation cleanly.
 - Offer fallback UI when unavailable or unsupported by language/device.
 - Keep generation work on the main user flow lightweight; persist outputs quickly.
-
-## Notes on Extended Styles
-
-Apple Intelligence updates mention additional style options in some surfaces (including ChatGPT-powered styles). Verify current behavior per OS release before hard-coding assumptions.
+- For ChatGPT-powered styles, handle network unavailability gracefully — fall back to on-device styles.
 
 ## Sources
 
