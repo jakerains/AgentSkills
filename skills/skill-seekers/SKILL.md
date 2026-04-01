@@ -7,14 +7,6 @@ description: Convert documentation websites, GitHub repositories, and PDFs into 
 
 **Convert documentation websites, GitHub repositories, and PDFs into Claude AI skills automatically.**
 
-## When to Activate
-
-Use this skill when:
-- User wants to create a Claude skill from documentation
-- User asks about scraping docs, GitHub repos, or PDFs for Claude
-- User needs to package documentation into a `.zip` for Claude
-- User wants to convert a website, repo, or PDF into knowledge for Claude
-
 ## Quick Reference
 
 ### Installation

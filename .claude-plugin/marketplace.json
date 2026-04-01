@@ -1,30 +1,76 @@
 {
-  "name": "claudeskills",
+  "name": "agentskills",
   "owner": {
     "name": "Jake Rains"
   },
   "metadata": {
-    "description": "Personal Claude Code skills library",
-    "version": "1.0.0"
+    "description": "Agent skills library compatible with 18+ AI coding agents and the Claude Code plugin marketplace",
+    "version": "1.0.0",
+    "pluginRoot": "./skills"
   },
   "plugins": [
     {
-      "name": "elevenlabs-voice-agents",
-      "source": "./skills/elevenlabs-voice-agents",
-      "description": "Create and deploy ElevenLabs conversational voice agents, phone bots, and voice assistants",
-      "version": "1.0.0"
+      "name": "apple-foundation-models",
+      "source": "./skills/apple-foundation-models",
+      "description": "Build Apple Intelligence features with Foundation Models and Image Playground on iOS, iPadOS, macOS, and visionOS",
+      "version": "1.0.0",
+      "tags": ["apple", "ios", "macos", "ai", "foundation-models"]
     },
     {
-      "name": "skill-seekers",
-      "source": "./skills/skill-seekers",
-      "description": "Convert documentation websites, GitHub repos, and PDFs into Claude skills",
-      "version": "1.0.0"
+      "name": "docxmakebetter",
+      "source": "./skills/docxmakebetter",
+      "description": "Create, edit, and analyze Word documents (.docx) with tracked changes, comments, formatting, and text extraction",
+      "version": "1.0.0",
+      "tags": ["docx", "word", "documents", "office"]
+    },
+    {
+      "name": "elevenlabs",
+      "source": "./skills/elevenlabs",
+      "description": "Complete ElevenLabs AI audio platform: TTS, STT, voice cloning, sound effects, music generation, dubbing, and voice agents",
+      "version": "1.0.0",
+      "tags": ["audio", "tts", "voice", "elevenlabs", "speech"]
+    },
+    {
+      "name": "macos-dmg-builder",
+      "source": "./skills/macos-dmg-builder",
+      "description": "Build, sign, notarize, and package native macOS apps into distributable DMGs",
+      "version": "1.0.0",
+      "tags": ["macos", "dmg", "notarize", "codesign", "distribution"]
+    },
+    {
+      "name": "nextjs-pwa",
+      "source": "./skills/nextjs-pwa",
+      "description": "Build Progressive Web Apps with Next.js: service workers, offline support, caching, push notifications, and install prompts",
+      "version": "1.0.0",
+      "tags": ["nextjs", "pwa", "service-worker", "offline", "push-notifications"]
+    },
+    {
+      "name": "onnx-webgpu-converter",
+      "source": "./skills/onnx-webgpu-converter",
+      "description": "Convert HuggingFace transformer models to ONNX format for browser inference with Transformers.js and WebGPU",
+      "version": "1.0.0",
+      "tags": ["onnx", "webgpu", "transformers", "ml", "browser-inference"]
     },
     {
       "name": "shot-list",
       "source": "./skills/shot-list",
-      "description": "Generate professional shot lists from screenplays and scripts",
-      "version": "1.0.0"
+      "description": "Generate professional shot lists from screenplays and scripts for production planning",
+      "version": "1.0.0",
+      "tags": ["screenplay", "shot-list", "film", "production"]
+    },
+    {
+      "name": "skill-seekers",
+      "source": "./skills/skill-seekers",
+      "description": "Convert documentation websites, GitHub repos, and PDFs into Claude AI skills",
+      "version": "1.0.0",
+      "tags": ["skills", "documentation", "scraping", "conversion"]
+    },
+    {
+      "name": "vercel-workflow",
+      "source": "./skills/vercel-workflow",
+      "description": "Build durable workflows with Vercel Workflow DevKit using 'use workflow' and 'use step' directives",
+      "version": "1.0.0",
+      "tags": ["vercel", "workflow", "durable", "background-jobs"]
     }
   ]
 }

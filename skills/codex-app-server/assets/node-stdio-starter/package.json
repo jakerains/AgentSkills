@@ -1,0 +1,14 @@
+{
+  "name": "codex-app-server-node-stdio-starter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p .",
+    "check": "tsc --noEmit -p .",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}

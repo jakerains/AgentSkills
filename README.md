@@ -30,6 +30,17 @@ Works with **18+ AI coding agents** via [skills.sh](https://skills.sh):
 
 ## Available Skills
 
+### codex-app-server
+> Embed Codex into rich apps with the Codex App Server
+
+**Use for:** Building Electron, Swift, Next.js, and Node/TypeScript Codex clients, integrating Codex into existing apps, ChatGPT or API-key login flows, external ChatGPT token refresh, streamed thread/turn/item events, approvals, and version-matched App Server schema generation
+
+```bash
+npx skills add jakerains/AgentSkills --skill codex-app-server
+```
+
+---
+
 ### vercel-workflow
 > Build durable, long-running workflows with Vercel's Workflow DevKit
 
