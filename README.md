@@ -96,6 +96,17 @@ npx skills add jakerains/AgentSkills --skill nextjs-pwa
 
 ---
 
+### nextstep-tours
+> Product tours, onboarding, and interactive tutorials with NextStep v2 for Next.js
+
+**Use for:** Guided tours, onboarding flows, feature walkthroughs, interactive tutorials, gated step-by-step lessons, multi-page tours with nextRoute, NextStepViewport for scrollable containers, custom tour cards, validation-gated progression
+
+```bash
+npx skills add jakerains/AgentSkills --skill nextstep-tours
+```
+
+---
+
 ### sam3
 > Create and work with Meta SAM 3 for open-vocabulary segmentation
 
