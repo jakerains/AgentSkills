@@ -151,6 +151,17 @@ npx skills add jakerains/AgentSkills --skill apple-foundation-models
 
 ---
 
+### update-changelog
+> Automated changelog management, version bumping, and release tracking
+
+**Use for:** Updating changelogs, bumping versions, setting up changelog systems, creating release entries, semantic versioning, "commit and push" workflows, version display UI components
+
+```bash
+npx skills add jakerains/AgentSkills --skill update-changelog
+```
+
+---
+
 ### macos-dmg-builder
 > Build, sign, notarize, and package native macOS apps into distributable DMGs
 
