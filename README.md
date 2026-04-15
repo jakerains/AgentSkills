@@ -50,6 +50,19 @@ npx skills add jakerains/AgentSkills --skill elevenlabs-maxx
 
 ---
 
+### elevenlabs-agent-builder
+> Build, validate, and deploy ElevenLabs Conversational AI voice agents end-to-end
+
+Focused companion to `elevenlabs-maxx` for voice agents specifically. Ships a schema-aware validator, a deploy-with-tools script, knowledge base upload, and migration cheatsheets for Retell, Vapi, and Bland — so you can port an existing voice bot or build one from a call script in a single pass.
+
+**Use for:** Building voice agents, phone bots, IVR flows, migrating from Retell/Vapi/Bland, validating agent JSON, knowledge base prep, fixing agent deployment errors
+
+```bash
+npx skills add jakerains/AgentSkills --skill elevenlabs-agent-builder
+```
+
+---
+
 ### skill-seekers ★
 > Turn any documentation into an installable agent skill
 
