@@ -120,20 +120,43 @@ Analyze ALL changes since the last changelog entry. This includes:
 - Any uncommitted/staged changes in the working tree
 - Files changed, features added, bugs fixed
 
-Categorize:
-- **Patch** (x.x.**+1**): bug fixes, dependency updates, small tweaks, typos, style changes, config adjustments
-- **Minor** (x.**+1**.0): new features, new API endpoints, new UI components, meaningful new functionality, new integrations
-- **Major** (**+1**.0.0): breaking changes, API redesigns, major rewrites (rare — user usually specifies)
+Categorize. **Default to patch.** Only escalate to minor when there is clearly a new, user-facing capability worth announcing. When torn between patch and minor, choose patch.
+
+- **Patch** (x.x.**+1**) — the default, and most releases land here. Use for:
+  - Bug fixes, typo fixes, copy tweaks
+  - Dependency updates, config adjustments, build tooling changes
+  - Refactors, cleanup, internal code changes with no user-visible behavior change
+  - Small UI tweaks, style/layout polish, accessibility fixes
+  - Performance improvements that don't change behavior
+  - New internal helpers, small extensions of existing features
+  - Docs, tests, CI changes
+- **Minor** (x.**+1**.0) — reserved for genuinely notable new capability. Requires ALL of:
+  - A new user-facing feature, page, workflow, integration, or public API surface
+  - Something a user would reasonably see in release notes and say "oh, that's new"
+  - Not just an extension or polish of an existing feature
+  - Examples that qualify: a brand-new page/route, a new integration with a third-party service, a new public API endpoint, a new major UI surface (modal/panel/tool) that didn't exist before
+  - Examples that do NOT qualify (these are patches): adding a button to an existing page, new config option, new CLI flag, new variant of an existing component, extending an existing feature, small new helper function
+- **Major** (**+1**.0.0) — breaking changes, API redesigns, major rewrites. Rare. Never pick this without explicit user direction.
+
+**Tiebreaker:** If the change feels "meh, it's just more of what we already do" → patch. If you find yourself justifying why it's minor → it's probably patch.
 
 ### Step 3: Determine new version
 
-Calculate the new version number based on the scope assessment.
+Calculate the new version number based on the scope assessment. **Remember: patch is the default. Only pick minor if the Step 2 criteria for minor are clearly met.**
 
-Present your recommendation with rationale:
+Present your recommendation with rationale. If you picked minor, explicitly justify which Step 2 minor-criterion the change meets — if you can't point to one cleanly, downgrade to patch before presenting.
+
 ```
 Current version: 1.15.7
 Recommended bump: patch → 1.15.8
-Reason: Bug fixes and small UI tweaks, no new features
+Reason: Bug fixes and small UI tweaks, no new user-facing capability
+```
+
+Or, for a minor bump:
+```
+Current version: 1.15.7
+Recommended bump: minor → 1.16.0
+Reason: Adds new /reports page (new user-facing surface) — qualifies as minor under Step 2 criteria
 ```
 
 The user may override your recommendation. Accept their choice.
