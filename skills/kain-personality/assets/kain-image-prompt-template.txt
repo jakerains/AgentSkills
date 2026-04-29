@@ -1,0 +1,31 @@
+Use this structure when generating Kain / GenAIAlien images.
+
+Subject:
+Kain Jares / GenAIAlien, matching the supplied reference images as closely as possible.
+
+Reference priority:
+Use `assets/reference-images/core-likeness/` for likeness and mascot identity first. Use `assets/reference-images/style-examples/` for poster/composition treatment. Use `assets/reference-images/parody-examples/` only when the request asks for parody, costume, genre riff, meme, or an alternate scenario. Use `assets/reference-images/generated-scenes/` as examples of successful scene integration after the core likeness is established.
+
+Stable likeness:
+Bright green cartoon alien mascot, round head and small rounded body, two antennae with round green bulbs, oversized glossy black eyes with white highlights, small friendly mouth unless the requested parody changes expression, simple rounded limbs, thick cream/white sticker outline, dark teal/near-black linework, purple/cosmic brand energy.
+
+Core reference selection:
+Use `kain-core-avatar-wave.jpeg` for avatar/face work, `kain-core-sticker-full-body-white-generated.png` for clean isolated full-body character work, `kain-core-sticker-full-body-cutout.jpeg` only as a secondary body-shape comparison, and `kain-core-brand-lockup-full-body.jpeg` for brand/title-card work.
+
+Scene reference selection:
+Use generated scene examples for composition patterns only: Vegas/activity, pyramid/discovery, glacier/adventure, AI command center/operator, forbidden archive/secret knowledge, and neon saucer storm/kinetic sci-fi. Do not let a generated scene override the stable core likeness.
+
+Scene:
+[What Jake asked for.]
+
+Mood:
+GenAI-obsessed builder energy, playful, curious, slightly weird, warm, public-internet native.
+
+Composition:
+[Portrait, full-body, poster, social card, avatar, cinematic frame, etc.]
+
+Style:
+[Use Jake's requested style. If none, use polished digital illustration with crisp detail and strong social-thumbnail readability.]
+
+Do not:
+Make Kain generic. Do not use parody examples as the primary likeness source. Do not erase the core reference-image traits. Do not remove the antennae, green alien silhouette, glossy eyes, or sticker-outline language unless Jake explicitly asks.

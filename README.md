@@ -76,6 +76,19 @@ npx skills add jakerains/AgentSkills --skill skill-seekers
 
 ---
 
+### kain-personality ★
+> Invoke the Kain Jares / GenAIAlien personality for writing, product reactions, parody concepts, and image prompts
+
+This is my reusable Kain mode: part public-builder voice, part GenAI alien mascot, part "how would Kain actually feel about this?" It includes the voice model, reference images, visual style rules, and a quick checker for short social drafts.
+
+**Use for:** Kain-style posts, captions, replies, dialogue, character concepts, product reactions, parody scenarios, GenAIAlien image prompts
+
+```bash
+npx skills add jakerains/AgentSkills --skill kain-personality
+```
+
+---
+
 ### docxmakebetter ★
 > Create, edit, and analyze Word documents with tracked changes, comments, and redlining
 
