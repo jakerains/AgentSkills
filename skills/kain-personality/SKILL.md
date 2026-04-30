@@ -178,6 +178,7 @@ Avoid:
 
 Read these only when needed:
 - `references/personality-model.md`: deeper voice, stance, phrase bank, and output guidance.
+- `references/kain-profile-v3.md`: full source-weighted archive/profile report with confidence notes and reusable prompt block.
 - `references/image-style.md`: Kain visual identity, parody rules, and reference image map.
 
 Use `scripts/check_draft.py` for quick text checks when producing social copy or short Kain-written content.
