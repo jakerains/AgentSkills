@@ -96,15 +96,25 @@ This is the primary workflow. Follow every step in order.
 # Current version
 cat package.json | jq -r '.version'
 
-# Recent commits (adjust depth as needed)
-git log --oneline -20
+# Unpushed commits — anything here is a release candidate
+git log @{u}..HEAD --oneline
 
-# What's changed since last entry
+# Uncommitted changes (also part of the next release if you commit them)
+git status --short
 git diff --stat
-git status
+
+# Wider history for cross-referencing against the changelog
+git log --oneline -20
 ```
 
 Read the existing changelog file(s) to find the **last documented version** and its **date**.
+
+**Cross-reference unpushed commits against the existing CHANGELOG.** For every commit returned by `git log @{u}..HEAD`, decide whether its content is already represented in the latest changelog entry:
+- If the commit message is a `release: vX.Y.Z` line, that's the version-bump commit itself — skip it.
+- If the commit's user-facing change is already in the latest changelog entry (or in any entry newer than the commit's date), it's already documented — skip it.
+- Otherwise, **the new entry must cover it.** Pull the diff (`git show <sha> --stat`) if the message is too terse to summarize from.
+
+This is the core rule: **the next changelog entry covers everything the next push will publish**, regardless of whether it's already committed or still in your working tree.
 
 If a structured data file exists (e.g., `lib/changelog-data.tsx`), read it to understand the entry format:
 - Does it use JSX/ReactNode for `content`? (e.g., `<div className="prose">...</div>`)
@@ -115,10 +125,12 @@ If a structured data file exists (e.g., `lib/changelog-data.tsx`), read it to un
 
 ### Step 2: Assess scope
 
-Analyze ALL changes since the last changelog entry. This includes:
-- Commits since the last entry's date
+Analyze the **complete delta the next push will publish**. This is the union of:
+- Unpushed commits (`git log @{u}..HEAD`) whose content isn't already in the latest changelog entry — see Step 1's cross-reference rule
 - Any uncommitted/staged changes in the working tree
-- Files changed, features added, bugs fixed
+- Files changed, features added, bugs fixed across both
+
+Treat both sources equally — a commit you made yesterday and an edit sitting in your working tree right now are both going out in the same push, so the entry covers both.
 
 Categorize. **Default to patch.** Only escalate to minor when there is clearly a new, user-facing capability worth announcing. When torn between patch and minor, choose patch.
 
@@ -221,9 +233,10 @@ For TS with markdown strings:
 
 Show the user:
 1. **Version bump**: `current → proposed` (with bump type)
-2. **CHANGELOG.md entry**: full formatted text
-3. **Structured data entry**: full formatted entry (if applicable)
-4. **Files to be modified**: list every file that will change
+2. **Scope captured**: a one-line list of unpushed commit shas/subjects this entry covers, plus a note about the uncommitted changes if any. This makes it easy to spot anything that got missed.
+3. **CHANGELOG.md entry**: full formatted text
+4. **Structured data entry**: full formatted entry (if applicable)
+5. **Files to be modified**: list every file that will change
 
 Ask: "Does this look good? Any changes?"
 
