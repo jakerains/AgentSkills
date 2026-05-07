@@ -1,6 +1,6 @@
 ---
 name: update-changelog
-description: "Automate changelog management, version bumping, and release tracking. Sets up a changelog system (CHANGELOG.md, UI modal, version display) if none exists, or updates an existing one. Use when: updating changelog, bumping version, creating release entry, setting up changelog, adding version display, managing semver, commit and push workflow. Triggers on: changelog, version bump, release notes, semver, CHANGELOG.md, release entry, what's new, patch/minor/major bump, commit and push, update the changelog, release, new version."
+description: "Automate changelog management, version bumping, release tracking, tags, and GitHub Releases. Sets up a changelog system (CHANGELOG.md, UI modal, version display) if none exists, or updates an existing one. Use when: updating changelog, bumping version, creating release entry, promoting [Unreleased], tagging, publishing GitHub Release notes, handling prerelease versions, setting up changelog, adding version display, managing semver, commit/push/release workflow. Triggers on: changelog, version bump, release notes, semver, CHANGELOG.md, release entry, what's new, patch/minor/major/prerelease bump, tag release, GitHub Release, update the changelog, release, new version."
 ---
 
 # Version Changelog
@@ -17,6 +17,7 @@ Dual-mode skill for changelog lifecycle management. Detects existing systems and
 | UI components | Reference | Read [ui-component-guide.md](references/ui-component-guide.md) |
 | Detection algorithm | Reference | Read [detection-logic.md](references/detection-logic.md) |
 | Parse CHANGELOG.md → JSON | Script | Run [parse-changelog.sh](scripts/parse-changelog.sh) |
+| Tags and GitHub Releases | Publish | Approval-gated in Update Mode |
 
 ---
 
@@ -90,7 +91,7 @@ After setup, immediately offer to run Update Mode if there are existing changes 
 
 This is the primary workflow. Follow every step in order.
 
-### Step 1: Read current state
+### Step 1: Read current state and release preflight
 
 ```bash
 # Current version
@@ -102,6 +103,12 @@ git log --oneline -20
 # What's changed since last entry
 git diff --stat
 git status
+
+# Release context
+git branch --show-current
+git tag --list --sort=-v:refname | head -20
+git remote -v
+command -v gh >/dev/null && gh auth status
 ```
 
 Read the existing changelog file(s) to find the **last documented version** and its **date**.
@@ -113,11 +120,18 @@ If a structured data file exists (e.g., `lib/changelog-data.tsx`), read it to un
 
 **Store the detected format.** New entries MUST match the existing format exactly.
 
+Check release workflow context before drafting:
+- **Branch**: For release-only version/changelog bumps, recommend `main`. If already on a feature branch with the code being released, keep the changelog/version bump on that branch so the merge carries code + release notes together. If not on `main` and intent is unclear, ask before writing.
+- **Tags**: Detect existing tag style with `git tag --list`. If tags use `vX.Y.Z`, use `vX.Y.Z`. If tags use `X.Y.Z`, use `X.Y.Z`. If there are no tags, ask and recommend `vX.Y.Z`.
+- **GitHub Release readiness**: Note whether `gh` exists and `gh auth status` succeeds. If not, skip GitHub Release creation unless the user fixes auth/tooling.
+- **Deploy coupling**: Look for `.github/workflows/`, `vercel.json`, `netlify.toml`, `fly.toml`, `render.yaml`, `railway.json`, or package scripts that imply deploy on `main`. If `main` auto-deploys, warn during approval: "Committing this release on main may ship vX.Y.Z to production."
+
 ### Step 2: Assess scope
 
 Analyze ALL changes since the last changelog entry. This includes:
 - Commits since the last entry's date
 - Any uncommitted/staged changes in the working tree
+- Any populated `[Unreleased]` section
 - Files changed, features added, bugs fixed
 
 Categorize. **Default to patch.** Only escalate to minor when there is clearly a new, user-facing capability worth announcing. When torn between patch and minor, choose patch.
@@ -143,6 +157,12 @@ Categorize. **Default to patch.** Only escalate to minor when there is clearly a
 ### Step 3: Determine new version
 
 Calculate the new version number based on the scope assessment. **Remember: patch is the default. Only pick minor if the Step 2 criteria for minor are clearly met.**
+
+Pre-release handling:
+- Stable releases are the default. Do not create `-alpha`, `-beta`, or `-rc` versions unless the user asks or the current version is already a pre-release.
+- If current version is `1.2.0-beta.1` and the work continues that track, recommend incrementing the pre-release number (`1.2.0-beta.2`) instead of jumping stable.
+- If current version is `1.2.0-rc.1` and the user says it is ready, recommend finalizing to `1.2.0`.
+- For `0.x` projects, still use semver shape: patch for fixes, minor for new user-facing capability, major only by explicit direction.
 
 Present your recommendation with rationale. If you picked minor, explicitly justify which Step 2 minor-criterion the change meets — if you can't point to one cleanly, downgrade to patch before presenting.
 
@@ -171,16 +191,23 @@ Draft entries for ALL detected changelog targets:
 ## [X.Y.Z] - Month DD, YYYY
 
 ### Added
-- New feature description
+- Add new feature description
 
 ### Changed
-- Changed behavior description
+- Update changed behavior description
 
 ### Fixed
-- Bug fix description
+- Fix bug description
 ```
 
 Use only the categories that apply: Added, Changed, Deprecated, Removed, Fixed, Security.
+
+If `CHANGELOG.md` has populated `[Unreleased]` items, promote relevant items into the new version entry and leave a fresh empty `## [Unreleased]` above it.
+
+Add traceability only when it helps:
+- Prefer issue/PR refs when available: `Fix login redirect (#142)`.
+- Use short commit refs only for hard-to-trace changes or when no PR/issue exists: `Fix migration ordering (a1b2c3d)`.
+- Do not clutter every line with hashes if the release commit already groups the work clearly.
 
 **B. Structured data file entry** (if one exists):
 
@@ -224,8 +251,34 @@ Show the user:
 2. **CHANGELOG.md entry**: full formatted text
 3. **Structured data entry**: full formatted entry (if applicable)
 4. **Files to be modified**: list every file that will change
+5. **Release context**: branch recommendation, detected tag style, GitHub Release readiness, and any main auto-deploy warning
 
-Ask: "Does this look good? Any changes?"
+Use this friendly approval shape:
+
+```markdown
+I found changes since vX.Y.Z and recommend a patch bump to vX.Y.Z.
+
+Release context:
+- Branch: main
+- Tags: existing tags use a v-prefix, so I will use vX.Y.Z
+- GitHub Release: gh is authenticated
+- Deploy: main appears to auto-deploy, so this may ship to production
+
+Proposed changelog:
+
+## [X.Y.Z] - Month DD, YYYY
+
+### Fixed
+- Fix ...
+
+Files I will modify:
+- package.json
+- CHANGELOG.md
+
+Reply "approved" to write and commit this release, or tell me what to change.
+```
+
+Keep it compact. Replace unavailable release context lines with clear status such as `GitHub Release: gh is not authenticated, so I will skip release creation unless that is fixed`. Omit sections that do not apply, like structured data when there is no structured data file.
 
 Wait for the user to explicitly approve (e.g., "looks good", "approved", "go", "yes", "do it").
 
@@ -241,7 +294,7 @@ After approval, execute ALL writes:
 
 **B. Prepend to CHANGELOG.md:**
 - Add the new entry immediately after the `# Changelog` header (or after any intro text)
-- Keep the `[Unreleased]` section if one exists (just add the new version below it)
+- If `[Unreleased]` exists, keep it above the new version entry and make it empty after promoting released items
 - Preserve all existing entries unchanged
 
 **C. Update structured data file (if exists):**
@@ -261,14 +314,45 @@ git commit -m "release: vX.Y.Z — <brief title describing the changes>"
 
 Include any source code files that were part of the changes being documented (i.e., if this is a "commit and push" workflow where you also wrote code, stage those files too).
 
-### Step 8: Done
+### Step 8: Offer approval-gated publish actions
 
 Report what was written:
 - Version bumped: `old → new`
 - Files modified: list
 - Commit hash: show it
 
-**STOP HERE. Do not push. Do not ask to push. Do not suggest pushing. The workflow is complete.**
+Then offer only the publish actions that are actually available:
+- **Annotated local tag**: `git tag -a <tag> -m "<tag>"`
+- **Push tag**: `git push origin <tag>`
+- **GitHub Release**: `gh release create <tag> --notes-file <release-notes-file>`
+
+Use the detected tag style. If there are no existing tags and the user has not chosen a style yet, ask before tagging and recommend `vX.Y.Z`.
+
+For GitHub Releases, first verify the tag exists on the remote; create and push the annotated tag after approval if needed. Then write release notes from the new changelog entry to a temporary file and pass it with `--notes-file`. Use `--notes-from-tag` only when the tag message is intentionally the release notes.
+
+Use this post-commit shape:
+
+```markdown
+Release commit created: abc1234
+
+Available publish actions:
+- Create annotated local tag vX.Y.Z
+- Push tag vX.Y.Z to origin
+- Create GitHub Release from the changelog notes
+
+I will not publish anything unless you explicitly approve those actions.
+```
+
+If some actions are unavailable, say why in the same list: `Create GitHub Release: unavailable because gh is not authenticated`.
+
+**Hard stop:** Do not create tags, push tags, or create GitHub Releases until the user explicitly approves those publish actions after the commit.
+
+### Step 9: Done
+
+After any approved publish actions, report:
+- Tag created/pushed, if any
+- GitHub Release URL, if created
+- Anything skipped because tooling/auth was unavailable
 
 ---
 
@@ -276,12 +360,12 @@ Report what was written:
 
 These rules are non-negotiable. Follow them exactly.
 
-### Never push
-- Do NOT run `git push`
-- Do NOT ask "should I push?"
-- Do NOT suggest pushing
-- Do NOT mention pushing
-- The workflow ends at the commit
+### Publish only after approval
+- Do NOT push commits as part of this skill
+- Do NOT create tags without explicit approval
+- Do NOT push tags without explicit approval
+- Do NOT create GitHub Releases without explicit approval
+- The default workflow stops after the release commit unless the user approves publish actions
 
 ### Date accuracy
 - ALWAYS verify the actual current date before writing entries
@@ -318,7 +402,7 @@ These rules are non-negotiable. Follow them exactly.
 ## Handling Edge Cases
 
 ### "Commit and push" user intent
-When a user says "commit and push" in a project with this skill installed, treat it as an Update Mode trigger. The "push" part is ignored — this skill NEVER pushes.
+When a user says "commit and push" in a project with this skill installed, treat it as an Update Mode trigger. Commit the changelog/version only after approval. Do not push commits. After the commit, ask for explicit approval before tag push or GitHub Release publication.
 
 ### No changes to document
 If `git log` shows no commits since the last changelog entry and there are no uncommitted changes, inform the user: "No changes found since the last changelog entry (vX.Y.Z on Date). Nothing to update."
@@ -329,6 +413,9 @@ If `package.json` version differs from the latest CHANGELOG.md version, flag it:
 
 ### Multiple structured data files
 If both a `.tsx` and `.json` changelog data file exist, update both. Ask the user which is canonical if unclear.
+
+### Pre-release ambiguity
+If the user requests a pre-release but does not specify the label, ask whether to use `alpha`, `beta`, or `rc`. If a pre-release label already exists, continue that label by default.
 
 ### Non-JS projects
 For Python, Rust, Go, or other projects without `package.json`:

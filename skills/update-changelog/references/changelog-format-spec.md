@@ -64,13 +64,37 @@ Use only the categories that apply. Omit empty categories.
 - Group related changes under the same category
 - Keep items to one line when possible
 - Reference issue/PR numbers if available: "Fix login redirect (#142)"
+- Use short commit refs only when they add useful navigation: "Fix migration ordering (a1b2c3d)"
 - Use backticks for code references: "Update `generateNotes()` to use streaming"
 
 ## Unreleased Section
 
 The `[Unreleased]` section is optional. It tracks changes that haven't been released yet.
 
-When creating a new version entry, move relevant items from `[Unreleased]` into the new version section.
+When creating a new version entry:
+- Move relevant populated items from `[Unreleased]` into the new version section
+- Leave a fresh empty `## [Unreleased]` section above the new version
+- Do not duplicate items that are already covered by commit-derived release notes
+
+## Pre-release Versions
+
+Stable releases are the default. Use pre-release identifiers only when requested or when continuing an existing pre-release track.
+
+Common examples:
+- `1.2.0-alpha.1` for early testing
+- `1.2.0-beta.1` for broader testing
+- `1.2.0-rc.1` for release candidates
+
+If current version is already a pre-release, increment the numeric suffix unless the user asks to finalize stable.
+
+## Tag and Release Notes
+
+Match the repository's existing tag convention:
+- Existing `v1.2.3` tags → use `vX.Y.Z`
+- Existing `1.2.3` tags → use `X.Y.Z`
+- No tags → ask, recommend `vX.Y.Z`
+
+For GitHub Releases, use the new changelog entry as release notes. Prefer `gh release create <tag> --notes-file <file>` so the public release matches `CHANGELOG.md`.
 
 ## Semantic Versioning Quick Reference
 

@@ -116,11 +116,11 @@ npx skills add jakerains/AgentSkills --skill nextjs-pwa
 ---
 
 ### update-changelog ★
-> Automated changelog management and version bumping
+> Automated changelog management, version bumping, and release publishing
 
-I got tired of manually maintaining changelogs. This skill handles the whole flow — changelog entries, version bumps, semantic versioning, even UI components for displaying the version.
+I got tired of manually maintaining changelogs. This skill handles the whole flow — changelog entries, version bumps, semantic versioning, release tags, GitHub Releases, even UI components for displaying the version.
 
-**Use for:** Changelogs, version bumping, release tracking, semantic versioning
+**Use for:** Changelogs, version bumping, release tracking, semantic versioning, tags, GitHub Releases
 
 ```bash
 npx skills add jakerains/AgentSkills --skill update-changelog

@@ -152,6 +152,6 @@ git commit -m "chore: set up changelog system (vX.Y.Z)"
 
 Adjust file paths to match what was actually created.
 
-**Do NOT push. Do NOT ask to push.**
+Do not push commits during setup. Setup mode ends after the initial local commit; release publishing belongs to Update Mode.
 
 After committing, inform the user: "Changelog system is set up. Run the skill again anytime to add new entries."
