@@ -1,0 +1,23 @@
+skills/worktree-bootstrap/scripts/setup-worktree.sh
+  s_9430213de54579::t_025a67f1cb231e 1-126
+.claude-plugin/marketplace.json
+  s_9430213de54579::t_0c7961ae67f7cb 74-80
+skills/worktree-bootstrap/SKILL.md
+  s_9430213de54579::t_623af4b7162ff5 1-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "0d456a839040369ee3ea0a163a73b76b133c9d4e",
+  "prompts": {},
+  "sessions": {
+    "s_9430213de54579": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2f721b2b-2307-4e87-abe3-1015fd76fc7f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jake Rains <jake@elevenlabs.io>"
+    }
+  }
+}
