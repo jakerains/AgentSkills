@@ -85,14 +85,26 @@ Common examples:
 - `1.2.0-beta.1` for broader testing
 - `1.2.0-rc.1` for release candidates
 
-If current version is already a pre-release, increment the numeric suffix unless the user asks to finalize stable.
+For feature branches, prerelease versions let the branch carry versioned release notes without bumping the official stable line on `main`.
+
+Choose the base version first, then append the prerelease label:
+- Stable `1.4.2` + patch beta track → `1.4.3-beta.1`
+- Stable `1.4.2` + minor beta track → `1.5.0-beta.1`
+- Existing `1.5.0-beta.1` continuing beta → `1.5.0-beta.2`
+- Existing `1.5.0-alpha.3` moving to beta → `1.5.0-beta.1`
+
+When finalizing, drop the prerelease suffix from the selected base: `1.5.0-beta.4` → `1.5.0`.
 
 ## Tag and Release Notes
+
+Only discuss or create tags and GitHub Releases when the user explicitly asks to tag, publish, or create a GitHub Release.
 
 Match the repository's existing tag convention:
 - Existing `v1.2.3` tags → use `vX.Y.Z`
 - Existing `1.2.3` tags → use `X.Y.Z`
 - No tags → ask, recommend `vX.Y.Z`
+
+For prerelease tags, include the full prerelease version: `v1.2.0-beta.1` or `1.2.0-beta.1`, matching the repository's tag prefix convention.
 
 For GitHub Releases, use the new changelog entry as release notes. Prefer `gh release create <tag> --notes-file <file>` so the public release matches `CHANGELOG.md`.
 

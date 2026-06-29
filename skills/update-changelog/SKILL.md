@@ -1,6 +1,6 @@
 ---
 name: update-changelog
-description: "Automate changelog management, version bumping, release tracking, tags, and GitHub Releases. Sets up a changelog system (CHANGELOG.md, UI modal, version display) if none exists, or updates an existing one. Use when: updating changelog, bumping version, creating release entry, promoting [Unreleased], tagging, publishing GitHub Release notes, handling prerelease versions, setting up changelog, adding version display, managing semver, commit/push/release workflow. Triggers on: changelog, version bump, release notes, semver, CHANGELOG.md, release entry, what's new, patch/minor/major/prerelease bump, tag release, GitHub Release, update the changelog, release, new version."
+description: "Automate changelog management, version bumping, release entries, and explicit prerelease/tag/publish workflows. Sets up a changelog system (CHANGELOG.md, UI modal, version display) if none exists, or updates an existing one. Use when: updating changelog, bumping version, creating release entry, promoting [Unreleased], handling alpha/beta/rc prerelease versions, setting up changelog, adding version display, managing semver. Use tag/GitHub Release instructions only when the user explicitly asks to tag, publish, or create a GitHub Release. Triggers on: changelog, version bump, release notes, semver, CHANGELOG.md, release entry, what's new, patch/minor/major/prerelease bump, alpha, beta, rc, tag release, GitHub Release, update the changelog, release, new version."
 ---
 
 # Version Changelog
@@ -17,7 +17,7 @@ Dual-mode skill for changelog lifecycle management. Detects existing systems and
 | UI components | Reference | Read [ui-component-guide.md](references/ui-component-guide.md) |
 | Detection algorithm | Reference | Read [detection-logic.md](references/detection-logic.md) |
 | Parse CHANGELOG.md → JSON | Script | Run [parse-changelog.sh](scripts/parse-changelog.sh) |
-| Tags and GitHub Releases | Publish | Approval-gated in Update Mode |
+| Explicit tags and GitHub Releases | Publish | Available only when the user asks to tag/publish |
 
 ---
 
@@ -91,7 +91,7 @@ After setup, immediately offer to run Update Mode if there are existing changes 
 
 This is the primary workflow. Follow every step in order.
 
-### Step 1: Read current state and release preflight
+### Step 1: Read current state
 
 ```bash
 # Current version
@@ -104,11 +104,8 @@ git log --oneline -20
 git diff --stat
 git status
 
-# Release context
+# Branch context
 git branch --show-current
-git tag --list --sort=-v:refname | head -20
-git remote -v
-command -v gh >/dev/null && gh auth status
 ```
 
 Read the existing changelog file(s) to find the **last documented version** and its **date**.
@@ -120,11 +117,27 @@ If a structured data file exists (e.g., `lib/changelog-data.tsx`), read it to un
 
 **Store the detected format.** New entries MUST match the existing format exactly.
 
-Check release workflow context before drafting:
-- **Branch**: For release-only version/changelog bumps, recommend `main`. If already on a feature branch with the code being released, keep the changelog/version bump on that branch so the merge carries code + release notes together. If not on `main` and intent is unclear, ask before writing.
-- **Tags**: Detect existing tag style with `git tag --list`. If tags use `vX.Y.Z`, use `vX.Y.Z`. If tags use `X.Y.Z`, use `X.Y.Z`. If there are no tags, ask and recommend `vX.Y.Z`.
-- **GitHub Release readiness**: Note whether `gh` exists and `gh auth status` succeeds. If not, skip GitHub Release creation unless the user fixes auth/tooling.
-- **Deploy coupling**: Look for `.github/workflows/`, `vercel.json`, `netlify.toml`, `fly.toml`, `render.yaml`, `railway.json`, or package scripts that imply deploy on `main`. If `main` auto-deploys, warn during approval: "Committing this release on main may ship vX.Y.Z to production."
+Check branch workflow context before drafting:
+- **Branch**: Keep ordinary changelog/version bumps on the branch that contains the code being documented. If the user explicitly asks for an official stable release, recommend `main`. If the intent is unclear and writing on the current branch could be surprising, ask before writing.
+- **Deploy coupling**: Only when the user asks for an official stable release, look for `.github/workflows/`, `vercel.json`, `netlify.toml`, `fly.toml`, `render.yaml`, `railway.json`, or package scripts that imply deploy on `main`. If `main` auto-deploys, warn during approval: "Committing this release on main may ship vX.Y.Z to production."
+
+Do not inspect, mention, offer, or prepare git tags, pushed tags, or GitHub Releases unless the user explicitly asks to tag, publish, create a GitHub Release, or work on a prerelease track.
+
+If the user explicitly asks for a prerelease track, inspect existing tags only to find the next alpha/beta/rc number:
+
+```bash
+git tag --list --sort=-v:refname | head -40
+```
+
+If the user explicitly asks to tag, push tags, publish, or create a GitHub Release, run the publish checks:
+
+```bash
+git tag --list --sort=-v:refname | head -40
+git remote -v
+command -v gh >/dev/null && gh auth status
+```
+
+For explicit publish/tag requests, detect tag style with `git tag --list`: use `vX.Y.Z` if existing tags use a `v` prefix, `X.Y.Z` if they do not, and ask/recommend `vX.Y.Z` if there are no tags.
 
 ### Step 2: Assess scope
 
@@ -160,8 +173,11 @@ Calculate the new version number based on the scope assessment. **Remember: patc
 
 Pre-release handling:
 - Stable releases are the default. Do not create `-alpha`, `-beta`, or `-rc` versions unless the user asks or the current version is already a pre-release.
-- If current version is `1.2.0-beta.1` and the work continues that track, recommend incrementing the pre-release number (`1.2.0-beta.2`) instead of jumping stable.
-- If current version is `1.2.0-rc.1` and the user says it is ready, recommend finalizing to `1.2.0`.
+- For feature branches, use prerelease versions when the user wants to version a track before merging to `main` without bumping the official stable line.
+- If current version is stable and the user asks for an alpha/beta/rc track, choose the next base version from the normal patch/minor/major assessment, then append the requested label and `.1`. Example: `1.4.2` + patch beta track → `1.4.3-beta.1`; `1.4.2` + minor beta track → `1.5.0-beta.1`.
+- If a matching prerelease already exists for the same base and label, increment the numeric suffix: `1.5.0-beta.1` → `1.5.0-beta.2`.
+- If switching labels on the same base, start the new label at `.1` unless matching tags or changelog entries show a higher number: `1.5.0-alpha.3` → `1.5.0-beta.1`.
+- If current version is `1.2.0-rc.1` and the user says it is ready for the official release, recommend finalizing to `1.2.0`.
 - For `0.x` projects, still use semver shape: patch for fixes, minor for new user-facing capability, major only by explicit direction.
 
 Present your recommendation with rationale. If you picked minor, explicitly justify which Step 2 minor-criterion the change meets — if you can't point to one cleanly, downgrade to patch before presenting.
@@ -177,6 +193,13 @@ Or, for a minor bump:
 Current version: 1.15.7
 Recommended bump: minor → 1.16.0
 Reason: Adds new /reports page (new user-facing surface) — qualifies as minor under Step 2 criteria
+```
+
+Or, for an explicit feature-branch beta track:
+```
+Current version: 1.15.7
+Recommended bump: patch prerelease → 1.15.8-beta.1
+Reason: User requested a beta track on the feature branch before merging to main; base bump is patch because the changes extend existing behavior
 ```
 
 The user may override your recommendation. Accept their choice.
@@ -251,18 +274,16 @@ Show the user:
 2. **CHANGELOG.md entry**: full formatted text
 3. **Structured data entry**: full formatted entry (if applicable)
 4. **Files to be modified**: list every file that will change
-5. **Release context**: branch recommendation, detected tag style, GitHub Release readiness, and any main auto-deploy warning
+5. **Branch/deploy context**: branch note and any main auto-deploy warning, only when relevant
+6. **Publish context**: only if the user explicitly asked for tags, pushed tags, or GitHub Releases
 
 Use this friendly approval shape:
 
 ```markdown
 I found changes since vX.Y.Z and recommend a patch bump to vX.Y.Z.
 
-Release context:
-- Branch: main
-- Tags: existing tags use a v-prefix, so I will use vX.Y.Z
-- GitHub Release: gh is authenticated
-- Deploy: main appears to auto-deploy, so this may ship to production
+Branch context:
+- Branch: feature/example
 
 Proposed changelog:
 
@@ -278,7 +299,7 @@ Files I will modify:
 Reply "approved" to write and commit this release, or tell me what to change.
 ```
 
-Keep it compact. Replace unavailable release context lines with clear status such as `GitHub Release: gh is not authenticated, so I will skip release creation unless that is fixed`. Omit sections that do not apply, like structured data when there is no structured data file.
+Keep it compact. Omit sections that do not apply, like structured data when there is no structured data file. Do not include tag style, GitHub Release readiness, or publish options unless the user explicitly asked for them.
 
 Wait for the user to explicitly approve (e.g., "looks good", "approved", "go", "yes", "do it").
 
@@ -314,19 +335,21 @@ git commit -m "release: vX.Y.Z — <brief title describing the changes>"
 
 Include any source code files that were part of the changes being documented (i.e., if this is a "commit and push" workflow where you also wrote code, stage those files too).
 
-### Step 8: Offer approval-gated publish actions
+### Step 8: Finish or handle explicit publish request
 
 Report what was written:
 - Version bumped: `old → new`
 - Files modified: list
 - Commit hash: show it
 
-Then offer only the publish actions that are actually available:
+If the user did not explicitly ask for tags, pushed tags, or a GitHub Release, stop here. Do not mention publish actions.
+
+If the user explicitly asked for publish actions, offer only the publish actions that are actually available:
 - **Annotated local tag**: `git tag -a <tag> -m "<tag>"`
 - **Push tag**: `git push origin <tag>`
 - **GitHub Release**: `gh release create <tag> --notes-file <release-notes-file>`
 
-Use the detected tag style. If there are no existing tags and the user has not chosen a style yet, ask before tagging and recommend `vX.Y.Z`.
+Use the detected tag style. If there are no existing tags and the user has not chosen a style yet, ask before tagging and recommend `vX.Y.Z`. For prerelease versions, include the prerelease identifier in the tag, such as `v1.15.8-beta.1`.
 
 For GitHub Releases, first verify the tag exists on the remote; create and push the annotated tag after approval if needed. Then write release notes from the new changelog entry to a temporary file and pass it with `--notes-file`. Use `--notes-from-tag` only when the tag message is intentionally the release notes.
 
@@ -349,7 +372,7 @@ If some actions are unavailable, say why in the same list: `Create GitHub Releas
 
 ### Step 9: Done
 
-After any approved publish actions, report:
+After finishing the release commit, and after any explicitly requested and approved publish actions, report:
 - Tag created/pushed, if any
 - GitHub Release URL, if created
 - Anything skipped because tooling/auth was unavailable
@@ -360,12 +383,12 @@ After any approved publish actions, report:
 
 These rules are non-negotiable. Follow them exactly.
 
-### Publish only after approval
+### Publish only on explicit request and approval
 - Do NOT push commits as part of this skill
-- Do NOT create tags without explicit approval
-- Do NOT push tags without explicit approval
-- Do NOT create GitHub Releases without explicit approval
-- The default workflow stops after the release commit unless the user approves publish actions
+- Do NOT mention, create, or offer git tags unless the user explicitly asks for tagging/publishing
+- Do NOT mention, push, or offer pushed tags unless the user explicitly asks for tagging/publishing
+- Do NOT mention, create, or offer GitHub Releases unless the user explicitly asks for GitHub Releases/publishing
+- The default workflow stops after the release commit
 
 ### Date accuracy
 - ALWAYS verify the actual current date before writing entries
@@ -402,7 +425,7 @@ These rules are non-negotiable. Follow them exactly.
 ## Handling Edge Cases
 
 ### "Commit and push" user intent
-When a user says "commit and push" in a project with this skill installed, treat it as an Update Mode trigger. Commit the changelog/version only after approval. Do not push commits. After the commit, ask for explicit approval before tag push or GitHub Release publication.
+When a user says "commit and push" in a project with this skill installed, treat it as an Update Mode trigger. Commit the changelog/version only after approval. Do not push commits, and do not bring up tags or GitHub Releases unless the user explicitly requested them.
 
 ### No changes to document
 If `git log` shows no commits since the last changelog entry and there are no uncommitted changes, inform the user: "No changes found since the last changelog entry (vX.Y.Z on Date). Nothing to update."
@@ -416,6 +439,13 @@ If both a `.tsx` and `.json` changelog data file exist, update both. Ask the use
 
 ### Pre-release ambiguity
 If the user requests a pre-release but does not specify the label, ask whether to use `alpha`, `beta`, or `rc`. If a pre-release label already exists, continue that label by default.
+
+### Feature-branch prerelease track
+When the user asks to version a feature branch without bumping the official release line:
+- Recommend `alpha` for early/private testing, `beta` for broader testing before merge, and `rc` only when the feature is expected to become the next stable release.
+- Keep the prerelease bump on the feature branch unless the user explicitly says otherwise.
+- Use changelog/version entries like `X.Y.Z-beta.N`; if creating a git tag was explicitly requested, use the same full prerelease version in the tag, such as `vX.Y.Z-beta.N`.
+- Do not treat a prerelease changelog entry as the official stable release. When the branch merges and the user asks to finalize, convert the chosen prerelease base to stable, e.g. `1.8.0-beta.4` → `1.8.0`.
 
 ### Non-JS projects
 For Python, Rust, Go, or other projects without `package.json`:
