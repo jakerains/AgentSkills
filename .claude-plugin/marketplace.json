@@ -71,6 +71,13 @@
       "description": "Build durable workflows with Vercel Workflow DevKit using 'use workflow' and 'use step' directives",
       "version": "1.0.0",
       "tags": ["vercel", "workflow", "durable", "background-jobs"]
+    },
+    {
+      "name": "worktree-bootstrap",
+      "source": "./skills/worktree-bootstrap",
+      "description": "Provision a freshly-created git worktree so its dev server runs like the main checkout: copies gitignored env files from the main checkout, installs node_modules with the repo's package manager (pnpm/npm/yarn/bun), and — for Next.js — checks the Turbopack workspace-root pin that prevents nested-worktree dev-server freezes. Works for any JS/TS repo.",
+      "version": "1.0.0",
+      "tags": ["git", "worktree", "monorepo", "pnpm", "nextjs", "turbopack", "dev-server", "bootstrap"]
     }
   ]
 }
