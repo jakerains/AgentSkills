@@ -36,10 +36,15 @@ bash scripts/setup-worktree.sh
    // next.config.ts — inside nextConfig
    turbopack: { root: import.meta.dirname },
    ```
+4. **portless dev-origin check** (read-only) — if `next.config.*` exists and the `portless` CLI is installed, it verifies `allowedDevOrigins` covers portless's multi-label `<branch>.<app>.localhost` host. Next's default `*.localhost` is a *single-label* wildcard, so a two-label portless host gets its dev/HMR requests blocked; if uncovered, it advises the recursive wildcard:
+   ```ts
+   // next.config.ts — inside nextConfig
+   allowedDevOrigins: ["**.localhost"],
+   ```
 
 ## The one thing it can't do for you
 
-Step 3 only **detects** the missing pin — it can't add it, because that's **source code** that must be committed on your **main branch** so every future worktree inherits it. Add the `turbopack.root` line to `next.config.*` on main once; after that, new worktrees just need this skill for env + deps.
+Steps 3 and 4 only **detect** missing config — they can't add it, because those are **source-code** changes (`turbopack.root` and `allowedDevOrigins`) that must be committed on the branch you cut worktrees from (your trunk) so every new worktree inherits them. Add them once; after that, new worktrees just need this skill for env + deps.
 
 > Note for monorepos: drop the `turbopack.root: import.meta.dirname` pin when the app lives inside a monorepo — there the root must be the monorepo root, not the app directory.
 

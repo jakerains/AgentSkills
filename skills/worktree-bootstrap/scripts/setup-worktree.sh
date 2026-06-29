@@ -115,12 +115,32 @@ if [ -n "$ncfg" ]; then
       warn "no turbopack.root pin, and a lockfile exists ABOVE this worktree ($above)."
       warn "the dev server may mis-root to the parent and watch two trees → memory blow-up / freeze."
       say  "     Fix — add inside nextConfig:  turbopack: { root: import.meta.dirname }"
-      say  "     Commit it on your MAIN branch so every future worktree inherits it."
+      say  "     Commit it on the branch you cut worktrees from (your trunk) so they inherit it."
     else
       ok "no parent lockfile detected — root inference is safe here"
     fi
   fi
   say ""
+
+  # --- 4) portless: does allowedDevOrigins cover the worktree's multi-label host? ---
+  # portless serves a worktree at `<branch>.<app>.localhost` (two labels before
+  # .localhost). Next's default cross-origin allowlist is `*.localhost`, and `*`
+  # is a single-label wildcard, so that host is blocked and HMR fails. The fix is
+  # a recursive `**.localhost` (or `*.<app>.localhost`) in allowedDevOrigins.
+  if command -v portless >/dev/null 2>&1; then
+    say "4) portless dev-origin check"
+    if grep -qE '(\*\*|\*\.[A-Za-z0-9-]+)\.[A-Za-z0-9.-]*localhost' "$ncfg"; then
+      ok "allowedDevOrigins covers portless's <branch>.<app>.localhost hosts"
+    else
+      app=$(node -e 'try{process.stdout.write((require(process.cwd()+"/package.json").name||"app").replace(/^@[^/]+\//,""))}catch(e){process.stdout.write("app")}' 2>/dev/null || echo app)
+      branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -c 'A-Za-z0-9' '-' | sed 's/--*/-/g;s/^-//;s/-$//')
+      warn "portless serves this worktree near  ${branch:-<branch>}.${app}.localhost  (a multi-label host)."
+      warn "Next's default *.localhost wildcard does NOT cover that → dev/HMR requests get blocked."
+      say  "     Fix — add inside nextConfig:  allowedDevOrigins: [\"**.localhost\"]"
+      say  "     Commit it on the branch you cut worktrees from (your trunk) so they inherit it."
+    fi
+    say ""
+  fi
 fi
 
 ok "Worktree ready. Start your dev server (e.g. pnpm dev, or portless)."
