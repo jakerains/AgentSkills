@@ -248,6 +248,21 @@ npx skills add jakerains/AgentSkills --skill sam3
 
 ---
 
+### worktree-bootstrap
+> Make a freshly-created git worktree run its dev server exactly like the main checkout
+
+**Last updated:** 2026-06-29
+
+Built this after a nested git worktree kept hard-freezing my machine when I ran the dev server in it. A worktree only checks out tracked files, so it's missing its gitignored `.env.local` and `node_modules` and the dev server crashes (missing env vars, or `next: command not found`). And for Next.js, a nested worktree can mis-root Turbopack to the parent and watch two dependency trees at once → out of memory → freeze. This copies the env from the main checkout, installs deps with whatever package manager the repo uses (pnpm/npm/yarn/bun), and flags the one-line `turbopack.root` fix when it's missing. Project-agnostic — any JS/TS repo, macOS/Linux/WSL.
+
+**Use for:** setting up / bootstrapping a new git worktree for dev, "worktree missing .env / node_modules", `next: command not found` in a worktree, "inferred workspace root" warning, worktree dev server freezing
+
+```bash
+npx skills add jakerains/AgentSkills --skill worktree-bootstrap
+```
+
+---
+
 ## Installation Options
 
 ```bash
