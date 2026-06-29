@@ -1,0 +1,19 @@
+README.md
+  s_9430213de54579::t_a5df1bd575517f 251-265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "0aa16846321a4c1b76559fa53890722c26980a0a",
+  "prompts": {},
+  "sessions": {
+    "s_9430213de54579": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2f721b2b-2307-4e87-abe3-1015fd76fc7f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jake Rains <jake@elevenlabs.io>"
+    }
+  }
+}
