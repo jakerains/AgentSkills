@@ -1,23 +1,28 @@
 #!/usr/bin/env bash
 # worktree-bootstrap — provision a freshly-created git worktree so its dev
-# server runs exactly like the main checkout.
+# server runs exactly like the active trunk.
 #
-# Git worktrees only check out *tracked* files, so two things a dev server
-# needs are missing in a fresh worktree: gitignored env (.env.local) and
-# node_modules. This copies the env from the repo's MAIN checkout, installs
-# dependencies with the repo's package manager, and — for Next.js — checks the
-# Turbopack workspace-root pin that prevents nested-worktree dev-server freezes.
+# A linked worktree is pinned to its own dedicated branch (git won't let two
+# worktrees share a branch), and that branch is frozen at creation time — it
+# never advances on its own, so every commit on the trunk leaves the worktree
+# silently behind ("the worktree is missing commits"). So step 1 FAST-FORWARDS
+# the worktree to the active trunk; only then does it copy gitignored env from
+# the main checkout, install node_modules, and run the Next.js/Turbopack pin
+# doctors — so every later step operates on the final, caught-up tree (no
+# installing deps against a stale lockfile that catch-up then moves).
 #
-# Portable (Linux/macOS/WSL) and non-fatal: run it from anywhere inside the
-# worktree. It never overwrites files, never prints secrets, and only ever
-# runs git, cp, and the detected package-manager install.
+# Portable (Linux/macOS/WSL) and non-fatal. The ONLY history mutation is a
+# strict fast-forward (`git merge --ff-only`) to the LOCAL trunk: never a non-ff
+# merge, rebase, reset, force, fetch, or pull. When a fast-forward isn't safe it
+# SKIPS (prints why and continues) rather than aborting the bootstrap.
 set -u
 
 say()  { printf '%s\n' "$*"; }
 ok()   { printf '  \033[32m✓\033[0m %s\n' "$*"; }
 warn() { printf '  \033[33m⚠\033[0m %s\n' "$*"; }
+info() { printf '  \033[36mℹ\033[0m %s\n' "$*"; }
 
-# --- locate the worktree and its main checkout (paths come from git only) -----
+# --- locate the worktree and the main checkout (paths come from git only) -----
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   say "Not inside a git repository — nothing to do."; exit 0
 fi
@@ -34,16 +39,51 @@ if [ "$common_dir" = "$git_dir" ]; then
   exit 0
 fi
 
-main=$(git worktree list --porcelain 2>/dev/null | awk '/^worktree /{print $2; exit}')
+# The porcelain worktree list: first block is the PRIMARY (main) worktree.
+porcelain=$(git worktree list --porcelain 2>/dev/null)
+main=$(printf '%s\n' "$porcelain" | awk '/^worktree /{print $2; exit}')
 [ -n "${main:-}" ] && main=$(cd "$main" 2>/dev/null && pwd -P)
 [ "${main:-}" = "$here" ] && main=""
 
 say "Bootstrapping worktree: $here"
-[ -n "${main:-}" ] && say "From main checkout:     $main"
+[ -n "${main:-}" ] && say "Main checkout:          $main"
 say ""
 
-# --- 1) copy gitignored env files from main -----------------------------------
-say "1) Environment files"
+# --- 1) catch up to the active trunk (fast-forward only) ----------------------
+# The active trunk is whatever branch the PRIMARY worktree has checked out — the
+# first block of the porcelain list. Resolved dynamically; never hardcoded (the
+# trunk has changed before and will again). Worktrees are pinned to their own
+# frozen branch, so without this they drift behind every trunk commit.
+say "1) Catch up to trunk"
+trunk=$(printf '%s\n' "$porcelain" | awk '
+  /^worktree /{n++}
+  n==1 && /^branch /{sub("refs/heads/","",$2); print $2; exit}')
+cur=$(git branch --show-current 2>/dev/null)
+
+if [ -z "$trunk" ]; then
+  warn "could not resolve the trunk (primary worktree detached?) — skipping catch-up."
+elif [ "$cur" = "$trunk" ]; then
+  info "this worktree is the trunk ($trunk) — nothing to catch up."
+elif [ -n "$(git status --porcelain -uno 2>/dev/null)" ]; then
+  warn "uncommitted tracked changes present — skipping catch-up to stay safe."
+  say  "     When clean:  git merge --ff-only $trunk"
+elif ! git merge-base --is-ancestor "$cur" "$trunk" 2>/dev/null; then
+  warn "'$cur' has diverged from '$trunk' (it has commits not on the trunk) — NOT fast-forwarding."
+  say  "     Rebase manually when ready:  git rebase $trunk"
+else
+  behind=$(git rev-list --count "HEAD..$trunk" 2>/dev/null); behind=${behind:-0}
+  if [ "$behind" -eq 0 ]; then
+    ok "already up to date with trunk ($trunk)."
+  elif git merge --ff-only "$trunk" >/dev/null 2>&1; then
+    ok "caught up $behind commit(s) from trunk ($trunk)."
+  else
+    warn "fast-forward to '$trunk' failed unexpectedly — skipping (your tree is unchanged)."
+  fi
+fi
+say ""
+
+# --- 2) copy gitignored env files from the main checkout ----------------------
+say "2) Environment files"
 if [ -n "${main:-}" ]; then
   copied=0
   while IFS= read -r f; do
@@ -60,8 +100,9 @@ else
 fi
 say ""
 
-# --- 2) install node_modules with the repo's package manager ------------------
-say "2) Dependencies"
+# --- 3) install node_modules with the repo's package manager ------------------
+# Runs AFTER catch-up so deps install against the final package.json / lockfile.
+say "3) Dependencies"
 if [ -e "$here/node_modules" ]; then
   say "  node_modules already present — skipping install"
 else
@@ -95,13 +136,15 @@ else
 fi
 say ""
 
-# --- 3) Next.js: verify the Turbopack workspace-root pin (read-only) ----------
+# --- 4 & 5) Next.js worktree-pin doctors (read-only) --------------------------
+# After catch-up these usually pass; a warning here means the pin is genuinely
+# absent from the trunk (add it to next.config on the trunk).
 ncfg=""
 for c in next.config.ts next.config.js next.config.mjs next.config.cjs; do
   [ -f "$here/$c" ] && { ncfg="$here/$c"; break; }
 done
 if [ -n "$ncfg" ]; then
-  say "3) Next.js workspace-root check"
+  say "4) Next.js workspace-root check"
   if grep -qE 'turbopack' "$ncfg" && grep -qE 'root[[:space:]]*:' "$ncfg"; then
     ok "turbopack.root is pinned in $(basename "$ncfg")"
   else
@@ -112,32 +155,24 @@ if [ -n "$ncfg" ]; then
       d=$(dirname "$d")
     done
     if [ -n "$above" ]; then
-      warn "no turbopack.root pin, and a lockfile exists ABOVE this worktree ($above)."
-      warn "the dev server may mis-root to the parent and watch two trees → memory blow-up / freeze."
-      say  "     Fix — add inside nextConfig:  turbopack: { root: import.meta.dirname }"
-      say  "     Commit it on the branch you cut worktrees from (your trunk) so they inherit it."
+      warn "no turbopack.root pin, and a lockfile exists ABOVE this worktree ($above) → dev server may freeze."
+      say  "     Add to $(basename "$ncfg") (on the trunk):  turbopack: { root: import.meta.dirname }"
     else
       ok "no parent lockfile detected — root inference is safe here"
     fi
   fi
   say ""
 
-  # --- 4) portless: does allowedDevOrigins cover the worktree's multi-label host? ---
   # portless serves a worktree at `<branch>.<app>.localhost` (two labels before
-  # .localhost). Next's default cross-origin allowlist is `*.localhost`, and `*`
-  # is a single-label wildcard, so that host is blocked and HMR fails. The fix is
-  # a recursive `**.localhost` (or `*.<app>.localhost`) in allowedDevOrigins.
+  # .localhost). Next's default allowlist `*.localhost` is a single-label
+  # wildcard, so that host is blocked and HMR fails. Fix: `**.localhost`.
   if command -v portless >/dev/null 2>&1; then
-    say "4) portless dev-origin check"
+    say "5) portless dev-origin check"
     if grep -qE '(\*\*|\*\.[A-Za-z0-9-]+)\.[A-Za-z0-9.-]*localhost' "$ncfg"; then
       ok "allowedDevOrigins covers portless's <branch>.<app>.localhost hosts"
     else
-      app=$(node -e 'try{process.stdout.write((require(process.cwd()+"/package.json").name||"app").replace(/^@[^/]+\//,""))}catch(e){process.stdout.write("app")}' 2>/dev/null || echo app)
-      branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -c 'A-Za-z0-9' '-' | sed 's/--*/-/g;s/^-//;s/-$//')
-      warn "portless serves this worktree near  ${branch:-<branch>}.${app}.localhost  (a multi-label host)."
-      warn "Next's default *.localhost wildcard does NOT cover that → dev/HMR requests get blocked."
-      say  "     Fix — add inside nextConfig:  allowedDevOrigins: [\"**.localhost\"]"
-      say  "     Commit it on the branch you cut worktrees from (your trunk) so they inherit it."
+      warn "no allowedDevOrigins '**.localhost' — portless's multi-label host gets dev/HMR requests blocked."
+      say  "     Add to $(basename "$ncfg") (on the trunk):  allowedDevOrigins: [\"**.localhost\"]"
     fi
     say ""
   fi
