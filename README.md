@@ -83,6 +83,21 @@ npx skills add jakerains/AgentSkills --skill kain-personality
 
 ---
 
+### jake-speak
+> Explain technical work to Jake in plain-English boxed cards, with optional standalone HTML recaps
+
+**Last updated:** 2026-06-29
+
+This is the personal "tell me what this means, not how the plumbing works" mode. It keeps the real product names, status, risks, and important numbers while stripping out code mechanics.
+
+**Use for:** Jake Speak recaps, plain-English explanations, non-technical summaries of work just done, product or system explainers, optional Desktop HTML recap pages
+
+```bash
+npx skills add jakerains/AgentSkills --skill jake-speak
+```
+
+---
+
 ### docxmakebetter ★
 > Create, edit, and analyze Word documents with tracked changes, comments, and redlining
 
