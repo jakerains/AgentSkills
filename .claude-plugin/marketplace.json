@@ -31,6 +31,13 @@
       "tags": ["audio", "tts", "voice", "elevenlabs", "speech"]
     },
     {
+      "name": "jake-speak",
+      "source": "./skills/jake-speak",
+      "description": "Explain technical work to Jake in plain-English boxed cards, preserving outcomes and status while leaving out code mechanics",
+      "version": "1.0.0",
+      "tags": ["communication", "plain-english", "recap", "jake-speak", "html"]
+    },
+    {
       "name": "macos-dmg-builder",
       "source": "./skills/macos-dmg-builder",
       "description": "Build, sign, notarize, and package native macOS apps into distributable DMGs",
