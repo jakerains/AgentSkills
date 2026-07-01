@@ -17,6 +17,13 @@
       "tags": ["apple", "ios", "macos", "ai", "foundation-models"]
     },
     {
+      "name": "codex-app-server",
+      "source": "./skills/codex-app-server",
+      "description": "Build rich Codex integrations with the Codex App Server across Electron, Swift, Next.js, and other host apps",
+      "version": "1.0.0",
+      "tags": ["codex", "app-server", "electron", "swift", "nextjs", "auth", "streaming"]
+    },
+    {
       "name": "docxmakebetter",
       "source": "./skills/docxmakebetter",
       "description": "Create, edit, and analyze Word documents (.docx) with tracked changes, comments, formatting, and text extraction",
@@ -29,6 +36,13 @@
       "description": "Explain technical work to Jake in plain-English boxed cards, preserving outcomes and status while leaving out code mechanics",
       "version": "1.0.0",
       "tags": ["communication", "plain-english", "recap", "jake-speak", "html"]
+    },
+    {
+      "name": "kain-personality",
+      "source": "./skills/kain-personality",
+      "description": "Invoke the Kain Jares / GenAIAlien personality for writing, product reactions, parody concepts, and image prompts",
+      "version": "1.0.0",
+      "tags": ["persona", "writing", "social", "image-prompts", "kain", "genaialien"]
     },
     {
       "name": "macos-dmg-builder",
@@ -45,11 +59,32 @@
       "tags": ["nextjs", "pwa", "service-worker", "offline", "push-notifications"]
     },
     {
+      "name": "nextstep-tours",
+      "source": "./skills/nextstep-tours",
+      "description": "Build product tours, onboarding flows, and interactive tutorials in Next.js with NextStep v2",
+      "version": "1.0.0",
+      "tags": ["nextjs", "nextstep", "onboarding", "product-tours", "tutorials"]
+    },
+    {
       "name": "onnx-webgpu-converter",
       "source": "./skills/onnx-webgpu-converter",
       "description": "Convert HuggingFace transformer models to ONNX format for browser inference with Transformers.js and WebGPU",
       "version": "1.0.0",
       "tags": ["onnx", "webgpu", "transformers", "ml", "browser-inference"]
+    },
+    {
+      "name": "plaud",
+      "source": "./skills/plaud",
+      "description": "Install and use Plaud's CLI and MCP surfaces for voice recordings, transcripts, summaries, and meeting workflows",
+      "version": "1.0.0",
+      "tags": ["plaud", "voice", "recordings", "transcripts", "mcp", "cli"]
+    },
+    {
+      "name": "sam3",
+      "source": "./skills/sam3",
+      "description": "Create and work with Meta SAM 3 for open-vocabulary image and video segmentation",
+      "version": "1.0.0",
+      "tags": ["sam3", "segmentation", "computer-vision", "huggingface", "video", "image"]
     },
     {
       "name": "shot-list",
@@ -64,6 +99,13 @@
       "description": "Convert documentation websites, GitHub repos, and PDFs into Claude AI skills",
       "version": "1.0.0",
       "tags": ["skills", "documentation", "scraping", "conversion"]
+    },
+    {
+      "name": "update-changelog",
+      "source": "./skills/update-changelog",
+      "description": "Automate changelog management, version bumping, release entries, prereleases, tags, and publish workflows",
+      "version": "1.0.0",
+      "tags": ["changelog", "versioning", "release-notes", "semver", "github-release"]
     },
     {
       "name": "vercel-workflow",
