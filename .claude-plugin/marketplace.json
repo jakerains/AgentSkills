@@ -24,13 +24,6 @@
       "tags": ["docx", "word", "documents", "office"]
     },
     {
-      "name": "elevenlabs",
-      "source": "./skills/elevenlabs",
-      "description": "Complete ElevenLabs AI audio platform: TTS, STT, voice cloning, sound effects, music generation, dubbing, and voice agents",
-      "version": "1.0.0",
-      "tags": ["audio", "tts", "voice", "elevenlabs", "speech"]
-    },
-    {
       "name": "jake-speak",
       "source": "./skills/jake-speak",
       "description": "Explain technical work to Jake in plain-English boxed cards, preserving outcomes and status while leaving out code mechanics",
