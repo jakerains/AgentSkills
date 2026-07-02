@@ -38,6 +38,21 @@ Works with **18+ AI coding agents** via [skills.sh](https://skills.sh):
 > Skills I use all the time are marked with a star. The rest are still solid — just more situational or specific to stuff I work on.
 > Each entry includes the date I last updated that skill.
 
+### prompt-scheduler
+> Schedule local Claude, Codex, or agent terminal prompts to run later in Warp with launchd
+
+**Last updated:** 2026-07-02
+
+This captures the late-night usage-reset workflow: create a one-time local macOS schedule from the system clock, open the prompt in Warp via a `.command` file, keep the command pinned to the right working directory, tag the job for tracking, and leave logs plus launchctl verification behind.
+
+**Use for:** Scheduling local Claude or Codex resume prompts, usage-reset restarts, Warp-visible one-time terminal jobs, launchd setup, prompt tags, delayed local agent commands
+
+```bash
+npx skills add jakerains/AgentSkills --skill prompt-scheduler
+```
+
+---
+
 ### plaud
 > Install and use the Plaud CLI and MCP server to search, transcribe, and summarize voice recordings from any agent
 

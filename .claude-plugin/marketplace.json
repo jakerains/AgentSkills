@@ -80,6 +80,13 @@
       "tags": ["plaud", "voice", "recordings", "transcripts", "mcp", "cli"]
     },
     {
+      "name": "prompt-scheduler",
+      "source": "./skills/prompt-scheduler",
+      "description": "Schedule local Claude, Codex, or agent terminal prompts to run later in Warp with launchd. Creates one-time macOS launchd jobs, Warp .command files, tags jobs, and provides verification/cleanup.",
+      "version": "1.0.0",
+      "tags": ["scheduling", "launchd", "warp", "claude", "codex", "local", "macos", "resume"]
+    },
+    {
       "name": "sam3",
       "source": "./skills/sam3",
       "description": "Create and work with Meta SAM 3 for open-vocabulary image and video segmentation",

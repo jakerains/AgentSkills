@@ -1,0 +1,23 @@
+{
+  "skill_name": "prompt-scheduler",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Schedule this to run locally in Warp at 3:45 AM after my Claude usage resets: claude-me-yolo --worktree content --resume \"Fable Content\" \"resume\". Use the current repo as cwd and tag it fable/content.",
+      "expected_output": "Creates a one-time macOS launchd job using a Warp-opened .command file, preserves the exact command and quoting, uses the current system date/time to resolve 3:45 AM, includes fable/content tags in the label, and verifies launchctl status plus permissions without running the command immediately.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to test the scheduler path right now with claude-yolo --worktree enterprise --resume \"Enterprise\" \"lets do option 1\" but don't touch the real scheduled fable job.",
+      "expected_output": "Creates a separate .command file for the Enterprise test and opens it in Warp immediately, without modifying any existing scheduled LaunchAgent.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "At 9:10 tonight from ~/Projects/my-app, run codex --resume \"nightly refactor\" \"continue from the TODO list\" locally. Tag it codex/nightly and make sure I can check logs tomorrow.",
+      "expected_output": "Resolves the requested time against the system local time, schedules a one-time local launchd job in the requested cwd, opens the prompt in Warp or a visible terminal by default, uses codex/nightly tags in generated names, and reports log paths and verification commands.",
+      "files": []
+    }
+  ]
+}
