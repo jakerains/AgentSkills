@@ -34,8 +34,75 @@ here=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
 here=$(cd "$here" 2>/dev/null && pwd -P) || exit 0
 
 if [ "$common_dir" = "$git_dir" ]; then
-  say "This is the PRIMARY checkout, not a linked worktree — nothing to bootstrap."
-  say "Run this inside a worktree (git worktree add <path> / claude --worktree)."
+  # ============================================================================
+  # PREP MODE — running from the PRIMARY checkout. Audit the current branch for
+  # "worktree-readiness": the things that must live ON THE BRANCH before you cut
+  # worktrees from it (so every future worktree inherits them). Read-only — it
+  # recommends; the agent/you apply. (Run INSIDE a worktree to bootstrap that
+  # worktree instead.)
+  # ============================================================================
+  cd "$here" 2>/dev/null || exit 0
+  say "Prep mode — auditing branch '$(git branch --show-current 2>/dev/null)' for worktree-readiness."
+  say "(Run this INSIDE a worktree instead to bootstrap that worktree.)"
+  say ""
+
+  # A) .worktreeinclude — Claude Code copies the gitignored files listed here
+  #    into each new worktree at creation, so a fresh worktree has its secrets.
+  say "A) .worktreeinclude (auto-copies gitignored files into new worktrees)"
+  wti_detected=()
+  while IFS= read -r f; do wti_detected+=("$f"); done \
+    < <(git ls-files --others --ignored --exclude-standard 2>/dev/null | grep -E '^\.env[^/]*$')
+  if [ -f .vercel/project.json ] && git check-ignore -q .vercel/project.json 2>/dev/null; then
+    wti_detected+=(".vercel/project.json")
+  fi
+  if [ ! -e .worktreeinclude ]; then
+    if [ "${#wti_detected[@]}" -gt 0 ]; then
+      warn "missing — new worktrees won't get your gitignored secrets at creation."
+      say  "     Recommended .worktreeinclude contents:"
+      for f in "${wti_detected[@]}"; do say "       $f"; done
+    else
+      ok "no gitignored env/secret files detected — a .worktreeinclude isn't needed."
+    fi
+  else
+    wti_missing=()
+    for f in "${wti_detected[@]}"; do
+      grep -qxF "$f" .worktreeinclude 2>/dev/null || wti_missing+=("$f")
+    done
+    if [ "${#wti_missing[@]}" -gt 0 ]; then
+      warn "present, but these gitignored files aren't listed: ${wti_missing[*]}"
+    else
+      ok ".worktreeinclude present and covers the detected secrets."
+    fi
+  fi
+  say ""
+
+  # B) Next.js worktree pins — source config nested worktrees need (so they don't
+  #    freeze / block portless HMR). Worktrees inherit these from the branch.
+  pcfg=""
+  for c in next.config.ts next.config.js next.config.mjs next.config.cjs; do
+    [ -f "$c" ] && { pcfg="$c"; break; }
+  done
+  if [ -n "$pcfg" ]; then
+    say "B) Next.js worktree pins (in $pcfg)"
+    if grep -qE 'turbopack' "$pcfg" && grep -qE 'root[[:space:]]*:' "$pcfg"; then
+      ok "turbopack.root is pinned."
+    else
+      warn "no turbopack.root pin — nested worktrees can mis-root to the parent and freeze."
+      say  "     Add inside nextConfig:  turbopack: { root: import.meta.dirname }"
+    fi
+    if command -v portless >/dev/null 2>&1; then
+      if grep -qE '(\*\*|\*\.[A-Za-z0-9-]+)\.[A-Za-z0-9.-]*localhost' "$pcfg"; then
+        ok "allowedDevOrigins covers portless's multi-label hosts."
+      else
+        warn "no allowedDevOrigins '**.localhost' — portless worktree URLs get HMR blocked."
+        say  "     Add inside nextConfig:  allowedDevOrigins: [\"**.localhost\"]"
+      fi
+    fi
+    say ""
+  fi
+
+  say "Prep audit done. Apply any ⚠ items and commit them on this branch, then run"
+  say "this skill INSIDE a new worktree to finish per-worktree setup."
   exit 0
 fi
 

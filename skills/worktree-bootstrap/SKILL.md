@@ -1,12 +1,19 @@
 ---
 name: worktree-bootstrap
 description: >-
-  Provision a freshly-created git worktree so its dev server runs exactly like the active trunk. FIRST fast-forwards the worktree up to the active trunk (a worktree is pinned to its own frozen branch, so it silently falls behind every trunk commit — "missing commits"), then copies gitignored env files (.env.local, .env) from the main checkout, installs node_modules with the repo's package manager (pnpm/npm/yarn/bun), and — for Next.js — checks the Turbopack workspace-root + allowedDevOrigins pins that prevent nested-worktree dev-server freezes and portless HMR blocks. Use right after creating a worktree (git worktree add, or `claude --worktree`), or whenever a worktree is missing recent commits, fails with missing env vars, "next: command not found", a node_modules-missing error, or an "inferred workspace root" warning. Triggers: set up / bootstrap / provision / prepare / catch up a worktree, "I just made a worktree", "worktree is missing commits / behind trunk", "worktree is missing its .env / node_modules", "make this worktree run like main", "dev server broken in worktree". Works for any JS/TS repo. Manual: /worktree-bootstrap.
+  Provision a freshly-created git worktree so its dev server runs exactly like the active trunk. FIRST fast-forwards the worktree up to the active trunk (a worktree is pinned to its own frozen branch, so it silently falls behind every trunk commit — "missing commits"), then copies gitignored env files (.env.local, .env) from the main checkout, installs node_modules with the repo's package manager (pnpm/npm/yarn/bun), and — for Next.js — checks the Turbopack workspace-root + allowedDevOrigins pins that prevent nested-worktree dev-server freezes and portless HMR blocks. Use right after creating a worktree (git worktree add, or `claude --worktree`), or whenever a worktree is missing recent commits, fails with missing env vars, "next: command not found", a node_modules-missing error, or an "inferred workspace root" warning. Auto-detects its mode: run it in the PRIMARY checkout instead and it switches to PREP mode — auditing the current branch for worktree-readiness (a `.worktreeinclude` to copy gitignored secrets into new worktrees, plus the Turbopack pins) and recommending what to add. Triggers: set up / bootstrap / provision / prepare / catch up a worktree, "I just made a worktree", "worktree is missing commits / behind trunk", "worktree is missing its .env / node_modules", "make this worktree run like main", "dev server broken in worktree", prep / make a branch worktree-ready, set up .worktreeinclude. Works for any JS/TS repo. Manual: /worktree-bootstrap.
 ---
 
 # worktree-bootstrap
 
-Make a freshly-created git worktree run its dev server **exactly like the active trunk** — in one command. Project-agnostic: works for any JavaScript/TypeScript repo on macOS, Linux, or WSL.
+Make a git worktree run its dev server **exactly like the active trunk** — in one command. Project-agnostic: works for any JavaScript/TypeScript repo on macOS, Linux, or WSL.
+
+## Two modes (auto-detected)
+
+Run the same script anywhere — it detects where you are and does the right thing:
+
+- **Inside a linked worktree** → **bootstrap** it: catch up to the trunk, copy env, install deps, check the Next.js pins. (The common case — the rest of this doc.)
+- **In the primary checkout** (not a worktree) → **prep** the current branch for worktrees: audit the branch-level things every future worktree *inherits* — a `.worktreeinclude` file (so new worktrees get gitignored secrets at creation) and the `turbopack.root` / `allowedDevOrigins` pins — and report what's missing. **When the script runs in prep mode, apply its recommendations:** create or extend `.worktreeinclude` (safe + additive — show the user what you're adding), and propose the `next.config` pins for confirmation (they're source code). It's a one-time "make this branch worktree-ready" pass.
 
 ## Why this exists
 
@@ -20,18 +27,18 @@ And for **Next.js**, a worktree nested inside another repo can make Turbopack mi
 
 ## How to run it
 
-From inside the target worktree, run the bundled script:
+Run the bundled script — it auto-detects worktree vs primary checkout:
 
 ```bash
 bash scripts/setup-worktree.sh
 ```
 
-(Use the absolute path to this skill's `scripts/setup-worktree.sh` if you're not in the skill directory.) Then relay its summary to the user. The script is **idempotent** — re-running when already current is a clean no-op. Its only history mutation is a strict fast-forward (`git merge --ff-only`) to the local trunk; it never does a non-ff merge, rebase, reset, force, fetch, or pull, and it **skips and continues** whenever a fast-forward isn't safe.
+(Use the absolute path to this skill's `scripts/setup-worktree.sh` if you're not in the skill directory.) Then relay its summary to the user — and in **prep mode**, apply the recommendations it prints (see "Two modes"). The script is **idempotent** — re-running when already current is a clean no-op. Its only history mutation is a strict fast-forward (`git merge --ff-only`) to the local trunk; it never does a non-ff merge, rebase, reset, force, fetch, or pull, and it **skips and continues** whenever a fast-forward isn't safe.
 
 ## What it does
 
 1. **Catch up to trunk** — fast-forwards the worktree to the **active trunk** (the branch the primary worktree has checked out, resolved dynamically from `git worktree list` — never hardcoded) via `git merge --ff-only`, so dep-install and the config checks below all run on the final tree. It **skips and continues** (never aborts, never auto-resolves) when the trunk can't be resolved, this worktree *is* the trunk, the tree has uncommitted tracked changes, or the branch has **diverged** (local commits not on the trunk — it tells you to `git rebase` manually).
-2. **Env** — copies every gitignored top-level `.env*` file from the **main** checkout into the worktree, only if missing (never overwrites, never prints contents).
+2. **Env** — copies every gitignored top-level `.env*` file from the **main** checkout into the worktree, only if missing (never overwrites, never prints contents). *(On Claude Code, a `.worktreeinclude` file at the repo root copies gitignored files into worktrees at creation time — for `--worktree`, subagent, and parallel sessions — so this step is the portable fallback and a no-op when they're already present.)*
 3. **Dependencies** — if `node_modules` is absent, detects the package manager from the lockfile (`pnpm-lock.yaml` → pnpm, `package-lock.json` → npm, `yarn.lock` → yarn, `bun.lockb` → bun) and runs the matching install — against the *caught-up* lockfile. With pnpm's shared global store this is typically a few seconds.
 4. **Next.js workspace-root check** (read-only) — if a `next.config.*` exists without a `turbopack.root` pin **and** there's a lockfile above the worktree, it warns and prints the fix:
    ```ts
