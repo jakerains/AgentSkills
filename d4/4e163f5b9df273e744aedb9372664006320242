@@ -1,0 +1,24 @@
+skills/worktree-bootstrap/scripts/setup-worktree.sh
+  s_9430213de54579::t_5587589d0afff5 37-105
+skills/worktree-bootstrap/SKILL.md
+  s_9430213de54579::t_b98c38ff889893 41
+  s_9430213de54579::t_4a5a3a2eac1bba 4
+  s_9430213de54579::t_22d93963b94377 9-16
+  s_9430213de54579::t_12aded063a5bb7 30,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "d44e163f5b9df273e744aedb9372664006320242",
+  "prompts": {},
+  "sessions": {
+    "s_9430213de54579": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2f721b2b-2307-4e87-abe3-1015fd76fc7f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jake Rains <jake@elevenlabs.io>"
+    }
+  }
+}
