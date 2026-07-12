@@ -38,6 +38,30 @@ Works with **18+ AI coding agents** via [skills.sh](https://skills.sh):
 > Skills I use all the time are marked with a star. The rest are still solid — just more situational or specific to stuff I work on.
 > Each entry includes the date I last updated that skill.
 
+Click a skill to jump to its details below (each section has a one-click-copy install block), or grab the command straight from here:
+
+| Skill | Install |
+|-------|---------|
+| [claude-advisor](#claude-advisor) | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
+| [prompt-scheduler](#prompt-scheduler) | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
+| [plaud](#plaud) | `npx skills add jakerains/AgentSkills --skill plaud` |
+| [simplify](#simplify) | `npx skills add jakerains/AgentSkills --skill simplify` |
+| [skill-seekers ★](#skill-seekers-) | `npx skills add jakerains/AgentSkills --skill skill-seekers` |
+| [kain-personality ★](#kain-personality-) | `npx skills add jakerains/AgentSkills --skill kain-personality` |
+| [jake-speak](#jake-speak) | `npx skills add jakerains/AgentSkills --skill jake-speak` |
+| [docxmakebetter ★](#docxmakebetter-) | `npx skills add jakerains/AgentSkills --skill docxmakebetter` |
+| [nextjs-pwa ★](#nextjs-pwa-) | `npx skills add jakerains/AgentSkills --skill nextjs-pwa` |
+| [update-changelog ★](#update-changelog-) | `npx skills add jakerains/AgentSkills --skill update-changelog` |
+| [onnx-webgpu-converter](#onnx-webgpu-converter) | `npx skills add jakerains/AgentSkills --skill onnx-webgpu-converter` |
+| [apple-foundation-models](#apple-foundation-models) | `npx skills add jakerains/AgentSkills --skill apple-foundation-models` |
+| [macos-dmg-builder](#macos-dmg-builder) | `npx skills add jakerains/AgentSkills --skill macos-dmg-builder` |
+| [vercel-workflow](#vercel-workflow) | `npx skills add jakerains/AgentSkills --skill vercel-workflow` |
+| [codex-app-server](#codex-app-server) | `npx skills add jakerains/AgentSkills --skill codex-app-server` |
+| [shot-list](#shot-list) | `npx skills add jakerains/AgentSkills --skill shot-list` |
+| [nextstep-tours](#nextstep-tours) | `npx skills add jakerains/AgentSkills --skill nextstep-tours` |
+| [sam3](#sam3) | `npx skills add jakerains/AgentSkills --skill sam3` |
+| [worktree-bootstrap](#worktree-bootstrap) | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
+
 ### claude-advisor
 > Consult Claude Fable as an independent, read-only second-opinion advisor through the local Claude Code CLI
 
