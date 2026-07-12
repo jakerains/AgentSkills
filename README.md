@@ -1,10 +1,8 @@
 # Jake's Agent Skills
 
-**A personal collection of skills I built because I couldn't find them anywhere else.**
+**My personal collection of custom agent skills.**
 
-I kept running into the same problem: I'd need my AI agent to do something specific — convert a model to ONNX for the browser, generate a shot list from a screenplay, build a macOS DMG — and there just wasn't a skill for it. So I started making my own.
-
-Some of these are broadly useful and you'll probably get a lot of mileage out of them. Others are pretty niche or tailored to my own workflows. Either way, they're all here if you want them.
+Skills I've built for my own projects and workflows, gathered here in one place. Some are broadly useful, others are shaped around how I like to work. Install the whole set or just grab the ones you want.
 
 ---
 
@@ -37,29 +35,224 @@ Works with **18+ AI coding agents** via [skills.sh](https://skills.sh):
 
 > Each entry includes the date I last updated that skill.
 
-Click a skill to jump to its details below (each section has a one-click-copy install block), or grab the command straight from here:
+Click a skill to jump to its full details below, or copy its install command straight from the table:
 
-| Skill | What it does | Install |
-|-------|--------------|---------|
-| [claude-advisor](#claude-advisor) | Consult Claude Fable as a read-only second-opinion advisor | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
-| [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
-| [plaud](#plaud) | Search, transcribe & summarize Plaud voice recordings (CLI + MCP) | `npx skills add jakerains/AgentSkills --skill plaud` |
-| [simplify](#simplify) | Clean up changed code — portable clone of Claude Code's /simplify | `npx skills add jakerains/AgentSkills --skill simplify` |
-| [skill-seekers](#skill-seekers) | Turn any documentation into an installable skill | `npx skills add jakerains/AgentSkills --skill skill-seekers` |
-| [kain-personality](#kain-personality) | The Kain Jares / GenAIAlien persona for writing & image prompts | `npx skills add jakerains/AgentSkills --skill kain-personality` |
-| [jake-speak](#jake-speak) | Explain technical work in plain-English boxed cards | `npx skills add jakerains/AgentSkills --skill jake-speak` |
-| [docxmakebetter](#docxmakebetter) | Create/edit Word docs — tracked changes, comments, redlining | `npx skills add jakerains/AgentSkills --skill docxmakebetter` |
-| [nextjs-pwa](#nextjs-pwa) | Build Progressive Web Apps with Next.js | `npx skills add jakerains/AgentSkills --skill nextjs-pwa` |
-| [update-changelog](#update-changelog) | Changelog management, version bumping & release publishing | `npx skills add jakerains/AgentSkills --skill update-changelog` |
-| [onnx-webgpu-converter](#onnx-webgpu-converter) | Convert HuggingFace models to ONNX for the browser (Transformers.js + WebGPU) | `npx skills add jakerains/AgentSkills --skill onnx-webgpu-converter` |
-| [apple-foundation-models](#apple-foundation-models) | Apple Intelligence / Foundation Models on iOS 26+, macOS 26+, visionOS 26+ | `npx skills add jakerains/AgentSkills --skill apple-foundation-models` |
-| [macos-dmg-builder](#macos-dmg-builder) | Build, sign, notarize & package macOS apps into DMGs | `npx skills add jakerains/AgentSkills --skill macos-dmg-builder` |
-| [vercel-workflow](#vercel-workflow) | Durable, long-running workflows with Vercel Workflow DevKit | `npx skills add jakerains/AgentSkills --skill vercel-workflow` |
-| [codex-app-server](#codex-app-server) | Embed Codex into rich apps with the Codex App Server | `npx skills add jakerains/AgentSkills --skill codex-app-server` |
-| [shot-list](#shot-list) | Generate professional shot lists from screenplays | `npx skills add jakerains/AgentSkills --skill shot-list` |
-| [nextstep-tours](#nextstep-tours) | Product tours & onboarding with NextStep v2 for Next.js | `npx skills add jakerains/AgentSkills --skill nextstep-tours` |
-| [sam3](#sam3) | Meta SAM 3 open-vocabulary image & video segmentation | `npx skills add jakerains/AgentSkills --skill sam3` |
-| [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
+<table>
+<thead>
+<tr><th>Skill</th><th>What it does</th><th>Install</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#claude-advisor">claude-advisor</a></td>
+<td>Consult Claude Fable as a read-only second-opinion advisor</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill claude-advisor
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#prompt-scheduler">prompt-scheduler</a></td>
+<td>Schedule local Claude/Codex terminal prompts in Warp via launchd</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill prompt-scheduler
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#plaud">plaud</a></td>
+<td>Search, transcribe &amp; summarize Plaud voice recordings (CLI + MCP)</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill plaud
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#simplify">simplify</a></td>
+<td>Clean up changed code — portable clone of Claude Code's /simplify</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill simplify
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#skill-seekers">skill-seekers</a></td>
+<td>Turn any documentation into an installable skill</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill skill-seekers
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#kain-personality">kain-personality</a></td>
+<td>The Kain Jares / GenAIAlien persona for writing &amp; image prompts</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill kain-personality
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#jake-speak">jake-speak</a></td>
+<td>Explain technical work in plain-English boxed cards</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill jake-speak
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#docxmakebetter">docxmakebetter</a></td>
+<td>Create/edit Word docs — tracked changes, comments, redlining</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill docxmakebetter
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#nextjs-pwa">nextjs-pwa</a></td>
+<td>Build Progressive Web Apps with Next.js</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill nextjs-pwa
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#update-changelog">update-changelog</a></td>
+<td>Changelog management, version bumping &amp; release publishing</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill update-changelog
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#onnx-webgpu-converter">onnx-webgpu-converter</a></td>
+<td>Convert HuggingFace models to ONNX for the browser (Transformers.js + WebGPU)</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill onnx-webgpu-converter
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#apple-foundation-models">apple-foundation-models</a></td>
+<td>Apple Intelligence / Foundation Models on iOS 26+, macOS 26+, visionOS 26+</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill apple-foundation-models
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#macos-dmg-builder">macos-dmg-builder</a></td>
+<td>Build, sign, notarize &amp; package macOS apps into DMGs</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill macos-dmg-builder
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#vercel-workflow">vercel-workflow</a></td>
+<td>Durable, long-running workflows with Vercel Workflow DevKit</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill vercel-workflow
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#codex-app-server">codex-app-server</a></td>
+<td>Embed Codex into rich apps with the Codex App Server</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill codex-app-server
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#shot-list">shot-list</a></td>
+<td>Generate professional shot lists from screenplays</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill shot-list
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#nextstep-tours">nextstep-tours</a></td>
+<td>Product tours &amp; onboarding with NextStep v2 for Next.js</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill nextstep-tours
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#sam3">sam3</a></td>
+<td>Meta SAM 3 open-vocabulary image &amp; video segmentation</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill sam3
+```
+
+</td>
+</tr>
+<tr>
+<td><a href="#worktree-bootstrap">worktree-bootstrap</a></td>
+<td>Make a new git worktree run its dev server like main</td>
+<td>
+
+```bash
+npx skills add jakerains/AgentSkills --skill worktree-bootstrap
+```
+
+</td>
+</tr>
+</tbody>
+</table>
 
 ### claude-advisor
 > Consult Claude Fable as an independent, read-only second-opinion advisor through the local Claude Code CLI
