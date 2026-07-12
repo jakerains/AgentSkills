@@ -35,7 +35,6 @@ Works with **18+ AI coding agents** via [skills.sh](https://skills.sh):
 
 ## Available Skills
 
-> Skills I use all the time are marked with a star. The rest are still solid — just more situational or specific to stuff I work on.
 > Each entry includes the date I last updated that skill.
 
 Click a skill to jump to its details below (each section has a one-click-copy install block), or grab the command straight from here:
@@ -46,12 +45,12 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
 | [plaud](#plaud) | Search, transcribe & summarize Plaud voice recordings (CLI + MCP) | `npx skills add jakerains/AgentSkills --skill plaud` |
 | [simplify](#simplify) | Clean up changed code — portable clone of Claude Code's /simplify | `npx skills add jakerains/AgentSkills --skill simplify` |
-| [skill-seekers ★](#skill-seekers-) | Turn any documentation into an installable skill | `npx skills add jakerains/AgentSkills --skill skill-seekers` |
-| [kain-personality ★](#kain-personality-) | The Kain Jares / GenAIAlien persona for writing & image prompts | `npx skills add jakerains/AgentSkills --skill kain-personality` |
+| [skill-seekers](#skill-seekers) | Turn any documentation into an installable skill | `npx skills add jakerains/AgentSkills --skill skill-seekers` |
+| [kain-personality](#kain-personality) | The Kain Jares / GenAIAlien persona for writing & image prompts | `npx skills add jakerains/AgentSkills --skill kain-personality` |
 | [jake-speak](#jake-speak) | Explain technical work in plain-English boxed cards | `npx skills add jakerains/AgentSkills --skill jake-speak` |
-| [docxmakebetter ★](#docxmakebetter-) | Create/edit Word docs — tracked changes, comments, redlining | `npx skills add jakerains/AgentSkills --skill docxmakebetter` |
-| [nextjs-pwa ★](#nextjs-pwa-) | Build Progressive Web Apps with Next.js | `npx skills add jakerains/AgentSkills --skill nextjs-pwa` |
-| [update-changelog ★](#update-changelog-) | Changelog management, version bumping & release publishing | `npx skills add jakerains/AgentSkills --skill update-changelog` |
+| [docxmakebetter](#docxmakebetter) | Create/edit Word docs — tracked changes, comments, redlining | `npx skills add jakerains/AgentSkills --skill docxmakebetter` |
+| [nextjs-pwa](#nextjs-pwa) | Build Progressive Web Apps with Next.js | `npx skills add jakerains/AgentSkills --skill nextjs-pwa` |
+| [update-changelog](#update-changelog) | Changelog management, version bumping & release publishing | `npx skills add jakerains/AgentSkills --skill update-changelog` |
 | [onnx-webgpu-converter](#onnx-webgpu-converter) | Convert HuggingFace models to ONNX for the browser (Transformers.js + WebGPU) | `npx skills add jakerains/AgentSkills --skill onnx-webgpu-converter` |
 | [apple-foundation-models](#apple-foundation-models) | Apple Intelligence / Foundation Models on iOS 26+, macOS 26+, visionOS 26+ | `npx skills add jakerains/AgentSkills --skill apple-foundation-models` |
 | [macos-dmg-builder](#macos-dmg-builder) | Build, sign, notarize & package macOS apps into DMGs | `npx skills add jakerains/AgentSkills --skill macos-dmg-builder` |
@@ -122,7 +121,7 @@ npx skills add jakerains/AgentSkills --skill simplify
 
 ---
 
-### skill-seekers ★
+### skill-seekers
 > Turn any documentation into an installable agent skill
 
 **Last updated:** 2026-03-31
@@ -137,7 +136,7 @@ npx skills add jakerains/AgentSkills --skill skill-seekers
 
 ---
 
-### kain-personality ★
+### kain-personality
 > Invoke the Kain Jares / GenAIAlien personality for writing, product reactions, parody concepts, and image prompts
 
 **Last updated:** 2026-04-30
@@ -167,7 +166,7 @@ npx skills add jakerains/AgentSkills --skill jake-speak
 
 ---
 
-### docxmakebetter ★
+### docxmakebetter
 > Create, edit, and analyze Word documents with tracked changes, comments, and redlining
 
 **Last updated:** 2026-03-31
@@ -182,7 +181,7 @@ npx skills add jakerains/AgentSkills --skill docxmakebetter
 
 ---
 
-### nextjs-pwa ★
+### nextjs-pwa
 > Build Progressive Web Apps with Next.js
 
 **Last updated:** 2026-02-01
@@ -197,7 +196,7 @@ npx skills add jakerains/AgentSkills --skill nextjs-pwa
 
 ---
 
-### update-changelog ★
+### update-changelog
 > Automated changelog management, version bumping, and release publishing
 
 **Last updated:** 2026-06-29
