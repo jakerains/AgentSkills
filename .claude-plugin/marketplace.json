@@ -17,6 +17,13 @@
       "tags": ["apple", "ios", "macos", "ai", "foundation-models"]
     },
     {
+      "name": "claude-advisor",
+      "source": "./skills/claude-advisor",
+      "description": "Consult Claude Fable as an independent, read-only second-opinion advisor via the local Claude Code CLI for hard decisions, design and code review, debugging, and tradeoff analysis",
+      "version": "1.0.0",
+      "tags": ["claude", "fable", "advisor", "second-opinion", "code-review", "read-only", "cli"]
+    },
+    {
       "name": "codex-app-server",
       "source": "./skills/codex-app-server",
       "description": "Build rich Codex integrations with the Codex App Server across Electron, Swift, Next.js, and other host apps",

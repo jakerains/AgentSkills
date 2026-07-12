@@ -38,6 +38,21 @@ Works with **18+ AI coding agents** via [skills.sh](https://skills.sh):
 > Skills I use all the time are marked with a star. The rest are still solid — just more situational or specific to stuff I work on.
 > Each entry includes the date I last updated that skill.
 
+### claude-advisor
+> Consult Claude Fable as an independent, read-only second-opinion advisor through the local Claude Code CLI
+
+**Last updated:** 2026-07-12
+
+Gives an agent a safe, one-shot way to get a second engineering opinion from **Claude Fable** when it judges that another perspective would genuinely help — a hard decision, a stubborn bug, a design or code review, a tradeoff call. A bundled wrapper (`consult-fable.sh`) runs `claude -p --model fable` in the active project, locked to read-only tools with all MCP servers stripped, so Fable can inspect files but can't edit anything or run commands. It's a **discretionary capability, not an always-on review**: the agent decides when to invoke it, waits for the blocking report, verifies the advice, and still owns every decision and change.
+
+**Use for:** Getting a second opinion before committing to an approach, pressure-testing ambiguous reasoning, design/architecture critique, code or plan review, debugging help, risk and tradeoff analysis
+
+```bash
+npx skills add jakerains/AgentSkills --skill claude-advisor
+```
+
+---
+
 ### prompt-scheduler
 > Schedule local Claude, Codex, or agent terminal prompts to run later in Warp with launchd
 
@@ -64,6 +79,21 @@ Plaud ships two surfaces — a terminal CLI (`@plaud-ai/cli`) and an MCP server 
 
 ```bash
 npx skills add jakerains/AgentSkills --skill plaud
+```
+
+---
+
+### simplify
+> Portable clone of Claude Code's `/simplify` — clean up changed code through four quality lenses
+
+**Last updated:** 2026-07-06
+
+Brings the `/simplify` cleanup workflow to agents that don't ship it (Codex, Cursor, etc.). Reviews your git diff through four lenses — **Reuse**, **Simplification**, **Efficiency**, **Altitude** — presents the findings, and applies the fixes on your approval. Quality only: it does not hunt for correctness bugs. **Do not install in Claude Code** — it has a superior native `/simplify` built for that harness.
+
+**Use for:** Tidying up recent edits before a commit or PR, spotting duplicated logic, removing needless complexity, catching bandaid fixes that belong one layer deeper
+
+```bash
+npx skills add jakerains/AgentSkills --skill simplify
 ```
 
 ---
