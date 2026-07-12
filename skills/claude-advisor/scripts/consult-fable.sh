@@ -5,24 +5,38 @@
 # The calling agent composes an advisor prompt dynamically and passes it here as a
 # single argument. This wrapper wraps that prompt in a fixed read-only advisor
 # instruction, invokes Claude Code (`claude -p --model fable`) in the current
-# working directory with the narrowest practical permissions, and streams Fable's
-# Markdown report to stdout. It BLOCKS until Fable returns a complete report.
+# working directory with the narrowest practical permissions, saves Fable's Markdown
+# report to a timestamped file, and also echoes it to stdout.
 #
 # Usage:
 #   consult-fable.sh "<advisor prompt>"
 #
+# Output:
+#   The report is written to  $FABLE_ADVISOR_DIR/advisory-<timestamp>.md
+#   (default dir: docs/fable, relative to the current working directory) so it
+#   persists for you and the user to read and keep. The exact path is printed to
+#   stderr; the pure report is printed to stdout.
+#
+# Backgrounding:
+#   The wrapper runs to completion, but the CALLER may run this invocation in the
+#   background and do other, unrelated work while Fable thinks — then read the
+#   report file once it finishes. It writes no file until Fable succeeds, so a
+#   background run either leaves a complete report or none at all.
+#
 # Fable is an advisor only. It is locked to read-only tools: it cannot edit, create,
 # rename, move, or delete files, and cannot run shell commands, git, tests, package
 # managers, network requests, or deployments. Enforcement is via Claude Code's own
-# permission system (a deny rule always overrides any ambient allow), not merely by
-# instructing the model to behave.
+# permission system (a deny rule always overrides any ambient allow) plus stripping
+# all MCP servers, not merely by instructing the model to behave. The wrapper — not
+# Fable — writes the report file, so Fable stays strictly read-only.
 #
 # Contract:
 #   - Exits 127 if the `claude` CLI is not on PATH.
 #   - Exits 2 if no advisor prompt is supplied.
 #   - Never falls back to another model if Fable is unavailable — it fails clearly
 #     and propagates Claude Code's own nonzero exit code instead.
-#   - Writes exactly one self-contained Markdown report to stdout on success.
+#   - On success, writes one self-contained Markdown report to the file and stdout.
+#   - On failure or an empty report, writes NO file and exits nonzero.
 
 set -euo pipefail
 
@@ -60,6 +74,9 @@ Example:
   bursts are common. Constraints: jobs must run at-least-once and are idempotent.
   Critique this choice, flag failure modes I may be missing, and note anything in
   the current retry code that would undermine it."
+
+The report is saved to docs/fable/advisory-<timestamp>.md (override the directory
+with the FABLE_ADVISOR_DIR environment variable).
 ERR
   exit 2
 fi
@@ -101,7 +118,7 @@ FULL_PROMPT="${FIXED_INSTRUCTION}
 
 ${PROMPT}"
 
-# --- 4. Consult Fable: read-only, blocking, in the current project --------------
+# --- 4. Consult Fable, then persist the report ----------------------------------
 # Runs in the current working directory so Fable can inspect the active project.
 # --model fable is required; there is intentionally no --fallback-model, so an
 # unavailable Fable fails loudly rather than quietly answering as another model.
@@ -120,11 +137,34 @@ ${PROMPT}"
 #                     user's own settings.json might grant, so this backstops the
 #                     built-in tool surface even under permissive ambient settings.
 #
-# `exec` replaces this process with claude, so stdout streams straight through and
-# claude's own exit code is preserved — a failed invocation exits nonzero.
-exec claude -p "$FULL_PROMPT" \
-  --model fable \
-  --strict-mcp-config \
-  --mcp-config '{"mcpServers":{}}' \
-  --allowedTools Read Grep Glob \
-  --disallowedTools Bash Edit Write NotebookEdit WebFetch WebSearch Task Workflow
+# Output is captured to a temp file first and only moved into place on a successful,
+# non-empty run — so a failed or backgrounded consultation never leaves a partial or
+# misleading report behind.
+OUTDIR="${FABLE_ADVISOR_DIR:-docs/fable}"
+REPORT="${OUTDIR}/advisory-$(date +%Y%m%d-%H%M%S).md"
+TMP="$(mktemp)"
+
+if claude -p "$FULL_PROMPT" \
+     --model fable \
+     --strict-mcp-config \
+     --mcp-config '{"mcpServers":{}}' \
+     --allowedTools Read Grep Glob \
+     --disallowedTools Bash Edit Write NotebookEdit WebFetch WebSearch Task Workflow \
+     > "$TMP"
+then
+  if [ -s "$TMP" ]; then
+    mkdir -p "$OUTDIR"
+    mv "$TMP" "$REPORT"
+    printf 'consult-fable.sh: Fable advisory report saved to %s\n' "$REPORT" >&2
+    cat "$REPORT"
+  else
+    rm -f "$TMP"
+    echo "consult-fable.sh: Fable returned an empty report; treat the consultation as unavailable." >&2
+    exit 1
+  fi
+else
+  status=$?
+  rm -f "$TMP"
+  echo "consult-fable.sh: the Fable consultation failed (claude exited ${status}); no report was written." >&2
+  exit "$status"
+fi

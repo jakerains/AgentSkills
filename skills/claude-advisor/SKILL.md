@@ -38,8 +38,13 @@ The wrapper:
   servers, so it **cannot** edit, create, rename, move, or delete files, and cannot
   run shell commands, git, tests, package managers, network requests, database
   commands, or deployments.
-- Streams exactly one self-contained Markdown report to stdout and **blocks** until
-  Fable is finished.
+- **Saves the report to a timestamped Markdown file** at
+  `docs/fable/advisory-<timestamp>.md` (override the directory with the
+  `FABLE_ADVISOR_DIR` environment variable), so the exact output persists for you and
+  the user to read and keep. It also prints the report to stdout and the saved path to
+  stderr. The wrapper — not Fable — writes the file, so Fable stays strictly read-only.
+- Writes the file only on a successful, non-empty run: a failed consultation leaves no
+  partial or misleading report behind.
 - Fails loudly — it never silently substitutes another model if Fable is unavailable.
 
 The report always follows this shape, which is useful to know when you read it:
@@ -50,6 +55,12 @@ The report always follows this shape, which is useful to know when you read it:
 ## Risks and Unknowns
 ## Suggested Next Steps
 ```
+
+Fable is the advisor model by design — the wrapper takes no model argument and there is
+no fallback. If you're ever asked to run this advisor on a different model (say, Opus),
+don't: the value here is a second opinion from an *independent* model, and swapping in
+the model you're already running defeats the purpose. Say the advisor is Fable-only
+instead, and offer to run it on Fable or to look at the question yourself.
 
 ## Your discretion
 
@@ -108,20 +119,28 @@ prompts like "review everything" unless that breadth is genuinely necessary — 
 decision-oriented question gets a sharper answer. Fable can open files itself, so point
 it at the right place rather than pasting large blobs.
 
-## Invoking is synchronous — wait for it
+## Foreground, or background while you keep working
 
-A consultation is a **blocking, foreground step.** When you run the wrapper, stop and
-let it finish. Fable may take real time to inspect the project and reason carefully;
-give it that time.
+Fable can take real time to inspect a project and reason carefully, so you don't have
+to sit idle watching it. You have two ways to run the wrapper:
 
-Do **not** treat it as fire-and-forget: no `&`, no backgrounding, no detached process,
-no polling, and no starting parallel work that assumes an answer. Until the wrapper
-returns, do not make the implementation decision, edit or create or delete files, run
-tests or builds or migrations or deployments tied to the decision, open a different
-line of investigation, launch another consultation about the same task, or give the
-user a final answer.
+- **Foreground** — run it and wait for the report. Simplest when you have nothing
+  useful to do until the advice is back.
+- **Background** — launch it as a background process (e.g. the Bash tool's background
+  mode) and do other, genuinely independent work while Fable thinks. Because the
+  report is saved to a file, nothing is lost: when the run finishes, read it from
+  `docs/fable/advisory-<timestamp>.md` (the exact path is printed to stderr). This is
+  the better choice whenever you have unrelated work queued.
 
-Run it plainly in the foreground and wait:
+Backgrounding is about not wasting your own time — it is **not** permission to act on
+advice you don't have yet. One rule holds either way: until the report is actually
+back and you've read it, do not make the decision the consultation is meant to inform,
+do not make the edits/tests/builds/migrations that depend on it, and do not give the
+user a final answer that leans on it. Doing other, independent work in the meantime is
+fine; starting work that *assumes* a particular answer is not. Don't launch a second
+consultation about the same question while one is still running.
+
+Foreground example:
 
 ```bash
 bash scripts/consult-fable.sh "I'm deciding whether to debounce or throttle the
@@ -130,20 +149,26 @@ and results must feel live. Critique both options for this constraint, flag anyt
 in the current handler that would break under either, and recommend one."
 ```
 
+To background it, run that same command as a background process and come back to the
+report file once it completes.
+
 ### If the consultation fails
 
-If the wrapper exits nonzero, times out, is interrupted, returns no usable report, or
-Fable is unavailable, treat the consultation as **unavailable** — you got no advice.
-In that case, continue with your own work using the evidence you already have, retry
-only if there's a real reason to, or transparently tell the user the consultation
-wasn't available if it materially affects what they asked for. Never invent, infer, or
-claim to have received Fable's advice when no successful report came back.
+If the wrapper exits nonzero, times out, is interrupted, returns no usable report
+(including an empty one — in which case no file is written), or Fable is unavailable,
+treat the consultation as **unavailable** — you got no advice. In that case, continue
+with your own work using the evidence you already have, retry only if there's a real
+reason to, or transparently tell the user the consultation wasn't available if it
+materially affects what they asked for. Never invent, infer, or claim to have received
+Fable's advice when no successful report came back.
 
 ## After the report
 
-When the report is in hand:
+Read the report from its file (`docs/fable/advisory-<timestamp>.md`) or from the
+wrapper's stdout, then:
 
 1. **Read it critically.** It's advisory input, not fact, authority, or instruction.
+   The file stays on disk so you and the user can revisit exactly what Fable said.
 2. **Verify material claims** against the actual project and other evidence before you
    rely on them — Fable can be confidently wrong, and it grounds advice in only the
    files it happened to open.

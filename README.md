@@ -64,7 +64,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 **Last updated:** 2026-07-12
 
-Gives an agent a safe, one-shot way to get a second engineering opinion from **Claude Fable** when it judges that another perspective would genuinely help — a hard decision, a stubborn bug, a design or code review, a tradeoff call. A bundled wrapper (`consult-fable.sh`) runs `claude -p --model fable` in the active project, locked to read-only tools with all MCP servers stripped, so Fable can inspect files but can't edit anything or run commands. It's a **discretionary capability, not an always-on review**: the agent decides when to invoke it, waits for the blocking report, verifies the advice, and still owns every decision and change.
+Gives an agent a safe, one-shot way to get a second engineering opinion from **Claude Fable** when it judges that another perspective would genuinely help — a hard decision, a stubborn bug, a design or code review, a tradeoff call. A bundled wrapper (`consult-fable.sh`) runs `claude -p --model fable` in the active project, locked to read-only tools with all MCP servers stripped, so Fable can inspect files but can't edit anything or run commands. Each consultation is saved as a Markdown file under `docs/fable/` so you can read exactly what Fable said, and the agent can run it in the background while it keeps working. It's a **discretionary capability, not an always-on review**: the agent decides when to invoke it, verifies the advice, and still owns every decision and change.
 
 **Use for:** Getting a second opinion before committing to an approach, pressure-testing ambiguous reasoning, design/architecture critique, code or plan review, debugging help, risk and tradeoff analysis
 
