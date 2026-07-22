@@ -56,6 +56,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [codex-app-server](#codex-app-server) | Embed Codex into rich apps with the Codex App Server | `npx skills add jakerains/AgentSkills --skill codex-app-server` |
 | [shot-list](#shot-list) | Generate professional shot lists from screenplays | `npx skills add jakerains/AgentSkills --skill shot-list` |
 | [nextstep-tours](#nextstep-tours) | Product tours & onboarding with NextStep v2 for Next.js | `npx skills add jakerains/AgentSkills --skill nextstep-tours` |
+| [driverjs-tours](#driverjs-tours) | Product tours, highlights & feature hints with Driver.js (any framework) | `npx skills add jakerains/AgentSkills --skill driverjs-tours` |
 | [sam3](#sam3) | Meta SAM 3 open-vocabulary image & video segmentation | `npx skills add jakerains/AgentSkills --skill sam3` |
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
 
@@ -310,6 +311,21 @@ Built this for a specific project. If you're using NextStep for guided tours and
 
 ```bash
 npx skills add jakerains/AgentSkills --skill nextstep-tours
+```
+
+---
+
+### driverjs-tours
+> Product tours, single-element highlights, and pulsing feature hints with Driver.js
+
+**Last updated:** 2026-07-22
+
+The framework-agnostic counterpart to nextstep-tours. Driver.js is a ~5kb, dependency-free library that dims the page, spotlights an element, and shows a popover — works in vanilla JS, React, Next.js, Vue, Svelte, or Angular. This skill is scraped straight from the current driver.js docs: full config/API/state type reference, theming (CSS classes + variables, dark mode, `onPopoverRender`), and copy-paste recipes for click-driven tours, multi-page resumable tours, confirm-on-exit, async navigation, and the separate hints/beacon module.
+
+**Use for:** Guided product tours, onboarding walkthroughs, coach marks, feature spotlights, "what's new" callouts, feature hints/beacons, styling/theming Driver.js popovers and overlays
+
+```bash
+npx skills add jakerains/AgentSkills --skill driverjs-tours
 ```
 
 ---
