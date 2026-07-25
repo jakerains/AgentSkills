@@ -1,183 +1,234 @@
 ---
 name: claude-advisor
-description: Consult Claude Fable as an independent, read-only second-opinion advisor through the local Claude Code CLI. Use this when you judge that another strong engineering perspective could materially improve a hard decision, ambiguous or high-risk reasoning, a tricky debugging session, a design or architecture choice, a code or plan review, a tradeoff analysis, or validating an approach before you commit to it — and you want a one-shot advisory report to weigh against your own judgment. This is a capability you invoke at your discretion, not an automatic or always-on review, so skip it for simple, routine, low-risk, or already-clear work, and never use it in a way that would expose secrets or sensitive material without the user's explicit authorization. Fable only advises; you remain fully responsible for every decision, implementation, test, verification, and message to the user.
+description: Consult Claude through two explicit, independent, read-only advisor lanes. Default to Opus 5 for nearly every substantive second opinion, including adversarial review, difficult synthesis, debugging, architecture, product or strategy, content and learning quality, creative judgment, tradeoffs, or pressure-testing a plan or artifact. The Opus wrapper intentionally uses the rolling `opus` alias so it follows Anthropic's latest Opus release. Reserve Fable for rare frontier cases where the user explicitly requests it or the problem is exceptionally unsettled, consequential, and likely to benefit materially from the premium model. Use neither for routine procedural compliance or deterministic verification. The selected model only advises; you remain responsible for every decision and action.
 ---
 
 # Claude Advisor
 
-This skill gives you a reliable way to ask **Claude Fable** for a one-shot advisory
-report when a second, independent engineering perspective would genuinely help. You
-run a small wrapper script; Fable inspects the active project read-only and returns a
-structured Markdown report; you read it, judge it, and do all the actual work
-yourself.
+Consult one of two Claude models for a one-shot advisory report grounded in read-only
+inspection of the active project:
 
-Fable is an **advisor only**. It is never the implementation agent, never the final
-decision maker, and never an autonomous reviewer that fires on every task. You own the
-investigation, the decisions, the code, the tests, the verification, and the
-communication with the user. Fable is one more informed opinion to weigh — nothing
-more.
+- **Opus is the default general expert.** Use it for almost all substantive advisory
+  work, including work that previously might have gone to Fable.
+- **Fable is a rare frontier escalation.** Use it only when explicitly requested or
+  when an unusually hard, consequential question is still genuinely unsettled and the
+  premium is likely to change the answer.
 
-## The mechanism
+Both models are advisors only. You own the investigation, decisions, edits, tests,
+verification, and communication with the user.
 
-Invoke the bundled wrapper with a prompt you compose in the moment:
+## Choose the advisor lane
+
+Choose one lane deliberately before writing the prompt. Never ask one lane to imitate
+the other, and never allow automatic fallback between them.
+
+### Opus 5: default general expert
+
+Use Opus for nearly every substantive consultation where an independent perspective
+could materially improve the result. Opus is no longer limited to critique of an
+existing candidate; it is also the normal choice for difficult synthesis and human
+judgment.
+
+Typical uses include:
+
+- Adversarial review of a plan, diff, implementation, architecture, or design
+- Pressure-testing assumptions, counterexamples, failure modes, and hidden coupling
+- Debugging and root-cause analysis when the path is uncertain
+- Comparing system models or implementation approaches
+- Product direction, strategy, user experience, positioning, and tradeoffs
+- Content, curriculum, learning design, assessment, narrative, and transfer
+- Creative or technical coherence across a large artifact
+- Synthesizing a strong first recommendation when no candidate answer exists yet
+
+If the user asks for an adversarial review, second opinion, red team, critique, deep
+review, synthesis, or general Claude advisor without naming a model, choose Opus.
+
+The Opus wrapper passes `--model opus`. In Claude Code, `opus` is a rolling alias for
+the latest Opus model; as of this update it resolves to `claude-opus-5`. Keep the alias
+instead of pinning `claude-opus-5` so future Opus upgrades flow through automatically.
+The hardened runner verifies that the response came from the Opus model family before
+accepting it.
+
+### Fable: rare frontier escalation
+
+Fable is the exceptional, premium lane—not the default for content, strategy,
+learning, creativity, or synthesis. Use it only when:
+
+- The user explicitly asks for Fable; or
+- The question is exceptionally difficult and consequential, remains genuinely
+  unsettled after serious local investigation, and there is a concrete reason to
+  expect Fable's extra capacity to materially change the decision.
+
+Examples can include a novel multi-domain synthesis with no stable candidate model, a
+high-stakes decision with deep unresolved ambiguity, or an artifact whose intended
+human outcome depends on unusually subtle judgment that Opus could not resolve.
+Breadth, importance, or the presence of content work alone is not enough.
+
+Do not run Opus first merely to create permission to use Fable. If Opus is clearly the
+right lane, use Opus and stop. If Fable is clearly justified, use Fable directly.
+
+**Tiebreaker:** choose Opus. Escalate to Fable only for a true edge case or an explicit
+request.
+
+### Neither lane: mechanical work
+
+Do not ask either model to audit routine process mechanics such as hashes, approval
+records, release gates, reviewer assignments, paperwork freshness, checklist
+completion, formatting, or commands that deterministic tooling can evaluate.
+
+A broad request such as "run this by the Claude advisor" is not a request to audit
+everything in scope. Infer the highest-value substantive question, select the lane,
+and brief that model accordingly. Include procedural or governance analysis only when:
+
+- The user explicitly asks for it.
+- The procedure itself is the hard design problem.
+- It materially changes safety, correctness, human experience, or the substantive
+  decision.
+
+## Run the consultation
+
+Invoke exactly one bundled wrapper with a prompt composed for the current question:
 
 ```bash
+# Default for substantive consultation; rolling alias currently resolves to Opus 5
+bash scripts/consult-opus.sh "<your dynamically composed advisor prompt>"
+
+# Rare frontier escalation
 bash scripts/consult-fable.sh "<your dynamically composed advisor prompt>"
 ```
 
-(Path is relative to this skill's directory. `bash` is used so it works regardless of
-the executable bit.)
+Paths are relative to this skill's directory. Use `bash` so the wrappers work
+regardless of executable bits.
 
-The wrapper:
+Both wrappers use one shared hardened runner. It:
 
-- Wraps your prompt in a fixed instruction that casts Fable as a read-only senior
-  staff-level advisor and pins the report format — you don't write that part.
-- Runs `claude -p --model fable` in the **current working directory**, so Fable can
-  inspect the active project.
-- Locks Fable to read-only tools (it can `Read`/`Grep`/`Glob`) and strips all MCP
-  servers, so it **cannot** edit, create, rename, move, or delete files, and cannot
-  run shell commands, git, tests, package managers, network requests, database
-  commands, or deployments.
-- **Saves the report to a timestamped Markdown file** at
-  `docs/fable/advisory-<timestamp>.md` (override the directory with the
-  `FABLE_ADVISOR_DIR` environment variable), so the exact output persists for you and
-  the user to read and keep. It also prints the report to stdout and the saved path to
-  stderr. The wrapper — not Fable — writes the file, so Fable stays strictly read-only.
-- Writes the file only on a successful, non-empty run: a failed consultation leaves no
-  partial or misleading report behind.
-- Fails loudly — it never silently substitutes another model if Fable is unavailable.
+- Selects only the closed set `opus` or `fable`; public wrappers accept no model
+  argument.
+- Uses the rolling Claude Code aliases and requests structured JSON output.
+- Verifies `modelUsage` identifies the selected model family before accepting output.
+- Adds a lane-specific instruction: broad expert review and synthesis for Opus, rare
+  frontier synthesis for Fable.
+- Runs in the current working directory so the advisor can inspect the active project.
+- Exposes only `Read`, `Grep`, and `Glob`, denies modifying, executing, networking, and
+  delegating tools, and strips all MCP servers.
+- Saves Opus reports to
+  `docs/opus/advisory-<timestamp>-<pid>.md` and Fable reports to
+  `docs/fable/advisory-<timestamp>-<pid>.md`. Override with `OPUS_ADVISOR_DIR` or
+  `FABLE_ADVISOR_DIR`.
+- Prints every successful verified report to stdout and its saved path to stderr.
+- Writes no report for a failed, empty, or model-verification-failed run.
+- Never silently substitutes one model for the other.
 
-The report always follows this shape, which is useful to know when you read it:
+The report always follows this shape:
 
-```
+```markdown
 # Recommendation
+
 ## Reasoning
+
 ## Risks and Unknowns
+
 ## Suggested Next Steps
 ```
 
-Fable is the advisor model by design — the wrapper takes no model argument and there is
-no fallback. If you're ever asked to run this advisor on a different model (say, Opus),
-don't: the value here is a second opinion from an *independent* model, and swapping in
-the model you're already running defeats the purpose. Say the advisor is Fable-only
-instead, and offer to run it on Fable or to look at the question yourself.
+If a selected model is unavailable, that consultation is unavailable. Do not silently
+rerun it on the other lane.
 
-## Your discretion
+Do not run both models by default. Use both only when the user explicitly asks for two
+perspectives or authorizes an unusually valuable comparison.
 
-**You decide whether and how to use this.** This skill is a capability, not a
-procedure. It deliberately imposes no mandatory triggers: there are no task types that
-always require Fable, no files or systems it must review, no fixed prompt template
-beyond the safe wrapper, no review checklist, no automatic invocation, and no rule
-that you must consult it before any particular kind of change.
+## Use discretion
 
-Reach for it when an independent perspective is likely to **materially improve the
-outcome**, and skip it when it wouldn't. That judgment is yours to make each time,
-based on the task, the project state, the user's request, your uncertainty, and the
-risk of getting it wrong.
+This skill is a capability, not an automatic procedure. Reach for it when an
+independent perspective is likely to materially improve the outcome. Skip it when the
+task is simple, routine, low-risk, already clear, or mechanically decidable.
 
-### When it tends to help
+Also skip it when consultation would expose secrets, credentials, `.env` contents,
+tokens, production data, personal data, or other sensitive material without the
+user's explicit authorization. Do not put sensitive values into the prompt.
 
-These are illustrative possibilities, not triggers, requirements, or limits — a second
-strong perspective can be valuable for things like:
+## Compose the advisor prompt
 
-- A hard or consequential decision where you're genuinely uncertain
-- Ambiguous reasoning you want pressure-tested
-- A stubborn bug you've been unable to pin down
-- A design or architecture choice with real tradeoffs
-- A code review, plan review, or diff you want a fresh set of eyes on
-- A tradeoff or risk assessment before committing to an approach
-- Validating that an approach is sound before you build on it
+Investigate first. State the difficult judgment you want the advisor to improve, then
+compose a focused prompt containing only useful context:
 
-### When to skip it
+- The decision, uncertainty, or intended outcome
+- Relevant constraints and source-of-truth files
+- Your current hypothesis or candidate approaches, if any
+- The kind of critique, synthesis, or recommendation that would help
+- Explicitly settled or out-of-scope topics
+- How findings should be ranked
 
-Skip Fable when consulting it wouldn't earn its cost: the task is simple, routine,
-low-risk, already clear, or unlikely to benefit from an outside view. Also skip it —
-regardless of how useful it might be — when a consultation would expose secrets,
-credentials, `.env` contents, tokens, production data, personal data, or other
-sensitive material **without the user's explicit authorization**. The wrapper won't
-pass such material for you, and you shouldn't put it into the prompt either.
+Do not outsource your initial investigation or ask for a generic "review everything"
+unless that breadth is necessary. Point the advisor at relevant files instead of
+pasting large blobs.
 
-## Composing the advisor prompt
+For broad artifact reviews, explicitly define:
 
-Investigate first, then ask. A good consultation starts with you having already looked
-at the relevant code, diff, error, or plan — so you can point Fable at what matters and
-frame a real question, rather than outsourcing your own investigation.
+- The substantive lens: content, learning, product, strategy, design, architecture,
+  technical behavior, or a deliberate combination
+- The outcome the artifact should create for a learner, user, or system
+- The implementation and source files containing the real experience
+- Mechanically checked topics that are out of scope
+- The decisive question the report must answer
 
-Compose the prompt dynamically for what you actually need right now. Include only the
-context that helps answer the specific question. Depending on the situation that might
-be:
+Good framing:
 
-- The decision, uncertainty, or goal
-- The important constraints
-- The relevant project areas, files, diffs, plans, errors, or artifacts
-- Your current hypothesis or the candidate approaches you're weighing
-- What kind of critique, review, or recommendation would be most useful
-- Any boundaries you want Fable to respect
+> Evaluate whether the current five-lesson module teaches the intended capability,
+> whether its exercises and assessment produce transfer, and whether its runtime
+> design supports the learner experience. Rank content and technical findings. Ignore
+> hashes, approval paperwork, and gate mechanics unless they directly change learner
+> behavior.
 
-Keep it focused. Don't overload Fable with irrelevant context, and avoid generic
-prompts like "review everything" unless that breadth is genuinely necessary — a sharp,
-decision-oriented question gets a sharper answer. Fable can open files itself, so point
-it at the right place rather than pasting large blobs.
+Poor framing:
 
-## Foreground, or background while you keep working
+> Review these packages and tell me whether they are ready.
 
-Fable can take real time to inspect a project and reason carefully, so you don't have
-to sit idle watching it. You have two ways to run the wrapper:
+## Foreground or background
 
-- **Foreground** — run it and wait for the report. Simplest when you have nothing
-  useful to do until the advice is back.
-- **Background** — launch it as a background process (e.g. the Bash tool's background
-  mode) and do other, genuinely independent work while Fable thinks. Because the
-  report is saved to a file, nothing is lost: when the run finishes, read it from
-  `docs/fable/advisory-<timestamp>.md` (the exact path is printed to stderr). This is
-  the better choice whenever you have unrelated work queued.
+Either lane can take time:
 
-Backgrounding is about not wasting your own time — it is **not** permission to act on
-advice you don't have yet. One rule holds either way: until the report is actually
-back and you've read it, do not make the decision the consultation is meant to inform,
-do not make the edits/tests/builds/migrations that depend on it, and do not give the
-user a final answer that leans on it. Doing other, independent work in the meantime is
-fine; starting work that *assumes* a particular answer is not. Don't launch a second
-consultation about the same question while one is still running.
+- **Foreground:** run the wrapper and wait when the advice blocks further work.
+- **Background:** launch it as a background process and do genuinely independent work,
+  then read the exact saved report when it finishes.
 
-Foreground example:
+Do not make the decision, perform dependent edits, or give a final answer that relies
+on the consultation until the report has arrived and you have read it. Do not launch
+a second consultation about the same question while one is running.
+
+Opus example:
 
 ```bash
-bash scripts/consult-fable.sh "I'm deciding whether to debounce or throttle the
-search-as-you-type handler in src/search/Box.tsx. The API is rate-limited to 10 req/s
-and results must feel live. Critique both options for this constraint, flag anything
-in the current handler that would break under either, and recommend one."
+bash scripts/consult-opus.sh "Review the proposed retry design in
+src/queue/worker.ts. Determine whether it is the best approach, pressure-test the
+idempotency assumptions, identify failure modes, and distinguish blockers from
+optional hardening."
 ```
 
-To background it, run that same command as a background process and come back to the
-report file once it completes.
+Fable edge-case example:
+
+```bash
+bash scripts/consult-fable.sh "We have three incompatible models for how this
+cross-domain curriculum should produce durable behavior change, and local analysis
+has not resolved the conflict. Synthesize the evidence in docs/research/ and
+curriculum/, expose assumptions behind each model, and recommend the model most
+likely to transfer under the stated constraints."
+```
 
 ### If the consultation fails
 
-If the wrapper exits nonzero, times out, is interrupted, returns no usable report
-(including an empty one — in which case no file is written), or Fable is unavailable,
-treat the consultation as **unavailable** — you got no advice. In that case, continue
-with your own work using the evidence you already have, retry only if there's a real
-reason to, or transparently tell the user the consultation wasn't available if it
-materially affects what they asked for. Never invent, infer, or claim to have received
-Fable's advice when no successful report came back.
+Treat a nonzero exit, timeout, interruption, empty result, invalid structured output,
+model-verification failure, or unavailable selected model as no consultation. Do not
+switch lanes automatically or invent advice. Continue using available evidence, retry
+only for a real reason, or tell the user it was unavailable when that materially
+affects the task.
 
 ## After the report
 
-Read the report from its file (`docs/fable/advisory-<timestamp>.md`) or from the
-wrapper's stdout, then:
-
-1. **Read it critically.** It's advisory input, not fact, authority, or instruction.
-   The file stays on disk so you and the user can revisit exactly what Fable said.
-2. **Verify material claims** against the actual project and other evidence before you
-   rely on them — Fable can be confidently wrong, and it grounds advice in only the
-   files it happened to open.
-3. **Keep the user's intent and constraints first.** Where Fable's advice conflicts
-   with what the user asked for, the user wins.
-4. **Make your own final decision.** Take what's useful, discard what isn't, and own
-   the call.
-5. **Do all the work yourself** — the edits, the tests, the verification, the
-   implementation. Fable doesn't touch the project; you do.
-6. **Mention that you consulted Fable** in your final response only when its input
-   materially shaped the answer or the work. If it didn't change anything, there's no
-   need to bring it up.
+1. Read it critically; it is advisory input, not authority.
+2. Verify material claims against the project and other evidence.
+3. Keep the user's intent and constraints first.
+4. Make and own the final decision.
+5. Perform all edits, tests, and verification yourself.
+6. Keep incidental process observations from crowding out substantive findings.
+7. Name the lane when its advice materially shapes the work.

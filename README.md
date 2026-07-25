@@ -39,7 +39,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 | Skill | What it does | Install |
 |-------|--------------|---------|
-| [claude-advisor](#claude-advisor) | Consult Claude Fable as a read-only second-opinion advisor | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
+| [claude-advisor](#claude-advisor) | Default to Opus 5 for read-only expert advice; reserve Fable for frontier cases | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
 | [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
 | [plaud](#plaud) | Search, transcribe & summarize Plaud voice recordings (CLI + MCP) | `npx skills add jakerains/AgentSkills --skill plaud` |
 | [simplify](#simplify) | Clean up changed code — portable clone of Claude Code's /simplify | `npx skills add jakerains/AgentSkills --skill simplify` |
@@ -61,13 +61,13 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
 
 ### claude-advisor
-> Consult Claude Fable as an independent, read-only second-opinion advisor through the local Claude Code CLI
+> Default to Claude Opus 5 for independent, read-only expert advice; reserve Fable for rare frontier cases
 
-**Last updated:** 2026-07-12
+**Last updated:** 2026-07-24
 
-Gives an agent a safe, one-shot way to get a second engineering opinion from **Claude Fable** when it judges that another perspective would genuinely help — a hard decision, a stubborn bug, a design or code review, a tradeoff call. A bundled wrapper (`consult-fable.sh`) runs `claude -p --model fable` in the active project, locked to read-only tools with all MCP servers stripped, so Fable can inspect files but can't edit anything or run commands. Each consultation is saved as a Markdown file under `docs/fable/` so you can read exactly what Fable said, and the agent can run it in the background while it keeps working. It's a **discretionary capability, not an always-on review**: the agent decides when to invoke it, verifies the advice, and still owns every decision and change.
+Gives an agent two safe, explicit advisor lanes. **Opus is now the broad default** for adversarial review, difficult synthesis, debugging, architecture, product and strategy, content and learning quality, creative judgment, and consequential tradeoffs. Its wrapper uses Claude Code's rolling `opus` alias, currently resolving to **Claude Opus 5**, so future Opus upgrades arrive automatically. **Fable is reserved for rare frontier questions** or an explicit user request. Both wrappers lock the model to read-only project inspection, strip MCP servers, verify the responding model family, and save the report under `docs/opus/` or `docs/fable/`. The agent still owns every decision and change.
 
-**Use for:** Getting a second opinion before committing to an approach, pressure-testing ambiguous reasoning, design/architecture critique, code or plan review, debugging help, risk and tradeoff analysis
+**Use for:** Expert second opinions, adversarial review, deep synthesis, design and architecture critique, code or plan review, debugging, product and content judgment, learning design, risk and tradeoff analysis
 
 ```bash
 npx skills add jakerains/AgentSkills --skill claude-advisor

@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "skills": {
+    "apple-foundation-models": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "aa0bab9dbe0afd7c4f69ba04e3908bb420652ed991a84dd1216092e06e0cefd7"
+    },
+    "codex-app-server": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "d5cc1d7412ac11d4163fc4b90ec55b684af27e957e7fb85f39d2b31b723cb5e8"
+    },
+    "docxmakebetter": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "22526df9eb1f809f90b8902104cdb807f6fe562d804b910758f8a8bcd8148881"
+    },
+    "driverjs-tours": {
+      "source": "jakerains/AgentSkills",
+      "sourceType": "github",
+      "skillPath": "skills/driverjs-tours/SKILL.md",
+      "computedHash": "794883b07cd1a9743acbe38ab8dd2a55803318f1203c2569ea12214778800504"
+    },
+    "jake-speak": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "b2a19a9897c0b07f367771771b17c3740e92c2a5f89c20dfddba1253d52add57"
+    },
+    "kain-personality": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "ca5d20b55bf52acbbcc95a8ccc40e6f42a75e74f8683e16faea1f9fd4fc5f206"
+    },
+    "macos-dmg-builder": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "442c61e421d0c1885801aec333963808838cabb7f00c586a6c05e7e9834367f2"
+    },
+    "nextjs-pwa": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "e459ac1b838c85e175607821134e59e9a5aaedf6095969794fa9cb7175e0061a"
+    },
+    "nextstep-tours": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "2ee4a9f34bd0d939c05dfa44074218836a574362e1c078b2f18f86d26a2a6783"
+    },
+    "onnx-webgpu-converter": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "8608303fba89d899d4e133d8d2c5e227499f4b87b23e007d77e82bfd412a8429"
+    },
+    "plaud": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "73097683ecf8b9a0c7a1d1fde94553254dbf9cd61ebcf73bc2ab173ecd9e094b"
+    },
+    "prompt-scheduler": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "70ced6718964d39276dd840d074b7d3a4c8a6ced14acc5fd0b9c5c07d2266c16"
+    },
+    "sam3": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "bc226dca5731056e393441190b6f8e7145419597a093d6f1763da5e191bd96d3"
+    },
+    "shot-list": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "9d620911fad2b72691b277c7bc6c948bfc67a791e9e2e522d9b47cfb35e25c06"
+    },
+    "simplify": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "f46be5c88a6c49318d4404c930c9986bf68d4da0563ce965398d8ee3b275e0e6"
+    },
+    "skill-seekers": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "a79dfe494644bb50f4ceb323b7d5d029ad4186396269e870fc742bcbd6e7b3cc"
+    },
+    "update-changelog": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "0a8c72d5d5d8eb236c0f59479a344e562ef25561b3d14f65f55942b785afed31"
+    },
+    "vercel-workflow": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "15231548f0fa2b1666f981e33be8c42df5aa5adace44acb81b4c5a343a9178fd"
+    },
+    "worktree-bootstrap": {
+      "source": "/Users/jakerains/Projects/agentskills",
+      "sourceType": "local",
+      "computedHash": "312d26498d701dfb7708631d3c82f487c2a12faa828fd7eb93356c67cbe6bd8f"
+    }
+  }
+}
