@@ -39,7 +39,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 | Skill | What it does | Install |
 |-------|--------------|---------|
-| [claude-advisor](#claude-advisor) | Default to Opus 5 for read-only expert advice; reserve Fable for frontier cases | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
+| [claude-advisor](#claude-advisor) | Codex/ChatGPT→Claude via `claude -p`; Opus default, Fable rare | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
 | [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
 | [plaud](#plaud) | Search, transcribe & summarize Plaud voice recordings (CLI + MCP) | `npx skills add jakerains/AgentSkills --skill plaud` |
 | [simplify](#simplify) | Clean up changed code — portable clone of Claude Code's /simplify | `npx skills add jakerains/AgentSkills --skill simplify` |
@@ -61,13 +61,13 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
 
 ### claude-advisor
-> Default to Claude Opus 5 for independent, read-only expert advice; reserve Fable for rare frontier cases
+> From Codex / ChatGPT desktop, get Claude Opus 5 (or rare Fable) advice via local `claude -p`
 
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-28
 
-Gives an agent two safe, explicit advisor lanes. **Opus is now the broad default** for adversarial review, difficult synthesis, debugging, architecture, product and strategy, content and learning quality, creative judgment, and consequential tradeoffs. Its wrapper uses Claude Code's rolling `opus` alias, currently resolving to **Claude Opus 5**, so future Opus upgrades arrive automatically. **Fable is reserved for rare frontier questions** or an explicit user request. Both wrappers lock the model to read-only project inspection, strip MCP servers, verify the responding model family, and save the report under `docs/opus/` or `docs/fable/`. The agent still owns every decision and change.
+Designed to run **inside Codex or the ChatGPT desktop app**, with **Claude Code installed** locally (`claude` on PATH). The host agent shells out through bundled wrappers that call Claude Code's non-interactive **`claude -p`** print mode, verify the responding model, and return a Markdown advisory report. **Opus is the broad default** for adversarial review, difficult synthesis, debugging, architecture, product and strategy, content and learning quality, creative judgment, and consequential tradeoffs (rolling `opus` alias → currently **Claude Opus 5**). **Fable is reserved for rare frontier questions** or an explicit user request. Both lanes are read-only (`Read`/`Grep`/`Glob` only), strip MCP servers, and save under `docs/opus/` or `docs/fable/`. The host agent still owns every decision and change.
 
-**Use for:** Expert second opinions, adversarial review, deep synthesis, design and architecture critique, code or plan review, debugging, product and content judgment, learning design, risk and tradeoff analysis
+**Use for:** Codex/ChatGPT→Claude second opinions, adversarial review, deep synthesis, design and architecture critique, code or plan review, debugging, product and content judgment, learning design, risk and tradeoff analysis
 
 ```bash
 npx skills add jakerains/AgentSkills --skill claude-advisor

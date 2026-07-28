@@ -1,6 +1,6 @@
 ---
 name: claude-advisor
-description: Consult Claude through two explicit, independent, read-only advisor lanes. Default to Opus 5 for nearly every substantive second opinion, including adversarial review, difficult synthesis, debugging, architecture, product or strategy, content and learning quality, creative judgment, tradeoffs, or pressure-testing a plan or artifact. The Opus wrapper intentionally uses the rolling `opus` alias so it follows Anthropic's latest Opus release. Reserve Fable for rare frontier cases where the user explicitly requests it or the problem is exceptionally unsettled, consequential, and likely to benefit materially from the premium model. Use neither for routine procedural compliance or deterministic verification. The selected model only advises; you remain responsible for every decision and action.
+description: Consult Claude from Codex or the ChatGPT desktop app via local Claude Code (`claude -p`). Two explicit, independent, read-only advisor lanes. Default to Opus 5 for nearly every substantive second opinion, including adversarial review, difficult synthesis, debugging, architecture, product or strategy, content and learning quality, creative judgment, tradeoffs, or pressure-testing a plan or artifact. The Opus wrapper uses the rolling `opus` alias so it follows Anthropic's latest Opus release. Reserve Fable for rare frontier cases where the user explicitly requests it or the problem is exceptionally unsettled, consequential, and likely to benefit materially from the premium model. Requires Claude Code installed with `claude` on PATH. Use neither lane for routine procedural compliance or deterministic verification. The selected model only advises; you remain responsible for every decision and action.
 ---
 
 # Claude Advisor
@@ -16,6 +16,43 @@ inspection of the active project:
 
 Both models are advisors only. You own the investigation, decisions, edits, tests,
 verification, and communication with the user.
+
+## Host, prerequisites, and how it works
+
+This skill is designed to run **inside Codex** — including the **ChatGPT desktop app**
+Codex / work surface — where the host agent can shell out to local tools. It is a
+cross-vendor bridge: an OpenAI-side agent asks Claude for a second opinion. It is
+**not** meant as Claude-consulting-itself inside a Claude Code session.
+
+**Prerequisite:** [Claude Code](https://docs.anthropic.com/en/docs/claude-code) must
+be installed locally, authenticated, and available as `claude` on `PATH`. Also
+requires `jq`. The skill does not install or configure Claude Code.
+
+### The `claude -p` bridge
+
+The wrappers do not open an interactive Claude TUI. They call Claude Code's
+non-interactive **print mode** (`claude -p`):
+
+```text
+Codex / ChatGPT desktop agent
+  → bash scripts/consult-opus.sh | consult-fable.sh
+    → scripts/consult-claude-model.sh
+      → claude -p "<full prompt>" --model opus|fable --output-format json ...
+        → verified Markdown report on stdout + saved under docs/opus/ or docs/fable/
+```
+
+`claude -p` means: one prompt in, one result out — no persistent chat session. The
+hardened runner then:
+
+1. Builds a fixed read-only advisor instruction plus your advisory request.
+2. Invokes `claude -p` with the selected rolling model alias (`opus` or `fable`).
+3. Restricts Claude Code tools to `Read`, `Grep`, and `Glob` only; strips MCP servers.
+4. Parses the JSON response, verifies `modelUsage` matches the requested family, and
+   extracts the Markdown report.
+5. Prints the report to stdout and saves it under `docs/opus/` or `docs/fable/`.
+
+If `claude` is missing, auth fails, the model is unavailable, or verification fails,
+treat the consultation as unavailable — do not invent advice or silently switch lanes.
 
 ## Choose the advisor lane
 
@@ -100,11 +137,13 @@ bash scripts/consult-fable.sh "<your dynamically composed advisor prompt>"
 Paths are relative to this skill's directory. Use `bash` so the wrappers work
 regardless of executable bits.
 
-Both wrappers use one shared hardened runner. It:
+Both wrappers call one shared hardened runner, which shells out via `claude -p`.
+That runner:
 
 - Selects only the closed set `opus` or `fable`; public wrappers accept no model
   argument.
-- Uses the rolling Claude Code aliases and requests structured JSON output.
+- Uses the rolling Claude Code aliases (`--model opus` or `--model fable`) and
+  requests structured JSON output from print mode.
 - Verifies `modelUsage` identifies the selected model family before accepting output.
 - Adds a lane-specific instruction: broad expert review and synthesis for Opus, rare
   frontier synthesis for Fable.
