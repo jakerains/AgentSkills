@@ -8,3 +8,4 @@
 - Documented the hard prerequisite: local **Claude Code** with `claude` on `PATH` (plus `jq`).
 - Explained the bridge mechanism: wrappers call Claude Code **print mode** (`claude -p`) for a one-shot JSON advisory result, then verify the model family and save the report.
 - Updated README skill blurb and table summary to match.
+- Refreshed `.claude-plugin/marketplace.json` description/tags (Opus default, Codex/ChatGPT host, `claude -p`).
