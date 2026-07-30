@@ -16,12 +16,6 @@
       "sourceType": "local",
       "computedHash": "22526df9eb1f809f90b8902104cdb807f6fe562d804b910758f8a8bcd8148881"
     },
-    "driverjs-tours": {
-      "source": "jakerains/AgentSkills",
-      "sourceType": "github",
-      "skillPath": "skills/driverjs-tours/SKILL.md",
-      "computedHash": "794883b07cd1a9743acbe38ab8dd2a55803318f1203c2569ea12214778800504"
-    },
     "jake-speak": {
       "source": "/Users/jakerains/Projects/agentskills",
       "sourceType": "local",

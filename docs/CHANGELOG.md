@@ -13,6 +13,8 @@
 ### Repository
 
 - Registered `driverjs-tours` in `.claude-plugin/marketplace.json` — it had a README entry but was **never** in the plugin manifest, so it did not surface to marketplace consumers. Now 19 plugins.
+- **Removed `driverjs-tours` from `skills-lock.json` — this was the root cause of the deletion, and it must not come back.** The entry had `"sourceType": "github"`, so `npx skills check` / `update` run inside this repo would *install the skill from GitHub over its own source*, replacing `skills/driverjs-tours/` with a symlink into gitignored `.agents/`. Git cannot see the symlink, so the next `git add -A` records six file deletions and nothing else. Reproduced exactly on 2026-07-30; the original loss matches (`.agents/skills/` written Jul 24 19:52, `6ddaec9` committed Jul 24 20:02, and `6ddaec9` has no `driverjs-tours` tree entry at all — a pure deletion).
+- All 18 remaining lockfile entries are `"sourceType": "local"` and are safe: they install *from* this repo outward, not into it. **Never add a `github`-sourced entry for a skill this repo owns.**
 - `simplify` is also absent from `marketplace.json`, and **stays that way by design** — do not "fix" this. The skill is a portable clone of Claude Code's native `/simplify`, built for every *other* agent; Claude Code already has it built in. Since `marketplace.json` targets Claude Code specifically, `simplify` has no audience there. Its README entry and `npx skills add` install path remain the correct route for non-Claude agents.
 
 ## 2026-07-28
