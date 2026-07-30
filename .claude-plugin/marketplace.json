@@ -38,6 +38,13 @@
       "tags": ["docx", "word", "documents", "office"]
     },
     {
+      "name": "driverjs-tours",
+      "source": "./skills/driverjs-tours",
+      "description": "Build product tours, onboarding walkthroughs, feature spotlights, and pulsing hint beacons with Driver.js (v1.8) in any framework",
+      "version": "1.0.0",
+      "tags": ["driverjs", "product-tours", "onboarding", "walkthrough", "highlights", "hints", "coach-marks", "javascript"]
+    },
+    {
       "name": "jake-speak",
       "source": "./skills/jake-speak",
       "description": "Explain technical work to Jake in plain-English boxed cards, preserving outcomes and status while leaving out code mechanics",

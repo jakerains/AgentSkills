@@ -318,9 +318,9 @@ npx skills add jakerains/AgentSkills --skill nextstep-tours
 ### driverjs-tours
 > Product tours, single-element highlights, and pulsing feature hints with Driver.js
 
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-30
 
-The framework-agnostic counterpart to nextstep-tours. Driver.js is a ~5kb, dependency-free library that dims the page, spotlights an element, and shows a popover — works in vanilla JS, React, Next.js, Vue, Svelte, or Angular. This skill is scraped straight from the current driver.js docs: full config/API/state type reference, theming (CSS classes + variables, dark mode, `onPopoverRender`), and copy-paste recipes for click-driven tours, multi-page resumable tours, confirm-on-exit, async navigation, and the separate hints/beacon module.
+The framework-agnostic counterpart to nextstep-tours. Driver.js is a ~5kb, dependency-free library that dims the page, spotlights an element, and shows a popover — works in vanilla JS, React, Next.js, Vue, Svelte, or Angular. This skill is scraped straight from the driver.js docs and **verified against v1.8.0**: full config/API/state type reference (including `advanceOnClick`, `waitForElement`, `skipMissingElement`, and the `index` hook option), theming (CSS classes + variables, dark mode, `onPopoverRender`), and copy-paste recipes for click-driven tours, multi-page resumable tours, confirm-on-exit, async navigation, and the separate hints/beacon module.
 
 **Use for:** Guided product tours, onboarding walkthroughs, coach marks, feature spotlights, "what's new" callouts, feature hints/beacons, styling/theming Driver.js popovers and overlays
 
