@@ -1,12 +1,12 @@
 ---
 name: claude-advisor
-description: Consult Claude from Codex or the ChatGPT desktop app via local Claude Code (`claude -p`). Two explicit, independent, read-only advisor lanes. Default to Opus 5 for nearly every substantive second opinion, including adversarial review, difficult synthesis, debugging, architecture, product or strategy, content and learning quality, creative judgment, tradeoffs, or pressure-testing a plan or artifact. The Opus wrapper uses the rolling `opus` alias so it follows Anthropic's latest Opus release. Reserve Fable for rare frontier cases where the user explicitly requests it or the problem is exceptionally unsettled, consequential, and likely to benefit materially from the premium model. Requires Claude Code installed with `claude` on PATH. Use neither lane for routine procedural compliance or deterministic verification. The selected model only advises; you remain responsible for every decision and action.
+description: Consult Claude from Codex or the ChatGPT desktop app via local Claude Code (`claude -p`). Supports independent one-shot reports and explicit named, bounded, resumable advisory threads; every turn is read-only and strips MCP. Default to the rolling Opus 5 lane for substantive second opinions, adversarial review, synthesis, debugging, architecture, product or strategy, content and learning quality, creative judgment, and tradeoffs. Reserve Fable for explicit requests or rare frontier questions where the premium model is likely to change a consequential answer. Requires authenticated Claude Code on PATH plus jq. Use neither lane for routine deterministic verification. Claude only advises; Codex remains responsible for decisions and actions.
 ---
 
 # Claude Advisor
 
-Consult one of two Claude models for a one-shot advisory report grounded in read-only
-inspection of the active project:
+Consult one of two Claude models for either an independent one-shot report or a named,
+bounded conversation grounded in read-only inspection of the active project:
 
 - **Opus is the default general expert.** Use it for almost all substantive advisory
   work, including work that previously might have gone to Fable.
@@ -38,15 +38,19 @@ Codex / ChatGPT desktop agent
   → bash scripts/consult-opus.sh | consult-fable.sh
     → scripts/consult-claude-model.sh
       → claude -p "<full prompt>" --model opus|fable --output-format json ...
+        ↳ optional explicit --resume <session-id> for a named thread
         → verified Markdown report on stdout + saved under docs/opus/ or docs/fable/
 ```
 
-`claude -p` means: one prompt in, one result out — no persistent chat session. The
-hardened runner then:
+Each `claude -p` process handles one prompt and returns one result. By default the
+runner disables persistence for an independent one-shot. Named-thread mode instead
+records Claude's returned session ID and explicitly resumes it later. The hardened
+runner then:
 
 1. Builds a fixed read-only advisor instruction plus your advisory request.
 2. Invokes `claude -p` with the selected rolling model alias (`opus` or `fable`).
-3. Restricts Claude Code tools to `Read`, `Grep`, and `Glob` only; strips MCP servers.
+3. Uses Claude restricted mode, exposes only `Read`, `Grep`, and `Glob`, denies
+   modifying/executing/network/delegating tools, and strips MCP servers.
 4. Parses the JSON response, verifies `modelUsage` matches the requested family, and
    extracts the Markdown report.
 5. Prints the report to stdout and saves it under `docs/opus/` or `docs/fable/`.
@@ -134,6 +138,55 @@ bash scripts/consult-opus.sh "<your dynamically composed advisor prompt>"
 bash scripts/consult-fable.sh "<your dynamically composed advisor prompt>"
 ```
 
+Those commands remain independent one-shots. Use a named thread only when likely
+follow-ups materially benefit from Claude retaining its own prior evidence and
+reasoning. Never infer or resume the latest Claude session.
+
+### Named resumable threads
+
+Start, continue, or branch a thread explicitly:
+
+```bash
+# Start a project-bound Opus thread
+bash scripts/consult-opus.sh --start-thread retry-review "<initial prompt>"
+
+# Continue that exact thread; the same restrictions are reasserted
+bash scripts/consult-opus.sh --continue-thread retry-review "<focused follow-up>"
+
+# Branch its prior context under a new binding and native Claude session
+bash scripts/consult-opus.sh --fork-thread retry-review alternative-design \
+  "Reassess the evidence under this alternative assumption."
+
+# Inspect or retire bindings for the current project directory
+bash scripts/advisor-thread.sh list
+bash scripts/advisor-thread.sh show opus retry-review
+bash scripts/advisor-thread.sh close opus retry-review
+bash scripts/advisor-thread.sh unlock opus retry-review  # only after a stale-lock error
+```
+
+Thread names use 1–64 letters, digits, dots, underscores, or hyphens. Bindings are
+scoped to the exact project directory and model lane, stored with private permissions
+under the platform state directory, and advanced only after a verified report is
+saved. Closing a binding does not delete Claude's native transcript.
+If an interrupted process leaves a stale lock, the runner fails closed. Confirm that
+no advisor or Terminal turn is active before using the explicit `unlock` command.
+
+Named threads default to six total reports. When that budget is reached, start a new
+independent thread or fork only when retaining prior evidence is genuinely useful.
+`CLAUDE_ADVISOR_MAX_THREAD_TURNS` can set a different positive limit for an explicitly
+authorized exceptional case; do not raise it merely for convenience. Long-lived
+advisor conversations cost more context and can become anchored to the consulting
+agent's framing.
+
+Every named-thread report receives a runner-generated footer with its Claude session
+ID and a ready-to-paste `claude --resume <session-id>` Terminal command. Directly
+resuming in Claude uses that interactive session's permissions; it is not constrained
+by this advisor wrapper, and those direct turns are not saved as advisor reports or
+counted in the binding. Use `--continue-thread` to preserve the read-only lane, and
+never run a Terminal resume concurrently with a wrapper turn on the same session.
+Treat the footer and captured stdout as private local metadata: remove the footer
+before committing, publishing, uploading, or otherwise sharing the report.
+
 Paths are relative to this skill's directory. Use `bash` so the wrappers work
 regardless of executable bits.
 
@@ -148,14 +201,17 @@ That runner:
 - Adds a lane-specific instruction: broad expert review and synthesis for Opus, rare
   frontier synthesis for Fable.
 - Runs in the current working directory so the advisor can inspect the active project.
-- Exposes only `Read`, `Grep`, and `Glob`, denies modifying, executing, networking, and
-  delegating tools, and strips all MCP servers.
+- Runs in restricted mode, exposes only `Read`, `Grep`, and `Glob`, denies modifying,
+  executing, networking, and delegating tools, and strips all MCP servers on every
+  fresh, resumed, or forked turn.
 - Saves Opus reports to
   `docs/opus/advisory-<timestamp>-<pid>.md` and Fable reports to
   `docs/fable/advisory-<timestamp>-<pid>.md`. Override with `OPUS_ADVISOR_DIR` or
   `FABLE_ADVISOR_DIR`.
 - Prints every successful verified report to stdout and its saved path to stderr.
 - Writes no report for a failed, empty, or model-verification-failed run.
+- Writes or advances no named-thread binding unless the response contains a valid
+  session ID, passes model verification, and its report is saved.
 - Never silently substitutes one model for the other.
 
 The report always follows this shape:
@@ -233,7 +289,8 @@ Either lane can take time:
 
 Do not make the decision, perform dependent edits, or give a final answer that relies
 on the consultation until the report has arrived and you have read it. Do not launch
-a second consultation about the same question while one is running.
+a second consultation about the same question while one is running. This includes
+opening the same named session directly in Claude Terminal during a wrapper turn.
 
 Opus example:
 
@@ -260,7 +317,9 @@ Treat a nonzero exit, timeout, interruption, empty result, invalid structured ou
 model-verification failure, or unavailable selected model as no consultation. Do not
 switch lanes automatically or invent advice. Continue using available evidence, retry
 only for a real reason, or tell the user it was unavailable when that materially
-affects the task.
+affects the task. If a named-thread resume fails, do not silently create a replacement
+session under the same name; report the failure and let the caller choose a fresh name
+or an intentional fork.
 
 ## After the report
 

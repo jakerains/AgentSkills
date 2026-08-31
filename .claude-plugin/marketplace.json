@@ -19,9 +19,9 @@
     {
       "name": "claude-advisor",
       "source": "./skills/claude-advisor",
-      "description": "From Codex or ChatGPT desktop, consult Claude via local Claude Code print mode (claude -p). Opus is the default read-only advisor; Fable is rare frontier escalation.",
-      "version": "1.1.0",
-      "tags": ["claude", "opus", "fable", "codex", "chatgpt", "advisor", "second-opinion", "code-review", "read-only", "cli"]
+      "description": "From Codex or ChatGPT desktop, consult Claude through local Claude Code print mode (claude -p) using independent reports or named resumable advisory threads.",
+      "version": "1.2.0",
+      "tags": ["claude", "opus", "fable", "codex", "chatgpt", "advisor", "second-opinion", "code-review", "read-only", "cli", "resume", "sessions"]
     },
     {
       "name": "codex-app-server",
@@ -29,6 +29,13 @@
       "description": "Build rich Codex integrations with the Codex App Server across Electron, Swift, Next.js, and other host apps",
       "version": "1.0.0",
       "tags": ["codex", "app-server", "electron", "swift", "nextjs", "auth", "streaming"]
+    },
+    {
+      "name": "design-explorer",
+      "source": "./skills/design-explorer",
+      "description": "Explore design directions as preview-only HTML mockups reviewed in a local no-model voting carousel with pins, drawings, ballots, and full page capture",
+      "version": "1.0.0",
+      "tags": ["design", "mockups", "ui", "layout", "design-review", "annotations", "carousel", "html"]
     },
     {
       "name": "docxmakebetter",
@@ -47,9 +54,9 @@
     {
       "name": "jake-speak",
       "source": "./skills/jake-speak",
-      "description": "Explain technical work to Jake in plain-English boxed cards, preserving outcomes and status while leaving out code mechanics",
-      "version": "1.0.0",
-      "tags": ["communication", "plain-english", "recap", "jake-speak", "html"]
+      "description": "Explain technical or complicated subjects and decisions to Jake in clear, high-level language",
+      "version": "1.1.0",
+      "tags": ["communication", "plain-english", "explanations", "decisions", "jake-speak"]
     },
     {
       "name": "kain-personality",

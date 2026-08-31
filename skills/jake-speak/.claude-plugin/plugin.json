@@ -1,5 +1,5 @@
 {
   "name": "jake-speak",
-  "description": "Explain technical work to Jake in plain-English boxed cards, with optional standalone HTML recaps",
-  "version": "1.0.0"
+  "description": "Explain technical or complicated subjects and decisions to Jake in clear, high-level language",
+  "version": "1.1.0"
 }

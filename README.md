@@ -39,13 +39,14 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 | Skill | What it does | Install |
 |-------|--------------|---------|
-| [claude-advisor](#claude-advisor) | Codex/ChatGPT→Claude via `claude -p`; Opus default, Fable rare | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
+| [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
+| [claude-advisor](#claude-advisor) | Codex/ChatGPT→Claude via `claude -p`; one-shot or named resumable threads | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
 | [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
 | [plaud](#plaud) | Search, transcribe & summarize Plaud voice recordings (CLI + MCP) | `npx skills add jakerains/AgentSkills --skill plaud` |
 | [simplify](#simplify) | Clean up changed code — portable clone of Claude Code's /simplify | `npx skills add jakerains/AgentSkills --skill simplify` |
 | [skill-seekers](#skill-seekers) | Turn any documentation into an installable skill | `npx skills add jakerains/AgentSkills --skill skill-seekers` |
 | [kain-personality](#kain-personality) | The Kain Jares / GenAIAlien persona for writing & image prompts | `npx skills add jakerains/AgentSkills --skill kain-personality` |
-| [jake-speak](#jake-speak) | Explain technical work in plain-English boxed cards | `npx skills add jakerains/AgentSkills --skill jake-speak` |
+| [jake-speak](#jake-speak) | Make technical or complicated subjects and decisions easy to understand | `npx skills add jakerains/AgentSkills --skill jake-speak` |
 | [docxmakebetter](#docxmakebetter) | Create/edit Word docs — tracked changes, comments, redlining | `npx skills add jakerains/AgentSkills --skill docxmakebetter` |
 | [nextjs-pwa](#nextjs-pwa) | Build Progressive Web Apps with Next.js | `npx skills add jakerains/AgentSkills --skill nextjs-pwa` |
 | [update-changelog](#update-changelog) | Changelog management, version bumping & release publishing | `npx skills add jakerains/AgentSkills --skill update-changelog` |
@@ -60,14 +61,29 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [sam3](#sam3) | Meta SAM 3 open-vocabulary image & video segmentation | `npx skills add jakerains/AgentSkills --skill sam3` |
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
 
+### design-explorer
+> Generate a batch of HTML mockups and review them in a local full-screen voting carousel with pins and drawings
+
+**Last updated:** 2026-08-09
+
+For when a screen's direction is genuinely open. The agent writes 6–10 mockups as bare `<section>` fragments, then a local zero-npm-dependency Node server serves them at `127.0.0.1:10000`. You move through the full-screen review, vote, write notes, pin comments to exact elements, draw directly on a design, or run an explicit pick/rank ballot. Submitting captures **every reviewed design**, including untouched ones, as an annotated PNG and flattened searchable HTML snapshot alongside structured `annotations.json` and readable `feedback.md`. The review workspace stays outside the project by default, is isolated by canonical project and branch identity, and never writes a repo ledger, invokes a model, or needs a paid API key. Tailwind, Lucide, and html2canvas are pinned and bundled locally; Google Fonts fall back to system fonts offline. MIT fork of [houshuang/design-explorer](https://github.com/houshuang/design-explorer), loopback-only unless trusted tailnet access is explicitly requested.
+
+**Use for:** exploring design directions, comparing layout options, mocking up screen variations, A/B-ing UI directions, pick/rank design decisions, review with pin annotations and drawings, deciding what a new screen should look like
+
+```bash
+npx skills add jakerains/AgentSkills --skill design-explorer
+```
+
+---
+
 ### claude-advisor
-> From Codex / ChatGPT desktop, get Claude Opus 5 (or rare Fable) advice via local `claude -p`
+> From Codex / ChatGPT desktop, get Claude Opus 5 (or rare Fable) advice through one-shot reports or named resumable threads
 
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-31
 
-Designed to run **inside Codex or the ChatGPT desktop app**, with **Claude Code installed** locally (`claude` on PATH). The host agent shells out through bundled wrappers that call Claude Code's non-interactive **`claude -p`** print mode, verify the responding model, and return a Markdown advisory report. **Opus is the broad default** for adversarial review, difficult synthesis, debugging, architecture, product and strategy, content and learning quality, creative judgment, and consequential tradeoffs (rolling `opus` alias → currently **Claude Opus 5**). **Fable is reserved for rare frontier questions** or an explicit user request. Both lanes are read-only (`Read`/`Grep`/`Glob` only), strip MCP servers, and save under `docs/opus/` or `docs/fable/`. The host agent still owns every decision and change.
+Designed to run **inside Codex or the ChatGPT desktop app**, with **Claude Code installed** locally (`claude` on PATH). The bundled wrappers call Claude Code's non-interactive **`claude -p`** print mode, verify the responding model, and return a Markdown advisory report. Independent one-shot reports remain the default. Explicit named threads persist Claude's session ID, support bounded continuation and forking, and include the exact `claude --resume <session-id>` command when a report finishes so the conversation can also be continued in Terminal. **Opus is the broad default** for adversarial review, difficult synthesis, debugging, architecture, product and strategy, content and learning quality, creative judgment, and consequential tradeoffs (rolling `opus` alias → currently **Claude Opus 5**). **Fable is reserved for rare frontier questions** or an explicit user request. Every turn remains read-only (`Read`/`Grep`/`Glob` only), strips MCP servers, and saves under `docs/opus/` or `docs/fable/`. The host agent still owns every decision and change.
 
-**Use for:** Codex/ChatGPT→Claude second opinions, adversarial review, deep synthesis, design and architecture critique, code or plan review, debugging, product and content judgment, learning design, risk and tradeoff analysis
+**Use for:** Codex/ChatGPT→Claude second opinions, continued advisory conversations, adversarial review, deep synthesis, design and architecture critique, code or plan review, debugging, product and content judgment, learning design, risk and tradeoff analysis
 
 ```bash
 npx skills add jakerains/AgentSkills --skill claude-advisor
@@ -151,13 +167,13 @@ npx skills add jakerains/AgentSkills --skill kain-personality
 ---
 
 ### jake-speak
-> Explain technical work to Jake in plain-English boxed cards, with optional standalone HTML recaps
+> Make technical or complicated subjects and decisions easy for Jake to understand
 
-**Last updated:** 2026-06-29
+**Last updated:** 2026-08-09
 
-This is the personal "tell me what this means, not how the plumbing works" mode. It keeps the real product names, status, risks, and important numbers while stripping out code mechanics.
+This is the personal "help me understand the whole situation" mode. It restores missing context, explains technical or overloaded information at a useful altitude, and keeps the real facts, status, risks, and important numbers. When Jake needs to make a decision, it explains each real choice, what it means, its tradeoffs, whether it can be reversed, and what happens next.
 
-**Use for:** Jake Speak recaps, plain-English explanations, non-technical summaries of work just done, product or system explainers, optional Desktop HTML recap pages
+**Use for:** Jake Speak explanations, technical subjects, large or complicated information, product or system behavior, work recaps, choices and tradeoffs, decision support, optional visual HTML explainers
 
 ```bash
 npx skills add jakerains/AgentSkills --skill jake-speak

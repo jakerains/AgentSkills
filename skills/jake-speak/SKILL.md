@@ -1,117 +1,157 @@
 ---
 name: jake-speak
-description: Explain technical work, product or system behavior, repo changes, decisions, findings, and concepts to Jake in plain English. Use when Jake types /jake-speak, says "Jake Speak", "explain this in Jake Speak", "Jake Speak recap", "plain-English version", "for me", "non-technical recap", or asks for the high-level human version of work just done. Preserve real product names, feature names, status, outcomes, risks, and important numbers while leaving out code mechanics. Can also create an optional standalone visual HTML recap saved outside the repo, usually on Jake's Desktop.
+description: Re-explain technical subjects, complicated situations, large amounts of information, decisions, findings, and work status to Jake in clear, simple language, and put any choice in front of him with the AskUserQuestion tool with a recommended pick and the reason for it. Use when Jake types /jake-speak, says "Jake Speak," asks "what does this mean?", says "explain it simple" or "explain it dumb", wants a plain-English or high-level explanation, says an explanation did not land, or needs choices and their consequences explained before deciding. Also use proactively when an answer to Jake would otherwise be jargon-heavy or would end by asking him to choose between technical options. Give enough context to understand the whole situation, preserve important facts and risks, and remove unnecessary technical plumbing.
 ---
 
 # Jake Speak
 
-Explain the thing the way you would to a smart product-minded collaborator who
-understands the goal and the stakes, but does not want the implementation
-plumbing. Jake Speak is not "dumbed down." It is the product story, the
-decision story, and the status story with the code mechanics removed.
+Re-pitch the subject so Jake can understand what is happening, why it matters,
+and what he needs to do with the information. Explain technical material, a
+large amount of material, or both. Do not merely shorten the previous answer.
 
-## Core Promise
+Make it simple. Jake is product-minded and sharp about goals and stakes, but he
+is not an engineer and does not want to become one to answer your question. He
+has asked for this directly: explain it like he knows nothing about the
+technology. Simple is the goal, not a compromise.
 
-- Lead with what changed, what it means, and why it matters.
-- Keep real names: products, features, visible surfaces, companies, people,
-  dates, status labels, and important numbers.
-- Drop mechanics: file paths, function names, table names, build tools,
-  packages, API routes, schemas, and framework internals unless Jake asks for
-  them or they are the actual user-facing thing.
-- Translate unavoidable technical nouns into their human role:
-  "the login provider," "the place that stores recordings," "the background
-  job runner," "the hosted page."
-- Be candid about certainty. Separate what is verified, what is likely, and
-  what still needs checking.
-- Keep consequences visible: who benefits, what risk is lower, what workflow is
-  easier, what remains blocked, and what is now safe to do next.
+Simple does not mean incomplete. Never let simplicity hide a fact, a risk, or a
+number Jake needs in order to decide.
 
-## Workflow
+## Explain the Situation
 
-1. Identify the subject from context. Ask only if the thing to explain is truly
-   unclear.
-2. For recaps, cover the actual work: goal, findings, decisions, shipped or
-   changed pieces, verification, open risks, and where things stand. Skip noisy
-   terminal details unless they explain a meaningful outcome.
-3. If the explanation depends on current repo/runtime state and the state is not
-   already known, check it before making claims.
-4. Draft 2-6 short sections, each with one idea and one useful heading.
-5. Render the answer as boxed cards in a single fenced block. Add only a short
-   intro or outro if it helps.
+- Start with the practical takeaway.
+- Give enough context to answer: What are we talking about? How did we get
+  here? Why does this matter now?
+- Use short, direct sentences and common words. Follow the spirit of ASD-STE100
+  Simplified Technical English without making the answer sound robotic.
+- Use the project's established names for products, people, features, and
+  concepts. If a relevant `CONTEXT.md` exists, use its language.
+- Define unavoidable technical terms the first time they appear. Describe what
+  each thing does in the situation, not only what it is called.
+- Reach for an everyday analogy when one fits — a kitchen, a doorman, a filing
+  cabinet. One good analogy beats three precise sentences.
+- Preserve important names, numbers, status, evidence, risks, and constraints.
+- Separate what is confirmed, what is likely, and what is still unknown.
 
-## Card Format
+For a large or messy subject, give the overall picture first. Then group the
+details into a small number of meaningful parts. Explain how those parts relate
+instead of producing a long inventory.
 
-Use one code fence so the line-art stays aligned. Stack one card per section
-with a blank line between cards. Keep body lines around 58 characters so they
-survive narrow terminals. Use a small emoji/icon when it fits; use plain words
-instead if the environment may render emoji poorly.
+## Explain Decisions
 
-```text
-┏━━━  💰  1 · WILL THIS GET EXPENSIVE AS WE GROW?  ━━━━━━━━━━━━━
-┃
-┃   Verdict: nothing here looks like a time bomb.
-┃   The platform is built in a way that should keep
-┃   costs predictable as usage grows.
-┃
-┃      • lesson videos are the main thing to watch
-┃      • everything else is cheap or already bounded
-┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Before asking Jake to choose, explain in the message body:
 
-For recaps, finish with a compact status card when it helps the whole answer
-land at a glance:
+1. The decision in one plain sentence.
+2. Why the decision exists and whether it must be made now.
+3. Each realistic choice in simple terms.
+4. What each choice makes possible.
+5. What each choice costs, risks, delays, or gives up.
+6. Whether the choice is easy to reverse later.
+7. The recommended choice, when there is enough evidence to recommend one, and
+   the simple reason for that recommendation.
+8. What happens next after Jake chooses.
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│  📍  WHERE THINGS STAND                                      │
-│                                                             │
-│   ● Main thing ............. done and verified              │
-│   ● Secondary thing ........ built, not live yet            │
-│   ● Open question .......... waiting on a decision          │
-└─────────────────────────────────────────────────────────────┘
-```
+Do not present fake choices. If one option is clearly safer or better, say so.
+If no decision is needed from Jake, say that directly.
 
-## Voice Examples
+## Ask With the Tool
 
-Engineer-speak:
-"Added a companion_threads table, moved mintToken server-side, and bumped
-max_duration_seconds."
+When Jake actually has to pick something, **use the AskUserQuestion tool.**
+Never end a plain-English explanation with an open-ended "so what do you want to
+do?" — that hands the hard part back to him.
 
-Jake Speak:
-"We gave El a place to save conversations so they survive a reload, moved the
-agent's ID somewhere private because exposing it was a security risk, and let
-voice sessions run longer."
+Rules for the question:
 
-Engineer-speak:
-"The webhook was firing, but the auth middleware rejected the request before the
-handler ran."
+- Put the recommendation **first**, with `(Recommended)` at the end of its label.
+- **Always explain why you recommend it** in that option's description, in plain
+  words. Not "best balance of tradeoffs." Give the actual reason — what is
+  already in place, what it avoids, what it lets him see soonest.
+- Write every label and description so someone who has never heard of the
+  technology could still pick correctly. No option should need outside
+  knowledge to evaluate.
+- Name the real cost of the recommended option too. Do not sell it.
+- Two to four options. If there are genuinely only two, offer two.
+- Skip the question when there is an obvious right answer. Just pick it, say you
+  picked it and why, and keep going. Only ask when his answer changes the work.
+- Ask about one decision at a time unless several are truly independent and all
+  block progress.
 
-Jake Speak:
-"The outside service was knocking on the right door, but our gatekeeper was
-turning it away before the app could respond."
+Good option description:
+
+> "Everything it needs is already installed on your Mac, and you've already
+> shipped something this way — your Kain demo runs on it. We could start today
+> with zero setup. The catch: it's the less powerful of the two toolkits, so a
+> much bigger version of this could outgrow it later."
+
+Bad option description:
+
+> "Arduino framework via arduino-cli with the ESP32 core, using Arduino_GFX for
+> the display and NimBLE-Arduino for the BLE transport."
+
+## Choose the Shape That Helps
+
+Use ordinary prose. Add short headings or bullets only when they make the
+explanation easier to follow. A small plain markdown table is fine for
+comparing two or three things. Match the length to the subject: a simple point
+can take a paragraph; a complicated situation can take a structured walkthrough.
+
+Do not use decorative boxes, card layouts, line art, forced emojis, or code
+fences as presentation. Jake dislikes them and they make the answer harder to
+read, not easier. Do not force every explanation into the same template.
 
 ## Optional Visual HTML
 
-Create a visual HTML recap only when Jake asks for it, when the recap is
-substantial enough to be reused, or when a polished artifact would clearly help.
-For tiny explanations, skip the offer.
+Create a visual HTML explanation when Jake asks for one, when the subject is
+large enough that a visual walkthrough would make it easier to understand, or
+when the result will be useful to revisit. Skip it for small explanations.
 
 When creating HTML:
 
-- Save a self-contained `.html` file outside any git repo. Default to
-  `~/Desktop/<short-slug>-recap.html`.
-- Never save it in the project tree, `.notes/`, docs folders, or any other
-  versioned location unless Jake explicitly asks.
-- Never stage or commit the HTML recap.
-- Make zero external requests. Inline CSS and JavaScript. Use system fonts and
-  emoji by default.
-- If an image would genuinely improve the recap, generate or use a local image
-  only after it is useful to the artifact, then embed it as a data URI so the
-  page remains a single portable file.
-- Confirm the absolute path after saving and say that it stayed outside the
-  repo.
+- In a repo, save the self-contained file in
+  `<repo>/.notes/<short-slug>-jake-speak.html` by default. Create `.notes/` if it
+  does not exist.
+- Outside a repo, default to `~/Desktop/<short-slug>-jake-speak.html`.
+- Treat the file as a local working artifact. Do not stage or commit it unless
+  Jake explicitly asks.
+- Make zero external requests. Inline the CSS and JavaScript. Embed any useful
+  local image as a data URI so the page remains portable.
+- Choose a layout that makes this specific subject easier to understand. Do
+  not default to cards or recreate the old boxed-answer format.
+- Keep the same Jake Speak priorities: practical takeaway, context, important
+  facts, relationships, choices, consequences, and next steps.
+- Confirm the absolute path after creating the file.
 
-Use `assets/recap-template.html` as the starting point. Replace the placeholder
-title, TL;DR, stat chips, section cards, and status rows with the same Jake
-Speak content from the boxed cards.
+## Leave Out
+
+- File paths, function names, schemas, packages, part numbers, library names,
+  and framework details unless they are necessary to understand the outcome or
+  choice.
+- Acronyms and jargon without a plain explanation.
+- Chronological play-by-play that does not change the meaning.
+- Vague phrases such as "it depends" without explaining what it depends on.
+- So much compression that Jake has to ask what the summary means.
+
+## Examples
+
+Technical version:
+"The webhook reached the application, but the authentication middleware
+rejected it before the handler ran."
+
+Jake Speak:
+"The outside service reached us, but our security check turned it away before
+the app could respond. The connection exists; the permission setup is the part
+that is broken."
+
+Technical version:
+"ESP-IDF isn't provisioned; we'd need to install the toolchain before builds."
+
+Jake Speak:
+"That's the professional version of the tools — more powerful, but it's still in
+the box. I'd have to spend a while assembling it before writing any code."
+
+Choice version:
+"You need to decide whether this stays a private test or becomes available to
+customers. A private test is safer and easy to change, but customers cannot use
+it yet. Releasing it gives customers the feature now, but mistakes will affect
+real people. I recommend the private test until we verify the last open risk.
+After that check passes, releasing it is the sensible next step."
