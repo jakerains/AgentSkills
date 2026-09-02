@@ -19,9 +19,16 @@
     {
       "name": "claude-advisor",
       "source": "./skills/claude-advisor",
-      "description": "From Codex or ChatGPT desktop, consult Claude through local Claude Code print mode (claude -p) using independent reports or named resumable advisory threads.",
-      "version": "1.2.0",
+      "description": "From Codex or ChatGPT desktop, consult Claude through persistent conversation-bound, resumable, read-only Claude Code threads, using Opus by default or pinned Fable 5.1 when requested.",
+      "version": "1.3.0",
       "tags": ["claude", "opus", "fable", "codex", "chatgpt", "advisor", "second-opinion", "code-review", "read-only", "cli", "resume", "sessions"]
+    },
+    {
+      "name": "codex-handoff",
+      "source": "./skills/codex-handoff",
+      "description": "From Claude Code, send an explicitly authorized, provenance-labelled result or work handoff into a specific existing Codex Desktop task through codex queue.",
+      "version": "1.0.0",
+      "tags": ["claude", "codex", "handoff", "queue", "desktop", "cli", "cross-agent", "provenance"]
     },
     {
       "name": "codex-app-server",

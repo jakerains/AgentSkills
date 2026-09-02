@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Explicit Fable frontier-advisory lane. This wrapper never selects another model.
+# Explicit Fable 5.1 frontier-advisory lane. This wrapper never selects another model.
 
 set -euo pipefail
 

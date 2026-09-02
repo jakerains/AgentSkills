@@ -34,13 +34,17 @@ shift
 case "$MODEL" in
   opus)
     DISPLAY_NAME="Opus"
+    CLAUDE_MODEL="opus"
+    VERIFIED_MODEL_PREFIX="claude-opus-"
     LANE_NAME="general expert review and synthesis"
     LANE_INSTRUCTION="Act as a rigorous general expert advisor. Determine the strongest answer, whether that requires adversarially reviewing an existing candidate or synthesizing a recommendation from unsettled evidence. Pressure-test assumptions, seek counterexamples and failure modes, identify contradictions and hidden coupling, weigh human and technical outcomes, distinguish blockers from preferences, and recommend the highest-value corrections or direction."
     OUTDIR="${OPUS_ADVISOR_DIR:-docs/opus}"
     REPORT_PREFIX="advisory"
     ;;
   fable)
-    DISPLAY_NAME="Fable"
+    DISPLAY_NAME="Fable 5.1"
+    CLAUDE_MODEL="claude-fable-5-1"
+    VERIFIED_MODEL_PREFIX="claude-fable-5-1"
     LANE_NAME="frontier synthesis"
     LANE_INSTRUCTION="Use unusually deep, integrative synthesis for this exceptional and genuinely unsettled question. Reconcile competing system models, subtle human or technical outcomes, ambiguous high-stakes judgment, and consequential tradeoffs. Look across the relevant system, expose the assumptions behind plausible alternatives, and focus the extra depth on what could materially change the decision."
     OUTDIR="${FABLE_ADVISOR_DIR:-docs/fable}"
@@ -52,11 +56,20 @@ case "$MODEL" in
     ;;
 esac
 
-MODE="oneshot"
+MODE="conversation"
 THREAD_NAME=""
 SOURCE_THREAD_NAME=""
 
 case "${1:-}" in
+  --thread)
+    [ "$#" -ge 3 ] || {
+      printf 'usage: consult-%s.sh --thread <name> "<advisor prompt>"\n' "$MODEL" >&2
+      exit 2
+    }
+    MODE="conversation"
+    THREAD_NAME="$2"
+    shift 2
+    ;;
   --start-thread)
     [ "$#" -ge 3 ] || {
       printf 'usage: consult-%s.sh --start-thread <name> "<advisor prompt>"\n' "$MODEL" >&2
@@ -86,6 +99,22 @@ case "${1:-}" in
     shift 3
     ;;
 esac
+
+if [ "$MODE" = "conversation" ] && [ -z "$THREAD_NAME" ]; then
+  if [ -n "${CLAUDE_ADVISOR_THREAD:-}" ]; then
+    THREAD_NAME="$CLAUDE_ADVISOR_THREAD"
+  elif [ -n "${CODEX_THREAD_ID:-}" ]; then
+    THREAD_NAME="codex-${CODEX_THREAD_ID}"
+  else
+    cat >&2 <<ERR
+claude-advisor: no Codex conversation ID is available for the persistent binding.
+
+Run from Codex/ChatGPT desktop, set CLAUDE_ADVISOR_THREAD, or pass an explicit
+binding with: consult-${MODEL}.sh --thread <name> "<advisor prompt>"
+ERR
+    exit 2
+  fi
+fi
 
 PROMPT="$*"
 if [ "$#" -eq 0 ] || [ -z "${PROMPT//[[:space:]]/}" ]; then
@@ -124,6 +153,31 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 case "$MODE" in
+  conversation)
+    advisor_validate_thread_name "$THREAD_NAME"
+    STATE_FILE="$(advisor_thread_file "$MODEL" "$THREAD_NAME")"
+    advisor_acquire_lock "$STATE_FILE"
+    advisor_recover_thread_state "$STATE_FILE"
+    if [ -e "$STATE_FILE" ]; then
+      advisor_require_state_file "$STATE_FILE"
+      if [ "$(jq -r '.status' "$STATE_FILE")" != "active" ]; then
+        printf 'claude-advisor: conversation thread %s/%s is closed; pass --thread with a new name or fork it intentionally.\n' "$MODEL" "$THREAD_NAME" >&2
+        exit 1
+      fi
+      prior_turn_count="$(jq -r '.turn_count' "$STATE_FILE")"
+      if [ "$prior_turn_count" -ge "$MAX_THREAD_TURNS" ]; then
+        printf 'claude-advisor: conversation thread %s/%s reached its %s-turn budget; fork or start a new bounded thread.\n' "$MODEL" "$THREAD_NAME" "$MAX_THREAD_TURNS" >&2
+        exit 1
+      fi
+      SESSION_ID="$(jq -r '.session_id' "$STATE_FILE")"
+      PARENT_REPORT="$(jq -r '.last_report // ""' "$STATE_FILE")"
+      TURN_NUMBER=$((prior_turn_count + 1))
+      MODE="continue"
+    else
+      TURN_NUMBER=1
+      MODE="start"
+    fi
+    ;;
   start)
     advisor_validate_thread_name "$THREAD_NAME"
     STATE_FILE="$(advisor_thread_file "$MODEL" "$THREAD_NAME")"
@@ -213,20 +267,17 @@ FULL_PROMPT="${FIXED_INSTRUCTION}
 
 ${PROMPT}"
 
-if [ "$MODE" = "oneshot" ]; then
-  REPORT="${OUTDIR}/${REPORT_PREFIX}-$(date +%Y%m%d-%H%M%S)-$$.md"
-else
-  REPORT="${OUTDIR}/${REPORT_PREFIX}-${THREAD_NAME}-turn-$(printf '%02d' "$TURN_NUMBER")-$(date +%Y%m%d-%H%M%S)-$$.md"
-fi
+REPORT="${OUTDIR}/${REPORT_PREFIX}-${THREAD_NAME}-turn-$(printf '%02d' "$TURN_NUMBER")-$(date +%Y%m%d-%H%M%S)-$$.md"
 REPORT_TMP="$(mktemp)"
 JSON_TMP="$(mktemp)"
 STATE_TMP="$(mktemp)"
 
-# MODEL is restricted by the closed case statement. Both names are rolling Claude
-# Code aliases; there is intentionally no fallback model.
+# MODEL is the stable internal lane key. Opus follows Claude Code's rolling alias;
+# Fable is pinned to 5.1 so an older Fable response cannot be accepted. Neither lane
+# has an automatic fallback model.
 CLAUDE_ARGS=(
   -p "$FULL_PROMPT"
-  --model "$MODEL"
+  --model "$CLAUDE_MODEL"
   --output-format json
   --restricted
   --strict-mcp-config
@@ -237,9 +288,6 @@ CLAUDE_ARGS=(
 )
 
 case "$MODE" in
-  oneshot)
-    CLAUDE_ARGS+=(--no-session-persistence)
-    ;;
   start)
     CLAUDE_ARGS+=(--name "claude-advisor:${MODEL}:${THREAD_NAME}")
     ;;
@@ -258,13 +306,13 @@ then
     exit 1
   fi
 
-  if ! jq -e --arg prefix "claude-${MODEL}-" '.modelUsage | keys | any(startswith($prefix))' "$JSON_TMP" >/dev/null; then
-    printf 'claude-advisor: model verification failed; requested %s but the structured response did not identify a matching model. No report was accepted.\n' "$MODEL" >&2
+  if ! jq -e --arg prefix "$VERIFIED_MODEL_PREFIX" '.modelUsage | keys | any(startswith($prefix))' "$JSON_TMP" >/dev/null; then
+    printf 'claude-advisor: model verification failed; requested %s but the structured response did not identify that model. No report was accepted.\n' "$CLAUDE_MODEL" >&2
     exit 1
   fi
-  RESOLVED_MODEL="$(jq -r --arg prefix "claude-${MODEL}-" '.modelUsage | keys | map(select(startswith($prefix))) | first' "$JSON_TMP")"
+  RESOLVED_MODEL="$(jq -r --arg prefix "$VERIFIED_MODEL_PREFIX" '.modelUsage | keys | map(select(startswith($prefix))) | first' "$JSON_TMP")"
 
-  if [ "$MODE" != "oneshot" ] && ! jq -e '.session_id | type == "string" and length > 0' "$JSON_TMP" >/dev/null; then
+  if ! jq -e '.session_id | type == "string" and length > 0' "$JSON_TMP" >/dev/null; then
     printf 'claude-advisor: %s did not return a resumable session ID; no named-thread state or report was accepted.\n' "$DISPLAY_NAME" >&2
     exit 1
   fi
@@ -275,89 +323,82 @@ then
     exit 1
   fi
 
-  if [ "$MODE" != "oneshot" ]; then
-    NEW_SESSION_ID="$(jq -r '.session_id' "$JSON_TMP")"
-    project_path="$(advisor_project_path)"
-    {
-      printf '\n\n---\n\n## Claude Advisor Thread\n\n'
-      printf -- '- Advisor binding: `%s/%s`\n' "$MODEL" "$THREAD_NAME"
-      printf -- '- Turn: `%s` of `%s` maximum\n' "$TURN_NUMBER" "$MAX_THREAD_TURNS"
-      printf -- '- Claude session ID: `%s`\n\n' "$NEW_SESSION_ID"
-      printf '**Private local metadata:** remove this footer before committing, publishing, or sharing the report.\n\n'
-      printf 'Resume the same native Claude conversation in Terminal:\n\n```bash\n'
-      printf 'cd %q && claude --resume %q\n' "$project_path" "$NEW_SESSION_ID"
-      printf '```\n\n'
-      printf 'That direct Terminal session uses its own interactive permissions, and its turns are not saved as advisor reports or counted in this binding. To preserve the advisor lane'
-      printf ' and reapply its read-only restrictions, continue through the wrapper:\n\n```bash\n'
-      printf 'cd %q && bash %q --continue-thread %q '\
-        "$project_path" "$SCRIPT_DIR/consult-${MODEL}.sh" "$THREAD_NAME"
-      printf '%s\n' "'<focused follow-up>'"
-      printf '```\n\nDo not resume this session from Terminal while an advisor wrapper turn is running.\n'
-    } >> "$REPORT_TMP"
-  fi
+  NEW_SESSION_ID="$(jq -r '.session_id' "$JSON_TMP")"
+  project_path="$(advisor_project_path)"
+  {
+    printf '\n\n---\n\n## Claude Advisor Thread\n\n'
+    printf -- '- Advisor binding: `%s/%s`\n' "$MODEL" "$THREAD_NAME"
+    printf -- '- Turn: `%s` of `%s` maximum\n' "$TURN_NUMBER" "$MAX_THREAD_TURNS"
+    printf -- '- Resolved model: `%s`\n' "$RESOLVED_MODEL"
+    printf -- '- Claude session ID: `%s`\n\n' "$NEW_SESSION_ID"
+    printf '**Private local metadata:** remove this footer before committing, publishing, or sharing the report.\n\n'
+    printf 'Open the same native Claude conversation in Terminal:\n\n```bash\n'
+    printf 'cd %q && claude --resume %q\n' "$project_path" "$NEW_SESSION_ID"
+    printf '```\n\n'
+    printf 'That direct Terminal session uses its own interactive permissions, and its turns are not saved as advisor reports or counted in this binding. To preserve the advisor lane'
+    printf ' and reapply its read-only restrictions, continue through the wrapper:\n\n```bash\n'
+    printf 'cd %q && bash %q --thread %q '\
+      "$project_path" "$SCRIPT_DIR/consult-${MODEL}.sh" "$THREAD_NAME"
+    printf '%s\n' "'<focused follow-up>'"
+    printf '```\n\nDo not resume this session from Terminal while an advisor wrapper turn is running.\n'
+  } >> "$REPORT_TMP"
 
   RECOVERY_FILE=""
-  if [ "$MODE" != "oneshot" ]; then
-    now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-    if [ "$MODE" = "continue" ]; then
-      jq \
-        --arg now "$now" \
-        --arg session_id "$NEW_SESSION_ID" \
-        --arg report "$REPORT" \
-        --arg parent "$PARENT_REPORT" \
-        --argjson turn "$TURN_NUMBER" \
-        '.session_id = $session_id
-         | .turn_count = $turn
-         | .last_report = $report
-         | .updated_at = $now
-         | .turns += [{turn: $turn, at: $now, report: $report, parent_report: (if $parent == "" then null else $parent end)}]' \
-        "$STATE_FILE" > "$STATE_TMP"
-    else
-      jq -n \
-        --arg model "$MODEL" \
-        --arg name "$THREAD_NAME" \
-        --arg project_path "$project_path" \
-        --arg session_id "$NEW_SESSION_ID" \
-        --arg report "$REPORT" \
-        --arg parent "$PARENT_REPORT" \
-        --arg source_thread "$SOURCE_THREAD_NAME" \
-        --arg now "$now" \
-        '{schema_version: 1, model: $model, name: $name, project_path: $project_path,
-          session_id: $session_id, status: "active", turn_count: 1,
-          created_at: $now, updated_at: $now, last_report: $report,
-          forked_from: (if $source_thread == "" then null else $source_thread end),
-          turns: [{turn: 1, at: $now, report: $report,
-                   parent_report: (if $parent == "" then null else $parent end)}]}' > "$STATE_TMP"
-    fi
-    RECOVERY_FILE="${STATE_FILE}.recovery.json"
-    advisor_atomic_write_json "$RECOVERY_FILE" "$STATE_TMP"
+  now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  if [ "$MODE" = "continue" ]; then
+    jq \
+      --arg now "$now" \
+      --arg session_id "$NEW_SESSION_ID" \
+      --arg resolved_model "$RESOLVED_MODEL" \
+      --arg report "$REPORT" \
+      --arg parent "$PARENT_REPORT" \
+      --argjson turn "$TURN_NUMBER" \
+      '.session_id = $session_id
+       | .resolved_model = $resolved_model
+       | .turn_count = $turn
+       | .last_report = $report
+       | .updated_at = $now
+       | .turns += [{turn: $turn, at: $now, report: $report, parent_report: (if $parent == "" then null else $parent end)}]' \
+      "$STATE_FILE" > "$STATE_TMP"
+  else
+    jq -n \
+      --arg model "$MODEL" \
+      --arg resolved_model "$RESOLVED_MODEL" \
+      --arg name "$THREAD_NAME" \
+      --arg project_path "$project_path" \
+      --arg session_id "$NEW_SESSION_ID" \
+      --arg report "$REPORT" \
+      --arg parent "$PARENT_REPORT" \
+      --arg source_thread "$SOURCE_THREAD_NAME" \
+      --arg now "$now" \
+      '{schema_version: 1, model: $model, resolved_model: $resolved_model,
+        name: $name, project_path: $project_path,
+        session_id: $session_id, status: "active", turn_count: 1,
+        created_at: $now, updated_at: $now, last_report: $report,
+        forked_from: (if $source_thread == "" then null else $source_thread end),
+        turns: [{turn: 1, at: $now, report: $report,
+                 parent_report: (if $parent == "" then null else $parent end)}]}' > "$STATE_TMP"
   fi
+  RECOVERY_FILE="${STATE_FILE}.recovery.json"
+  advisor_atomic_write_json "$RECOVERY_FILE" "$STATE_TMP"
 
   if mkdir -p "$OUTDIR" && mv "$REPORT_TMP" "$REPORT"; then
     REPORT_TMP=""
-    if [ "$MODE" != "oneshot" ]; then
-      if ! advisor_atomic_write_json "$STATE_FILE" "$STATE_TMP"; then
-        cat "$REPORT"
-        printf 'claude-advisor: warning — the verified report was saved, but binding state could not be advanced. Recovery will be attempted from %s on the next thread operation.\n' "$RECOVERY_FILE" >&2
-        exit 1
-      fi
-      rm -f "$RECOVERY_FILE"
+    if ! advisor_atomic_write_json "$STATE_FILE" "$STATE_TMP"; then
+      cat "$REPORT"
+      printf 'claude-advisor: warning — the verified report was saved, but binding state could not be advanced. Recovery will be attempted from %s on the next thread operation.\n' "$RECOVERY_FILE" >&2
+      exit 1
     fi
+    rm -f "$RECOVERY_FILE"
     cat "$REPORT"
-    if [ "$MODE" = "oneshot" ]; then
-      printf 'claude-advisor: verified %s (%s) %s report saved to %s\n' "$DISPLAY_NAME" "$RESOLVED_MODEL" "$LANE_NAME" "$REPORT" >&2
-    else
-      printf 'claude-advisor: verified %s (%s) thread %s turn %s/%s saved to %s\n' "$DISPLAY_NAME" "$RESOLVED_MODEL" "$THREAD_NAME" "$TURN_NUMBER" "$MAX_THREAD_TURNS" "$REPORT" >&2
-    fi
+    printf 'claude-advisor: verified %s (%s) thread %s turn %s/%s saved to %s\n' "$DISPLAY_NAME" "$RESOLVED_MODEL" "$THREAD_NAME" "$TURN_NUMBER" "$MAX_THREAD_TURNS" "$REPORT" >&2
   else
     if [ -n "$RECOVERY_FILE" ]; then rm -f "$RECOVERY_FILE"; fi
     SURVIVING_REPORT="$REPORT_TMP"
     REPORT_TMP=""
     cat "$SURVIVING_REPORT"
     printf 'claude-advisor: warning — the verified %s report was delivered above but could not be saved to %s. The temporary report remains at %s; named-thread state was not advanced.\n' "$DISPLAY_NAME" "$REPORT" "$SURVIVING_REPORT" >&2
-    if [ "$MODE" != "oneshot" ]; then
-      exit 1
-    fi
+    exit 1
   fi
 else
   status=$?

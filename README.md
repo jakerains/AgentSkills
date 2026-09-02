@@ -40,7 +40,8 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | Skill | What it does | Install |
 |-------|--------------|---------|
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
-| [claude-advisor](#claude-advisor) | Codex/ChatGPT→Claude via `claude -p`; one-shot or named resumable threads | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
+| [claude-advisor](#claude-advisor) | Codex/ChatGPT→Claude via `claude -p`; persistent conversation-bound advisory threads | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
+| [codex-handoff](#codex-handoff) | Claude Code→an existing Codex Desktop task via `codex queue` | `npx skills add jakerains/AgentSkills --skill codex-handoff` |
 | [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
 | [plaud](#plaud) | Search, transcribe & summarize Plaud voice recordings (CLI + MCP) | `npx skills add jakerains/AgentSkills --skill plaud` |
 | [simplify](#simplify) | Clean up changed code — portable clone of Claude Code's /simplify | `npx skills add jakerains/AgentSkills --skill simplify` |
@@ -77,16 +78,31 @@ npx skills add jakerains/AgentSkills --skill design-explorer
 ---
 
 ### claude-advisor
-> From Codex / ChatGPT desktop, get Claude Opus 5 (or rare Fable) advice through one-shot reports or named resumable threads
+> From Codex / ChatGPT desktop, get Claude Opus 5 (or rare pinned Fable 5.1) advice through persistent resumable threads
 
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-01
 
-Designed to run **inside Codex or the ChatGPT desktop app**, with **Claude Code installed** locally (`claude` on PATH). The bundled wrappers call Claude Code's non-interactive **`claude -p`** print mode, verify the responding model, and return a Markdown advisory report. Independent one-shot reports remain the default. Explicit named threads persist Claude's session ID, support bounded continuation and forking, and include the exact `claude --resume <session-id>` command when a report finishes so the conversation can also be continued in Terminal. **Opus is the broad default** for adversarial review, difficult synthesis, debugging, architecture, product and strategy, content and learning quality, creative judgment, and consequential tradeoffs (rolling `opus` alias → currently **Claude Opus 5**). **Fable is reserved for rare frontier questions** or an explicit user request. Every turn remains read-only (`Read`/`Grep`/`Glob` only), strips MCP servers, and saves under `docs/opus/` or `docs/fable/`. The host agent still owns every decision and change.
+Designed to run **inside Codex or the ChatGPT desktop app**, with **Claude Code installed** locally (`claude` on PATH). The bundled wrappers call Claude Code's non-interactive **`claude -p`** print mode, verify the responding model, and return a Markdown advisory report. Every ordinary call creates or resumes a persistent binding keyed by the current Codex conversation, exact project directory, and model lane, so later advisor requests in that conversation retain Claude's own context. Explicit names, continuation, and forking remain available, and every report includes the exact `claude --resume <session-id>` command so the conversation can also be opened in Terminal. **Opus is the broad default** for adversarial review, difficult synthesis, debugging, architecture, product and strategy, content and learning quality, creative judgment, and consequential tradeoffs (rolling `opus` alias → currently **Claude Opus 5**). **Fable 5.1 is pinned with the full `claude-fable-5-1` model ID** and reserved for rare frontier questions or an explicit user request. Every advisor turn remains read-only (`Read`/`Grep`/`Glob` only), strips MCP servers, and saves under `docs/opus/` or `docs/fable/`. The host agent still owns every decision and change.
 
 **Use for:** Codex/ChatGPT→Claude second opinions, continued advisory conversations, adversarial review, deep synthesis, design and architecture critique, code or plan review, debugging, product and content judgment, learning design, risk and tradeoff analysis
 
 ```bash
 npx skills add jakerains/AgentSkills --skill claude-advisor
+```
+
+---
+
+### codex-handoff
+> From Claude Code, send a labelled result or work handoff into one specific existing Codex Desktop task
+
+**Last updated:** 2026-09-01
+
+Designed to be the receiving-side counterpart to `claude-advisor`. When the user explicitly asks Claude to pass work to Codex and supplies either a raw task UUID or a `codex://threads/...` link, the skill writes a compact provenance-labelled handoff and sends it through the installed Codex CLI's **`codex queue`** command. A bundled Python helper validates the target, preserves multiline text without shell evaluation, supports dry runs, and surfaces the real queue result. It never guesses a recent task, starts a separate Codex run, or treats the handoff as owner approval. A matching global Codex instruction teaches receiving tasks how to interpret `[Claude handoff]` submissions.
+
+**Use for:** Claude→Codex findings, one-time task updates, status relays, decision handoffs, passing terminal research into a visible Codex Desktop task
+
+```bash
+npx skills add jakerains/AgentSkills --skill codex-handoff
 ```
 
 ---

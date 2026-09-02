@@ -1,0 +1,23 @@
+{
+  "skill_name": "codex-handoff",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Pass your completed accessibility findings to Codex task codex://threads/123e4567-e89b-12d3-a456-426614174000 and ask it to respond once. Include whether your work is continuing.",
+      "expected_output": "Queues exactly one concise, provenance-labelled Claude handoff to the specified task with the outcome, useful evidence, requested one-time response, and continuing status, then reports the real queue confirmation.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Can you send those findings to Codex?",
+      "expected_output": "Does not guess a recent task or invoke the queue helper; asks for one Codex task UUID or codex://threads deep link.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Open codex://threads/123e4567-e89b-12d3-a456-426614174000 so I can read that task.",
+      "expected_output": "Does not send or queue a message because the request is to open or inspect a task, not to hand work off to it.",
+      "files": []
+    }
+  ]
+}
