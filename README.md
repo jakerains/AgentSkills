@@ -18,16 +18,11 @@ npx skills add jakerains/AgentSkills --skill <skill-name>
 
 ## Supported Agents
 
-Works with **18+ AI coding agents** via [skills.sh](https://skills.sh):
+Works with popular AI coding tools via [skills.sh](https://skills.sh), including:
 
-| Agent | Agent | Agent |
-|-------|-------|-------|
-| AMP | Antigravity | Claude Code |
-| ClawdBot | Cline | Codex |
-| Cursor | Droid | Gemini |
-| GitHub Copilot | Goose | Kilo |
-| Kiro CLI | OpenCode | Roo |
-| Trae | VSCode | Windsurf |
+| Claude Desktop | Claude Code | Codex | Cursor |
+|----------------|-------------|-------|--------|
+| OpenCode | Gemini CLI | GitHub Copilot | Windsurf |
 
 ---
 
