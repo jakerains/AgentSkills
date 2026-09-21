@@ -20,9 +20,11 @@ npx skills add jakerains/AgentSkills --skill <skill-name>
 
 Works with popular AI coding tools via [skills.sh](https://skills.sh), including:
 
-| Claude Desktop | Claude Code | Codex | Cursor |
-|----------------|-------------|-------|--------|
-| OpenCode | Gemini CLI | GitHub Copilot | Windsurf |
+- **Terminal** — Claude Code · Codex · OpenCode · Gemini CLI
+- **Editors** — Cursor · Windsurf · VS Code + GitHub Copilot · Zed
+- **Other** — Warp · Cline
+
+Installing for Codex also covers the ChatGPT desktop app, since both read `~/.codex/skills/`. Plenty of other agents are supported too — see [skills.sh](https://skills.sh).
 
 ---
 
