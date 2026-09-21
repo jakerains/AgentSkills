@@ -39,8 +39,9 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 | Skill | What it does | Install |
 |-------|--------------|---------|
+| [eli5](#eli5) | Explain any topic for a specific age, role, education level, or audience | `npx skills add jakerains/AgentSkills --skill eli5` |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
-| [claude-advisor](#claude-advisor) | Codex/ChatGPT→Claude via `claude -p`; persistent conversation-bound advisory threads | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
+| [claude-advisor](#claude-advisor) | Named Claude chat handoffs, guarded live delivery, and persistent read-only advice | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
 | [codex-handoff](#codex-handoff) | Claude Code→an existing Codex Desktop task via `codex queue` | `npx skills add jakerains/AgentSkills --skill codex-handoff` |
 | [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
 | [plaud](#plaud) | Search, transcribe & summarize Plaud voice recordings (CLI + MCP) | `npx skills add jakerains/AgentSkills --skill plaud` |
@@ -62,6 +63,22 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [sam3](#sam3) | Meta SAM 3 open-vocabulary image & video segmentation | `npx skills add jakerains/AgentSkills --skill sam3` |
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
 
+---
+### eli5
+> Explain complex topics, code, concepts, and errors at exactly the right level for a specific audience
+
+**Last updated:** 2026-09-21
+
+Adapts explanations for a requested age, grade level, job role, relationship, or technical background. It starts with the core idea, uses an audience-appropriate analogy, adds only the useful level of detail, and closes with why the topic matters to that person.
+
+**Use for:** ELI5 explanations, explaining technical topics to non-technical audiences, tailoring explanations for managers or engineers, breaking concepts down for children or students, simplifying code and errors for a specific person
+
+```bash
+npx skills add jakerains/AgentSkills --skill eli5
+```
+
+---
+
 ### design-explorer
 > Generate a batch of HTML mockups and review them in a local full-screen voting carousel with pins and drawings
 
@@ -78,13 +95,15 @@ npx skills add jakerains/AgentSkills --skill design-explorer
 ---
 
 ### claude-advisor
-> From Codex / ChatGPT desktop, get Claude Opus 5 (or rare pinned Fable 5.1) advice through persistent resumable threads
+> Consult Claude or send a provenance-labelled handoff to a named existing Claude Code conversation
 
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-06
 
-Designed to run **inside Codex or the ChatGPT desktop app**, with **Claude Code installed** locally (`claude` on PATH). The bundled wrappers call Claude Code's non-interactive **`claude -p`** print mode, verify the responding model, and return a Markdown advisory report. Every ordinary call creates or resumes a persistent binding keyed by the current Codex conversation, exact project directory, and model lane, so later advisor requests in that conversation retain Claude's own context. Explicit names, continuation, and forking remain available, and every report includes the exact `claude --resume <session-id>` command so the conversation can also be opened in Terminal. **Opus is the broad default** for adversarial review, difficult synthesis, debugging, architecture, product and strategy, content and learning quality, creative judgment, and consequential tradeoffs (rolling `opus` alias → currently **Claude Opus 5**). **Fable 5.1 is pinned with the full `claude-fable-5-1` model ID** and reserved for rare frontier questions or an explicit user request. Every advisor turn remains read-only (`Read`/`Grep`/`Glob` only), strips MCP servers, and saves under `docs/opus/` or `docs/fable/`. The host agent still owns every decision and change.
+Use natural requests such as “send these findings to Claude chat 'claude test'” without tagging the skill. The helper resolves local sessions across project folders, binds exact destinations to the current Codex task, and sends through a guarded live Claude courier, explicit headless continuation for stopped sessions, or the existing-cloud-session queue. Private receipts distinguish transport acknowledgement from completed work and prevent automatic duplicate sends. One explicitly requested reply can return through the reciprocal `codex-handoff` skill. Requires authenticated Claude Code and Python 3.10+ for handoffs; historical name lookup optionally uses the official Python Agent SDK.
 
-**Use for:** Codex/ChatGPT→Claude second opinions, continued advisory conversations, adversarial review, deep synthesis, design and architecture critique, code or plan review, debugging, product and content judgment, learning design, risk and tradeoff analysis
+Read-only advisory work remains available through the existing Opus and Fable wrappers, with persistent conversation/project/model bindings, restricted Read/Grep/Glob access, no MCP, and inbound peer messages refused. Opus is the broad default; pinned Fable 5.1 is reserved for explicit requests or rare frontier judgments. Advisory wrappers require bash and jq. Live courier delivery is implemented for macOS/Linux; other-machine discovery and MCP channels are outside this skill's transport.
+
+**Use for:** Named Claude chat handoffs, findings and work relays, existing-session continuation, one-reply round trips, second opinions, adversarial review, architecture, debugging, product and content judgment
 
 ```bash
 npx skills add jakerains/AgentSkills --skill claude-advisor

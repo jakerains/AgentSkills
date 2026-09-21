@@ -282,10 +282,22 @@ CLAUDE_ARGS=(
   --restricted
   --strict-mcp-config
   --mcp-config '{"mcpServers":{}}'
+  --settings '{"crossSessionInbound":"refuse"}'
   --tools 'Read,Grep,Glob'
   --allowedTools Read Grep Glob
-  --disallowedTools Bash BashOutput KillShell Edit Write NotebookEdit WebFetch WebSearch Task Workflow SlashCommand TodoWrite
+  --disallowedTools Bash BashOutput KillShell Edit Write NotebookEdit WebFetch WebSearch Task Workflow SlashCommand TodoWrite SendMessage ListAgents
 )
+
+if [ "$MODE" = "continue" ]; then
+  if ! claude agents --json > "$JSON_TMP"; then
+    printf 'claude-advisor: cannot check live sessions before resuming; no advisory turn started.\n' >&2
+    exit 1
+  fi
+  if ! jq -e --arg sid "$SESSION_ID" 'type == "array" and ([.[] | select(.sessionId == $sid and ((.pid // 0) > 0))] | length == 0)' "$JSON_TMP" >/dev/null; then
+    printf 'claude-advisor: this Claude session is already live, or its live state is unavailable. Finish the Terminal turn before using the advisor wrapper.\n' >&2
+    exit 1
+  fi
+fi
 
 case "$MODE" in
   start)

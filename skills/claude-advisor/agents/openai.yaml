@@ -1,0 +1,5 @@
+interface:
+  display_name: "Claude Advisor & Handoff"
+  short_description: "Consult Claude or hand off to a named conversation"
+policy:
+  allow_implicit_invocation: true
