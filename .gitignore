@@ -22,7 +22,9 @@ __pycache__/
 .commandcode/
 .continue/
 .crush/
-.cursor/
+.cursor/*
+!.cursor/environment.json
+!.cursor/install.sh
 .factory/
 .gemini/
 .github/
