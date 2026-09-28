@@ -59,6 +59,13 @@
       "tags": ["driverjs", "product-tours", "onboarding", "walkthrough", "highlights", "hints", "coach-marks", "javascript"]
     },
     {
+      "name": "eli",
+      "source": "./skills/eli",
+      "description": "Explain any subject through five audience-aware modes with text, visual pages, or interactive walkthroughs, supported by bundled source-grounding and teaching references.",
+      "version": "1.2.0",
+      "tags": ["explanation", "teaching", "enablement", "plain-language", "visual-learning"]
+    },
+    {
       "name": "jake-speak",
       "source": "./skills/jake-speak",
       "description": "Explain technical or complicated subjects and decisions to Jake in clear, high-level language",

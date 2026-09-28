@@ -6,6 +6,12 @@ This file provides guidance to AI coding agents when working with code in this r
 
 This is a personal agent skills library compatible with 18+ AI coding agents including AMP, Antigravity, Claude Code, ClawdBot, Cline, Codex, Cursor, Droid, Gemini, GitHub Copilot, Goose, Kilo, Kiro CLI, OpenCode, Roo, Trae, VSCode, and Windsurf (via [skills.sh](https://skills.sh)). Skills are stored in `skills/` and can be installed via `npx skills add jakerains/AgentSkills`.
 
+## Adding Skills Means Updating the Collection
+
+Treat requests to "add a skill to this repo/project" as requests to add it to the source collection. Create or import the skill under `skills/<skill-name>/`, validate its definition and bundled resources, and update the Available Skills section in `README.md`. Follow the creation or import instructions below as appropriate.
+
+Do not interpret "add a skill" as permission to install it. Do not run `npx skills add`, create project-local or global agent installations, or change installation lockfiles unless the user explicitly requests installation. Keep repository source changes and installation actions separate.
+
 ## Repository Structure
 
 ```

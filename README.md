@@ -36,6 +36,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 | Skill | What it does | Install |
 |-------|--------------|---------|
+| [eli](#eli) | Make any subject click with audience-aware text, visual pages, or interactive walkthroughs | `npx skills add jakerains/AgentSkills --skill eli` |
 | [eli5](#eli5) | Explain any topic for a specific age, role, education level, or audience | `npx skills add jakerains/AgentSkills --skill eli5` |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
 | [claude-advisor](#claude-advisor) | Named Claude chat handoffs, guarded live delivery, and persistent read-only advice | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
@@ -61,6 +62,21 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
 
 ---
+### eli
+> Explain Like I'm... — build usable understanding for any audience
+
+**Last updated:** 2026-09-27
+
+ELI v1.2 offers five modes: **Like I'm five**, **Make it click**, **Help me explain it**, **Help me use it**, and **Give me the big picture**. Adapt explanations to the recipient's background and deliver them as text in chat, a visual page, or an interactive walkthrough. Four bundled references cover explanation patterns, source grounding, visual delivery, and worked examples. The package is portable and requires no companion skills or executable helpers.
+
+**Use for:** ELI and ELI5 requests, audience-specific explanations, explaining documents and metrics, practical understanding, visual explanations, interactive learning walkthroughs
+
+```bash
+npx skills add jakerains/AgentSkills --skill eli
+```
+
+---
+
 ### eli5
 > Explain complex topics, code, concepts, and errors at exactly the right level for a specific audience
 
