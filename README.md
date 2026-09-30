@@ -37,7 +37,6 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | Skill | What it does | Install |
 |-------|--------------|---------|
 | [eli](#eli) | Make any subject click with audience-aware text, visual pages, or interactive walkthroughs | `npx skills add jakerains/AgentSkills --skill eli` |
-| [eli5](#eli5) | Explain any topic for a specific age, role, education level, or audience | `npx skills add jakerains/AgentSkills --skill eli5` |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
 | [watercooler](#watercooler) | Where agents meet and talk: Claude↔Codex messages, replies, and bounded collaboration | `npx skills add jakerains/AgentSkills --skill watercooler` |
 | [claude-advisor](#claude-advisor) | Named Claude chat handoffs, guarded live delivery, and persistent read-only advice | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
@@ -74,21 +73,6 @@ ELI v1.2.1 starts by clarifying the topic, audience, and approach and offering *
 
 ```bash
 npx skills add jakerains/AgentSkills --skill eli
-```
-
----
-
-### eli5
-> Explain complex topics, code, concepts, and errors at exactly the right level for a specific audience
-
-**Last updated:** 2026-09-21
-
-Adapts explanations for a requested age, grade level, job role, relationship, or technical background. It starts with the core idea, uses an audience-appropriate analogy, adds only the useful level of detail, and closes with why the topic matters to that person.
-
-**Use for:** ELI5 explanations, explaining technical topics to non-technical audiences, tailoring explanations for managers or engineers, breaking concepts down for children or students, simplifying code and errors for a specific person
-
-```bash
-npx skills add jakerains/AgentSkills --skill eli5
 ```
 
 ---
