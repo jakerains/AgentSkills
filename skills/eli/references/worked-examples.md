@@ -5,6 +5,10 @@ These are complete short examples and annotated choices, not required templates.
 ## Contents
 
 - [Bare invocation](#bare-invocation)
+- [A named topic still needs setup](#a-named-topic-still-needs-setup)
+- [ELI5 with an audience still needs a format](#eli5-with-an-audience-still-needs-a-format)
+- [A partial answer preserves earlier choices](#a-partial-answer-preserves-earlier-choices)
+- [Explicit delegation skips setup](#explicit-delegation-skips-setup)
 - [A short answer stays short](#a-short-answer-stays-short)
 - [Make it click for a nontechnical adult](#make-it-click-for-a-nontechnical-adult)
 - [The same topic for a sales teammate](#the-same-topic-for-a-sales-teammate)
@@ -23,13 +27,67 @@ These are complete short examples and annotated choices, not required templates.
 
 > For the course checkpoint we're discussing, how would you like it explained?
 >
-> **Format:** Text in chat, visual page, or interactive walkthrough.
+> **Format:** Text in chat, a visual HTML page/artifact, or an interactive walkthrough?
 >
-> **Approach:** Like I'm five, Make it click, Help me explain it, Help me use it, or Give me the big picture.
+> **Approach:** Like I'm five, Make it click, Help me explain it, Help me use it, or Give me the big picture?
 >
-> **Audience:** You, a sales teammate, a stakeholder, engineering, or someone else. A reply like "visual, Make it click, for sales" is enough.
+> **Audience:** You, a sales teammate, a stakeholder, engineering, or someone else? A reply like "HTML page, Make it click, for sales" is enough.
 
-**Why this fits:** The referent is visible, format comes first, Like I'm five stays first among modes, and one reply settles the setup. This is not a universal menu to show before every explanation. A complete request skips it.
+**Why this fits:** The referent is visible, format comes first, Like I'm five stays first among modes, and one reply can settle the setup. The response ends here and waits; it does not append an explanation. If no current topic exists, include "What would you like explained?" in the setup instead of inventing a referent.
+
+## A named topic still needs setup
+
+**Request:** "ELI caching quickly."
+
+**Example first response:**
+
+> For caching, I'll keep it brief:
+>
+> **Format:** Text in chat, a visual HTML page/artifact, or an interactive walkthrough?
+>
+> **Approach:** Like I'm five, Make it click, Help me explain it, Help me use it, or Give me the big picture?
+>
+> **Audience:** You, a nontechnical teammate, an engineer new to caching, or someone else?
+
+**Why this fits:** The topic and pace are known, but format, approach, and recipient are not. "Quickly" keeps setup concise; it does not select chat. Wait for the reply rather than supplying a brief explanation followed by an offer to make a page.
+
+## ELI5 with an audience still needs a format
+
+**Request:** "ELI5 caching for sales."
+
+**Example first response:**
+
+> I'll use Like I'm five with adult-appropriate language for sales. Would you like **text in chat**, a **visual HTML page/artifact**, or an **interactive walkthrough**?
+
+**User reply:** "An HTML artifact."
+
+**Next action:** Create the visual explanation using the visual-delivery reference. Use an available native artifact workspace or a self-contained HTML file. Do not ask for the mode or audience again, and do not substitute a chat-only explanation for the selected artifact.
+
+**Why this fits:** ELI5 settles the approach and sales settles the audience. The first response asks only for the missing format; the reply completes setup without another confirmation.
+
+## A partial answer preserves earlier choices
+
+**Context:** The topic is caching. The first response offered format, approach, and audience choices.
+
+**User reply:** "Interactive, for me."
+
+**Example next response:**
+
+> An interactive walkthrough of caching for you. Which approach: **Like I'm five**, **Make it click**, **Help me explain it**, **Help me use it**, or **Give me the big picture**? I'd suggest Make it click.
+
+**User reply:** "Yes, Make it click."
+
+**Next action:** Build the walkthrough. Use general examples unless relevant background is known; do not require another audience form. Keep the chosen topic, audience, and format for follow-up edits.
+
+**Why this fits:** Only the unresolved approach is requested. A recommendation is visible and the user can accept it naturally; it does not become a silent default before they reply.
+
+## Explicit delegation skips setup
+
+**Request:** "ELI the reservation rule below. Choose the approach and format for me; no questions."
+
+**Next action:** Explain the supplied rule directly using Make it click, text, and a nontechnical adult audience. Preserve any explicit choice if supplied, such as "no questions, make an HTML page."
+
+**Why this fits:** The user explicitly delegates the unresolved choices. A missing topic would still need clarification; delegation does not supply the subject.
 
 ## A short answer stays short
 
@@ -69,7 +127,7 @@ These are complete short examples and annotated choices, not required templates.
 
 ## The same topic for a sales teammate
 
-**Request:** "Help me explain fixture L to a sales teammate who doesn't know APIs. Keep it short."
+**Request:** "Help me explain fixture L to a sales teammate who doesn't know APIs. In chat, and keep it short."
 
 **Example response:**
 
@@ -83,7 +141,7 @@ These are complete short examples and annotated choices, not required templates.
 
 ## The same topic for an engineer new to it
 
-**Request:** "Make fixture L click for an engineer who hasn't worked on rate limiting."
+**Request:** "Make fixture L click for an engineer who hasn't worked on rate limiting. Text please."
 
 **Example response:**
 
@@ -117,7 +175,7 @@ These are complete short examples and annotated choices, not required templates.
 
 **Fixture P:** The supplied policy is effective November 1. P1: Travel meals are reimbursable up to $35 per person per day. P2: A receipt is required for every claim. P3: Claims must be submitted within 14 days of the purchase. No prior policy or exception process is supplied.
 
-**Request:** "Help me explain the new expense policy to my team."
+**Request:** "Help me explain the new expense policy to my team. Text in chat."
 
 **Example response:**
 
@@ -132,6 +190,8 @@ These are complete short examples and annotated choices, not required templates.
 ## A metric with a changed denominator
 
 **Fixture M:** Period A: 80 completed applications out of 100 started. Period B: 90 completed out of 150 started. These fictional periods use the same supplied definition of completion; no information about population mix or operational changes is supplied.
+
+**Setup already resolved:** The user chose Make it click, text in chat, for themselves as a nontechnical reader.
 
 **Request:** "What does this actually mean? More people completed, but the rate went down."
 
@@ -151,7 +211,7 @@ These are complete short examples and annotated choices, not required templates.
 
 **Fixture E:** A notice says service stopped at 14:05 and resumed at 14:20. It says the cause is under investigation. A separate supplied timeline records a deployment at 14:00, without connecting it to the outage.
 
-**Request:** "Explain why this happened in plain English."
+**Request:** "Explain why this happened for me in plain English, here in chat."
 
 **Example response:**
 
@@ -165,7 +225,7 @@ These are complete short examples and annotated choices, not required templates.
 
 **Fixture Q:** A community room is reserved only after the coordinator confirms the requested date. Q1: Submit the date, start and end times, and expected attendance. Q2: A submission is a request, not a confirmed reservation. Q3: No response-time commitment is supplied.
 
-**Request:** "Help me use this process, then draft a request for October 10, 2 to 4 PM, for 12 people."
+**Request:** "Here in chat, help me use this process, then draft a request for October 10, 2 to 4 PM, for 12 people."
 
 **Example response:**
 

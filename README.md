@@ -66,9 +66,9 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 ### eli
 > Explain Like I'm... — build usable understanding for any audience
 
-**Last updated:** 2026-09-27
+**Last updated:** 2026-09-29
 
-ELI v1.2 offers five modes: **Like I'm five**, **Make it click**, **Help me explain it**, **Help me use it**, and **Give me the big picture**. Adapt explanations to the recipient's background and deliver them as text in chat, a visual page, or an interactive walkthrough. Four bundled references cover explanation patterns, source grounding, visual delivery, and worked examples. The package is portable and requires no companion skills or executable helpers.
+ELI v1.2.1 starts by clarifying the topic, audience, and approach and offering **text in chat**, a **visual HTML page/artifact**, or an **interactive walkthrough**. It waits for missing choices before explaining, while honoring choices already supplied and explicit requests to skip setup. Five modes guide the explanation: **Like I'm five**, **Make it click**, **Help me explain it**, **Help me use it**, and **Give me the big picture**. Four bundled references cover explanation patterns, source grounding, visual delivery, and worked examples. The package is portable and requires no companion skills or executable helpers.
 
 **Use for:** ELI and ELI5 requests, audience-specific explanations, explaining documents and metrics, practical understanding, visual explanations, interactive learning walkthroughs
 
