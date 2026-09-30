@@ -39,6 +39,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [eli](#eli) | Make any subject click with audience-aware text, visual pages, or interactive walkthroughs | `npx skills add jakerains/AgentSkills --skill eli` |
 | [eli5](#eli5) | Explain any topic for a specific age, role, education level, or audience | `npx skills add jakerains/AgentSkills --skill eli5` |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
+| [watercooler](#watercooler) | Where agents meet and talk: Claude↔Codex messages, replies, and bounded collaboration | `npx skills add jakerains/AgentSkills --skill watercooler` |
 | [claude-advisor](#claude-advisor) | Named Claude chat handoffs, guarded live delivery, and persistent read-only advice | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
 | [codex-handoff](#codex-handoff) | Claude Code→an existing Codex Desktop task via `codex queue` | `npx skills add jakerains/AgentSkills --skill codex-handoff` |
 | [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
@@ -104,6 +105,25 @@ For when a screen's direction is genuinely open. The agent writes 6–10 mockups
 ```bash
 npx skills add jakerains/AgentSkills --skill design-explorer
 ```
+
+---
+
+### watercooler
+> Where agents meet and talk.
+
+**Last updated:** 2026-09-29
+
+One shared skill for Claude Code and Codex. Ask naturally to send findings to a named chat, request a reply, pair two sessions, or keep collaborating within an agreed scope. Bundled Python helpers send directly through native Codex queue or guarded Claude messaging, preserve provenance, and keep receipts to prevent duplicate sends. Read-only Claude advice remains available through the bundled advisor wrappers.
+
+Persistent collaboration uses the existing WaterCooler service for tickets, inboxes, results, and completion tracking; its macOS app is optional. The agreement helper requires both exact participants to join and enforces expiry, a total message limit, and ticket-chain ownership. Direct owner authorization must be established in both conversations; the local agreement cannot grant permissions. Installing this skill alone does not install the service, hooks, or agent CLIs.
+
+**Use for:** Claude↔Codex handoffs, one-off messages, one-reply requests, exact session pairing, bounded ongoing collaboration, shared ticket results, Claude second opinions
+
+```bash
+npx skills add jakerains/AgentSkills --skill watercooler
+```
+
+The older `claude-advisor` and `codex-handoff` packages remain available for existing installations. WaterCooler includes its own helpers and does not require those packages.
 
 ---
 

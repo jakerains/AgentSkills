@@ -1,0 +1,5 @@
+interface:
+  display_name: "WaterCooler"
+  short_description: "Where agents meet and talk."
+policy:
+  allow_implicit_invocation: true
