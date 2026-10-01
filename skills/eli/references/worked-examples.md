@@ -184,26 +184,25 @@ These are complete short examples and annotated choices, not required templates.
 |---|---|
 | "1A, 2D" | Keep recipient = user and language = adult. Ask question 3 about familiarity and question 4 about purpose; recommend Make it click for general understanding. |
 | "3A, 4B" | Keep beginner-friendly treatment and Make it click. Ask question 5 about format and question 6 about depth. Recommend an interactive explanation if the planned cache example gives the learner a meaningful input to change, and standard depth. |
-| "5C, 6B" | Keep interactive and standard depth. Ask question 7 about visual style and question 8 about motion. Recommend Academy illustration and learner-controlled steps. |
-| "7A, 8B" | Summarize the brief in one sentence and build. Use a light interface, a large SVG scene explaining cache hits/misses, and useful step controls. Ground the actual caching model or label it as a simplified teaching example. Do not request another confirmation. |
+| "5C, 6B" | The teaching brief is complete. Summarize it in one sentence and build with the standard light design, a large SVG scene explaining cache hits/misses, and useful step controls. Ground the actual caching model or label it as a simplified teaching example. Do not ask about style or motion or request another confirmation. |
 
-**Why this fits:** The user makes short selections through four small rounds. Each choice changes the eventual explainer. Age affects wording, familiarity affects prerequisites, and the large SVG shows the relationship rather than acting as decoration. The request does not create a native slash command or authorize publishing.
+**Why this fits:** The user makes short selections through three small rounds. Each teaching choice changes the eventual explainer; the standard design applies automatically. Age affects wording, familiarity affects prerequisites, and the large SVG shows the relationship rather than acting as decoration. The request does not create a native slash command or authorize publishing.
 
 ## Guide shortcuts and completed choices
 
 | Request or reply | Expected behavior |
 |---|---|
 | "ELI guide" with no current topic | Ask what to explain first. Do not invent topical choices or assume the subject is the ELI skill. |
-| "ELI guide caching for sales, adult beginners, Make it click, HTML, three minutes" | Skip known audience, age, familiarity, purpose, format, and depth. Start with the two visual questions. |
-| "ELI guide the supplied rule, for adult beginners, text in chat, Make it click, two paragraphs" | The brief is complete and visual questions do not apply. Explain in chat without asking about colors or SVG motion. |
+| "ELI guide caching for sales, adult beginners, Make it click, HTML, three minutes" | The complete teaching brief is supplied. Build immediately with the standard light design; do not ask any style or motion questions. |
+| "ELI guide the supplied rule, for adult beginners, text in chat, Make it click, two paragraphs" | The brief is complete. Explain in chat without further setup. |
 | "E: for a ten-year-old who already codes" in the age menu | Preserve both age ten and coding experience; ask only for background relevant to the actual topic if still unknown. Do not infer they are an absolute beginner. |
-| "Use your recommendations, for adult beginners" during a visual interview | Fill remaining preferences with the relevant recommendations/defaults, state the resulting brief, and create the visual. Preserve earlier source, format, and audience choices. |
-| "Build it, no more questions, HTML" | Resolve remaining preferences with the light Academy default, standard depth, and Make it click unless already chosen; build once the topic is clear. |
-| "C" for motion after choosing interactive | Keep useful controls and instant state changes; create a static visual treatment without animation. |
-| "D: match my supplied dark brand guide" | Honor the explicit style override. The light default does not override the user's chosen brand. |
+| "Use your recommendations, for adult beginners" during an interview for visual output | Fill remaining preferences with the relevant recommendations/defaults, state the resulting brief, and create the visual. Preserve earlier source, format, and audience choices. |
+| "Build it, no more questions, HTML" | Resolve remaining preferences with the standard light design, standard depth, and Make it click unless already chosen; build once the topic is clear. |
+| "Make it interactive, but no animation" | Honor the volunteered requirement: keep useful controls and instant state changes without motion. Do not ask the user to select a motion preset. |
+| "Use the dark theme from my supplied project guidelines" | Honor the explicit requirement without a design questionnaire. The standard light design does not override a direct user instruction. |
 | "Make it click for adult beginners in HTML, no interview" | Use the ordinary complete-request route and light visual defaults. Do not force guide mode or add style questions. |
 
-**Why this fits:** Guide mode adds useful choices when wanted, while short requests and explicit delegation still work. No optional companion skill, logo package, external font, animation library, or brand-kit download is required to produce the default standalone result.
+**Why this fits:** Guide mode clarifies the teaching brief while applying the standard design automatically. Short requests and explicit delegation still work. No companion skill, logo package, proprietary font, or external animation library is required to produce the default standalone result.
 
 ## Explicit delegation skips setup
 

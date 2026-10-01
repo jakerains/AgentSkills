@@ -32,7 +32,7 @@ Documentation checked **2026-10-01**. Names, availability, and rendering can cha
 
 ## Visual previews when supported
 
-Use an option preview when it helps compare composition or style, especially Academy illustration, ElevenLabs editorial, and Minimal light. Show the same small teaching subject in each preview so the comparison isolates the visual choice. Keep previews lightweight and use only the tool's allowed format. Without preview support, concise descriptions are enough; do not build or publish mockups just to ask an interview question.
+Use an option preview only if it clarifies a needed format or learning-goal question, such as a static overview versus a walkthrough with meaningful controls. Keep the same standard design across previews. Never add a style, color, typography, or motion question just because previews are available. Keep previews lightweight and use only the tool's allowed format. Without preview support, concise descriptions are enough; do not build or publish mockups just to ask an interview question.
 
 Claude's SDK documents opt-in `toolConfig.askUserQuestion.previewFormat` with Markdown or an HTML fragment; unset configurations omit `preview`. That does not establish that every Claude CLI, desktop, or custom client exposes identical rendering. Read the current schema instead of sending `preview` unconditionally. Do not change SDK configuration merely to run ELI. [Official preview documentation](https://code.claude.com/docs/en/agent-sdk/user-input#option-previews-typescript).
 
@@ -56,5 +56,6 @@ These are expected behaviors for reviewing this skill, not claims of executed pl
 | Async question has returned but no answer has arrived | Keep it pending; no dependent explainer generation or duplicate question. |
 | User dismisses an optional question | Follow host policy; distinguish stated defaults from user selections. |
 | Question tool unavailable in this mode | Use labeled chat fallback, retaining prior choices; do not change modes. |
-| User already specified topic, audience, goal, and format | Build directly unless they explicitly requested the guide's remaining visual choices. |
+| User already supplied the full teaching brief, including guide depth if relevant | Build directly using the standard design; no style or motion questions. |
+| User chooses a page or walkthrough in the last unresolved guide round | End the interview and create it; do not add a design round or approval gate. |
 | User says “no questions” with a known topic | Honor the shortcut and supplied choices; do not invoke a picker merely because it exists. |

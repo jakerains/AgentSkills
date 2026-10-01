@@ -9,12 +9,12 @@ description: >-
   and native question pickers (labeled text fallback) for chat, an HTML page/artifact, or an interactive walkthrough
   before explaining. Use "/eli guide", "ELI guide", or "guide me through an
   explainer" for a short interview about audience, age, background, purpose,
-  presentation, and visual style. Defaults to polished light visual pages with
+  presentation, and depth. Automatically applies a polished light design with
   large explanatory SVGs. Combines five audience-aware modes. Uses available
   visual workspaces or standalone HTML. Do not hijack implementation-only or
   unrelated writing requests; complete explicitly requested combined tasks.
 metadata:
-  version: "1.3.2"
+  version: "1.3.3"
   author: "Jake Rains"
   category: "learning-and-communication"
   tags: "explanation, teaching, enablement, plain-language, visual-learning"
@@ -35,9 +35,9 @@ This is one portable skill package. Its references are bundled Markdown, not ext
 
 For **`/eli guide [topic]`**, **`ELI guide [topic]`**, or a request to be interviewed about an explainer, read [guided interview](references/guided-interview.md) and start its first unresolved round. Treat these as request phrases; actual slash-command registration belongs to the host. The plain-language form works wherever the skill can be invoked. Do not install a command or claim a slash menu was registered by editing this skill.
 
-The guide replaces the ordinary setup menu with a few short conversational rounds: **audience and age → background and purpose → format and depth → look and motion**. Ask at most two questions at a time, skip known choices, and wait between rounds. Use the host's native question picker as described below, with grounded recommendations and a custom-answer path. Use letters for all answer options in text fallback, with the custom answer last. Age, expertise, role, learning goal, and appearance are separate choices. Selecting an age or ELI5 does not require childish artwork.
+The guide replaces the ordinary setup menu with a few short conversational rounds: **audience and age → background and purpose → format and depth**. Ask at most two questions at a time, skip known choices, and wait between rounds. Use the host's native question picker as described below, with grounded recommendations and a custom-answer path. Use letters for all answer options in text fallback, with the custom answer last. Age, expertise, role, and learning goal are separate choices. Selecting an age or ELI5 does not require childish artwork.
 
-An explicit guide request includes choosing the visual treatment even if topic, format, mode, and audience are already known. Skip visual questions for chat output. Accept "use your recommendations" or "build it" to finish the remaining preferences with stated defaults, preserving supplied choices. Once the brief is resolved, summarize it in one sentence and create the result without another approval step. A request to edit the guide itself is skill authoring, not an invocation of the interview.
+**Apply the standard design automatically. Do not ask the user to choose a visual style, palette, typography, illustration treatment, or motion.** Choose composition and purposeful motion from the teaching point and selected format. Honor design instructions the user supplies without prompting for them. A guide request with a complete teaching brief goes straight to creation. Accept "use your recommendations" or "build it" to finish the remaining teaching preferences with stated defaults, preserving supplied choices. Once the brief is resolved, summarize it in one sentence and create the result without another approval step. A request to edit the guide itself is skill authoring, not an invocation of the interview.
 
 ### Ordinary ELI setup
 
@@ -59,7 +59,7 @@ For setup, the guide, and later clarifications, **use an available, permitted na
 - Follow the actual schema and host rules for question count, option count, ordering, custom input, and current-mode availability. Keep guide rounds at two questions or fewer even if the tool permits more. Group longer menus into short follow-ups so every choice remains reachable; do not abandon a usable native picker just because one menu is too long.
 - Use the native custom/free-text entry when provided; do not add a duplicate **My own answer/Other** option. Otherwise provide a custom-answer option and a supported way to enter it. Label recommendations where grounded, and put them first if the host requires that. Native selection IDs or returned labels determine the answer, not the fallback menu's positions.
 - Keep one option-label scheme within the native interface. If the host automatically supplies numbers or letters, use those controls without adding competing prefixes. If adding choice labels yourself, use letters consistently. Numbered question headings identify questions, not answer options.
-- Use multi-select only when both the schema and question allow combinations. Use option previews for visual choices only when the current tool supports them. Do not invent `multiSelect`, `preview`, or other fields, assume identical CLI/desktop rendering, or change modes/install tools to obtain a picker.
+- Use multi-select only when both the schema and question allow combinations. Use option previews only when supported and helpful for an already-needed format or learning-goal question; do not create design questions to use previews. Do not invent `multiSelect`, `preview`, or other fields, assume identical CLI/desktop rendering, or change modes/install tools to obtain a picker.
 - Do not duplicate the native form in chat or require users to retype a clicked selection. An asynchronous request remains pending until an answer arrives; continue only independent work. Never treat a highlighted default or elapsed time as an answer. Respect the host's skip/cancel/no-answer behavior; if it directs proceeding on optional preferences, state assumptions instead of claiming they were chosen. Still resolve a missing topic.
 
 If no suitable native tool is available or allowed, use the text convention below and wait for a reply. Do not build a custom question UI as part of the interview. The selected explainer's final format is independent of the interface used to ask questions.
@@ -172,7 +172,7 @@ When a substantial explanation needs a teaching approach, consult [explanation p
 
 **Format is the learning experience. Workspace is where it appears.** Check the capabilities actually exposed in this session, not the product name. HTML can appear inside a native workspace or as a standalone file.
 
-**Default visual direction for all ELI pages and walkthroughs:** clean, polished, light, and spacious, close to ElevenLabs and Eleven Academy's Balanced treatment. Use white/off-white surfaces, graphite type, restrained accents, large purposeful SVG illustrations, and clear controls. Keep the explanation visually led rather than surrounding paragraphs with small icons. Do not default to dark mode, an overall beige wash, neon gradients, or a dense dashboard. Follow explicit style choices and supplied branding; do not infer a dark theme from the device setting.
+**Standard design for all ELI pages and walkthroughs:** clean, polished, light, and spacious. Use white/off-white surfaces, graphite type, restrained accents, large purposeful SVG illustrations, and clear controls. Apply this directly, without a design questionnaire or named style menu. Keep the explanation visually led rather than surrounding paragraphs with small icons. Do not default to dark mode, an overall beige wash, neon gradients, or a dense dashboard. Honor explicit user-supplied design requirements; do not infer a dark theme from the device setting or add an organization's visual identity to an unrelated explanation.
 
 | Requested experience | Action |
 |---|---|
@@ -181,11 +181,11 @@ When a substantial explanation needs a teaching approach, consult [explanation p
 | **Interactive walkthrough** | Create a guided single-page experience in which actions reveal the concept, using a suitable workspace or standalone HTML. |
 | **Larger site/application** | Use the available site/app workflow only when requested; respect the project's existing stack. Building is not the same as public deployment. |
 
-Use available **svg-animation** guidance for meaningful vector motion and **SVG Logo Designer** guidance for simple, distinctive symbols when relevant; an explainer does not require a logo package. For actual ElevenLabs or Academy work, use available **elevenlabs-brand** and **academy-illustrations** guidance and the project's real assets/components. Keep brand identities intact. The bundled visual reference supplies a portable default if those helpers are unavailable; never require their installation. Follow other design guidance the chosen host requires, such as `artifact-design` where supplied. Do not invent a tool or switch platforms unasked.
+Use available SVG animation or illustration guidance when it helps implement the explanation. The bundled visual reference supplies the complete standard design; no companion skill, logo package, proprietary font, organization-specific assets, or installation is required. Reuse relevant existing project components and honor host-required design guidance. Do not invent a tool or switch platforms unasked.
 
 Without a suitable workspace, create and attach a **self-contained HTML file** with embedded styles, scripts, and visuals and no required network access or installation by default. A requested advanced feature may justify libraries, but disclose their requirements rather than calling an online-dependent result offline-ready. Without file creation, provide complete HTML code with brief save/open instructions. Claim previews, files, URLs, and publishing only after successful tool results.
 
-For visual or interactive work, read [visual patterns and delivery](references/visual-patterns.md). The core standards are: **the visual teaches**, **one main point at a time**, **interaction has a learning purpose**, and **styling adapts to the audience or supplied branding**. Keep the reading path, controls, and accessible alternatives clear. Prefer a strong static visual to pointless motion. Use 3D when it clarifies the concept or is requested, not as an automatic upgrade.
+For visual or interactive work, read [visual patterns and delivery](references/visual-patterns.md). The core standards are: **the visual teaches**, **one main point at a time**, **interaction has a learning purpose**, and **the standard design works for the audience and subject**. Keep the reading path, controls, and accessible alternatives clear. Prefer a strong static visual to pointless motion. Use 3D when it clarifies the concept or is requested, not as an automatic upgrade.
 
 ## 6. Use the bundled references selectively
 
@@ -197,6 +197,6 @@ References add examples and conditional detail; they do not override the user's 
 
 Check that clarification used a permitted native picker when available, respected its schema, included a custom-answer route and a grounded recommendation when possible, and mapped selections correctly. Otherwise check the labeled text fallback. Check that setup was resolved, explicitly waived, or handled under the host's optional no-answer policy before producing the explanation. Check that the result matches the actual topic, recipient, goal, length, and selected format; that the learner gets the real concept rather than only a metaphor; and that comparisons, calculations, causal claims, and citations are supported. Do not claim learning was achieved without learner evidence.
 
-For visuals, review the selected design brief, light default, prominent teaching artwork, learning path, readable labels, responsive layout, keyboard access, motion alternatives, and meaningful state changes. Prioritize desktop and tablet for Academy/SCORM work. Render and exercise the output when suitable tools are available; inspect animated start, middle, settled, replay, and reduced-motion states. Otherwise identify code inspection as inspection, not runtime testing. Verify that an output described as self-contained has no required external assets or calls.
+For visuals, confirm the standard design was applied without asking design questions. Review the light default, prominent teaching artwork, learning path, readable labels, responsive layout, keyboard access, motion alternatives, and meaningful state changes. Respect explicitly supplied design requirements and target devices. Render and exercise the output when suitable tools are available; inspect animated start, middle, settled, replay, and reduced-motion states. Otherwise identify code inspection as inspection, not runtime testing. Verify that an output described as self-contained has no required external assets or calls.
 
 Deliver the explanation or artifact, not the internal checklist. After a visual, give a short handoff with the actual file/workspace reference and essential limitations, not a duplicate full explanation in chat.
