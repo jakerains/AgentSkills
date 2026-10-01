@@ -36,7 +36,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 | Skill | What it does | Install |
 |-------|--------------|---------|
-| [eli](#eli) | Make any subject click with audience-aware text, visual pages, or interactive walkthroughs | `npx skills add jakerains/AgentSkills --skill eli` |
+| [eli](#eli) | Guided explainer interviews, audience-aware teaching, and polished light SVG pages | `npx skills add jakerains/AgentSkills --skill eli` |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
 | [watercooler](#watercooler) | Where agents meet and talk: Claude↔Codex messages, replies, and bounded collaboration | `npx skills add jakerains/AgentSkills --skill watercooler` |
 | [claude-advisor](#claude-advisor) | Named Claude chat handoffs, guarded live delivery, and persistent read-only advice | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
@@ -62,14 +62,17 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
 
 ---
+
 ### eli
 > Explain Like I'm... — build usable understanding for any audience
 
-**Last updated:** 2026-09-29
+**Last updated:** 2026-10-01
 
-ELI v1.2.1 starts by clarifying the topic, audience, and approach and offering **text in chat**, a **visual HTML page/artifact**, or an **interactive walkthrough**. It waits for missing choices before explaining, while honoring choices already supplied and explicit requests to skip setup. Five modes guide the explanation: **Like I'm five**, **Make it click**, **Help me explain it**, **Help me use it**, and **Give me the big picture**. Four bundled references cover explanation patterns, source grounding, visual delivery, and worked examples. The package is portable and requires no companion skills or executable helpers.
+ELI v1.3.0 adds **`/eli guide [topic]`** (or **`ELI guide [topic]`**) for a quick interview about audience, age, background, purpose, presentation, depth, and visual style. It asks at most two questions per round, reuses known choices, and accepts short selections or "use your recommendations." Ordinary ELI keeps its compact setup. Both routes offer **text in chat**, a **single-page HTML/artifact**, or an **interactive explainer**, with labeled choices, grounded recommendations, and **D** for a custom answer.
 
-**Use for:** ELI and ELI5 requests, audience-specific explanations, explaining documents and metrics, practical understanding, visual explanations, interactive learning walkthroughs
+Visual outputs default to a clean, polished light treatment inspired by ElevenLabs and Eleven Academy: generous space, graphite type, restrained accents, and large explanatory SVG scenes. The guide offers Academy illustration, ElevenLabs editorial, minimal light, or a custom direction, with purposeful motion or static artwork. Five teaching modes remain available: **Like I'm five**, **Make it click**, **Help me explain it**, **Help me use it**, and **Give me the big picture**. Five bundled references support the workflow. SVG and brand helper skills are optional; the package works without companion installations. Slash-command availability depends on the host; the plain-language guide phrase requires no command registration.
+
+**Use for:** ELI and ELI5 requests, guided explainer interviews, audience- and age-specific explanations, explaining documents and metrics, practical understanding, polished SVG visual explanations, interactive learning walkthroughs
 
 ```bash
 npx skills add jakerains/AgentSkills --skill eli

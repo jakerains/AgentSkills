@@ -1,6 +1,60 @@
 # Visual patterns and delivery
 
-Read this for a visual page or interactive walkthrough. These patterns guide what the explanation demonstrates; they do not mandate a layout, palette, library, or platform. Use the user's branding and existing project context where applicable.
+Read this for a visual page or interactive walkthrough. Use the light visual defaults below unless the user selects another treatment. Adapt the composition to the teaching point and respect supplied branding and existing project context.
+
+## Contents
+
+- [Default: polished, light, and visually led](#default-polished-light-and-visually-led)
+- [Large SVG scenes, with purpose](#large-svg-scenes-with-purpose)
+- [Motion and optional helper skills](#motion-and-optional-helper-skills)
+- [Start with the teaching point, not the controls](#start-with-the-teaching-point-not-the-controls)
+- [Choose a visual pattern](#choose-a-visual-pattern)
+- [Worked design: a fictional rate-limit walkthrough](#worked-design-a-fictional-rate-limit-walkthrough)
+- [Visual meaning and narrative](#visual-meaning-and-narrative)
+- [Accessible and readable by design](#accessible-and-readable-by-design)
+- [Match the current environment](#match-the-current-environment)
+- [Validate what the result claims to do](#validate-what-the-result-claims-to-do)
+
+## Default: polished, light, and visually led
+
+Use a clean ElevenLabs/Eleven Academy-inspired direction for ordinary visual requests as well as guide-created outputs. A supplied brand or explicit style choice takes precedence. These portable presets do not certify official brand compliance.
+
+- **Light foundation:** white and off-white surfaces, graphite text, delicate rules, generous whitespace. A useful ElevenLabs-derived base is white `#FFFFFF`, off-white `#FAFAFA`, graphite `#1E1916`, and divider `#E0DEDC`. Use cream `#F5F3F1` locally within objects, not as an overall beige wash. Keep light styling even when the device prefers dark mode. Do not add a theme toggle unless requested.
+- **Academy illustration (default):** neutral surrounds, white/paper objects, graphite outlines, small cream areas, and restrained terracotta emphasis. Make one connection, current edit, or meaningful focus carry the accent. Avoid sepia, amber glow, gradients, shadows, and filters inside the teaching drawing. Keep real company and agent identity colors intact.
+- **ElevenLabs editorial:** strong, spacious typography on a light base, with large vector scenes or relevant atmospheric media. Let imagery carry color while interface controls remain restrained. Apply current brand rules for actual branded work; avoid adding generic colored UI panels in the name of branding.
+- **Minimal light:** precise monochrome diagrams, spare labels, and the same strong scale and whitespace. This is also a useful custom choice for technical reference material.
+- **Typography:** use supplied KMR Waldenburg fonts where available and permitted; otherwise use a clean local sans-serif fallback such as Inter, Helvetica Neue, or the system font. Use sentence case, a clear two-weight hierarchy, readable body text, and large uncomplicated headings. Do not fetch a remote font silently or make a missing brand font block the explanation.
+- **Composition:** make the main SVG a substantial teaching stage, roughly half of a desktop opening section or a full-width scene below a short introduction. Let the relationship be visible before the supporting paragraphs. Follow with a small number of purposeful sections, each with one point. Avoid tiny decorative icons, rows of interchangeable cards, excessive badges, and dashboard chrome.
+- **Controls:** use a small set of familiar controls beside the state they affect. Preserve the existing host's real components when building inside Academy; the standalone default does not authorize replacing course UI. A standalone explainer may use ordinary accessible HTML controls without importing the Academy app.
+
+Use genuine supplied logos and agent assets when needed; do not redraw them or add an ElevenLabs wordmark to an unrelated explanation merely to evoke the look. Brand inspiration changes the visual treatment, not the identity of the content.
+
+## Large SVG scenes, with purpose
+
+Before drawing, identify what the learner should see and what a mistaken reading would be. Choose a spatial relationship that teaches it: a bracket for a rule applying across replies, a boundary for a limit, a shared base for a dependency, or aligned cases for a comparison. Labels support that relationship; they should not be the only thing explaining it.
+
+Make the primary object the largest meaningful shape. Reserve space for labels before routing connectors. Use clear silhouettes, balanced negative space, consistent outline families, rounded line endings, and a small number of distinctive details. Group related objects; keep stable anchors across states. A large generic symbol floating above paragraphs does not meet the visual brief.
+
+Use inline SVG with a responsive `viewBox`, scoped styles, unique IDs, and an accessible title/description or equivalent nearby text. Keep labels readable at the actual rendered size; enlarge the stage or reduce detail before shrinking text. Include meaningful text equivalents. Do not encode unsupported quantities in shape size, distance, or animation speed.
+
+## Motion and optional helper skills
+
+Animate to explain sequence, change, or comparison. Draw a connector only after both endpoints exist; reveal labels as readable units; use movement to preserve correspondence between states. Avoid decorative loops, floating shapes, glowing backgrounds, and letter-by-letter label reveals. A complete static composition is preferable when motion adds no teaching value.
+
+Use these helpers only when available and relevant, while preserving the selected brief:
+
+| Helper | Apply to the explainer | Keep within scope |
+|---|---|---|
+| svg-animation | Stroke reveals, purposeful path motion, transitions, and deterministic seeking | Prefer inline CSS, SMIL, or browser JavaScript for offline output; do not add a CDN merely because a helper example uses one |
+| SVG Logo Designer | Distinctive silhouettes, simple symbols, negative space, clean scalable paths | Create the needed illustration or requested mark; do not generate an unrequested logo concept/variation package or redesign an existing identity |
+| elevenlabs-brand | Actual ElevenLabs name, typography, palette, identity, and media treatment | Use current supplied assets and guidelines; do not claim the portable preset alone is exact compliance |
+| academy-illustrations | Balanced drawing grammar, teaching relationships, cue-based reveals, real course host integration | Reuse the actual host and shared parts in Academy; keep a generic standalone explainer independent of that codebase |
+
+Without helpers, use the standards in this reference. Never install skills or fetch a brand kit just to finish an ELI explanation. Required project assets may still need the user to supply them if inaccessible; a stylistic inspiration does not require identity assets.
+
+For animated standalone HTML, use one coherent clock for each coordinated scene. Provide deterministic seeking such as `?t=N` so start, middle, and settled frames can be inspected; make seeking rebuild the same state in both directions. Do not mix unsynchronized CSS timers with a separate JavaScript playback clock. In a host with an existing animation/narration clock, use it instead.
+
+Honor reduced motion with a complete readable composition and instant meaningful state changes. Never leave stroke-dashoffset hiding the diagram when motion is disabled. Provide pause/replay or step controls when needed; a static preference still permits useful controls that change state without animation.
 
 ## Start with the teaching point, not the controls
 
@@ -72,7 +126,9 @@ When file creation is unavailable, provide the complete HTML code and brief save
 
 ## Validate what the result claims to do
 
-When tools permit, render the actual output and exercise the beginning, end, repeat actions, reset, and important boundary conditions. Check whether the displayed explanation agrees with the state and with the source rules. Test keyboard access and a small-screen layout; review reduced-motion behavior and textual equivalents. Inspect console errors and required network requests when possible.
+When tools permit, render the actual output and exercise the beginning, end, repeat actions, reset, and important boundary conditions. Inspect animated start, middle, settled, replay, and backward-seek states, not just the finished picture. Check whether the displayed explanation agrees with the state and with the source rules. Test keyboard access and responsive layouts; prioritize desktop and tablet for Academy/SCORM output. Review reduced-motion behavior and textual equivalents. Inspect console errors and required network requests when possible.
+
+Review visual quality separately from technical correctness: the chosen light treatment remains light, the primary SVG is prominent, labels have room, connectors do not clip or cross unrelated objects, the composition teaches the relationship, and the result reflects the interview choices. A technically valid SVG is not proof of a polished design.
 
 For a claimed self-contained file, check its actual dependencies, not just its extension. Inspect external script and style references, images and CSS URLs, imports, embedded-frame sources, and network calls. A library may initiate requests even when its entry script is bundled. Separate this technical check from judging whether a human learned the idea.
 

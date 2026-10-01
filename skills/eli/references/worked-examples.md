@@ -8,6 +8,10 @@ These are complete short examples and annotated choices, not required templates.
 - [A named topic still needs setup](#a-named-topic-still-needs-setup)
 - [ELI5 with an audience still needs a format](#eli5-with-an-audience-still-needs-a-format)
 - [A partial answer preserves earlier choices](#a-partial-answer-preserves-earlier-choices)
+- [Custom and ambiguous selections](#custom-and-ambiguous-selections)
+- [A later clarification uses the same convention](#a-later-clarification-uses-the-same-convention)
+- [A guided start becomes a visual brief](#a-guided-start-becomes-a-visual-brief)
+- [Guide shortcuts and completed choices](#guide-shortcuts-and-completed-choices)
 - [Explicit delegation skips setup](#explicit-delegation-skips-setup)
 - [A short answer stays short](#a-short-answer-stays-short)
 - [Make it click for a nontechnical adult](#make-it-click-for-a-nontechnical-adult)
@@ -23,17 +27,13 @@ These are complete short examples and annotated choices, not required templates.
 
 **Context:** The conversation is about a learner checkpoint in a course. No format, audience, or mode has been selected. The user says: "ELI."
 
-**Example response:**
+**First response:** Use the labeled three-question example in section 1 of SKILL.md: format A–C plus D, all five approaches numbered 1–5 plus D, and audience A–C plus D. Recommend the visual page and Make it click for the checkpoint's role in the learner route; leave audience to the user because it is unknown.
 
-> For the course checkpoint we're discussing, how would you like it explained?
->
-> **Format:** Text in chat, a visual HTML page/artifact, or an interactive walkthrough?
->
-> **Approach:** Like I'm five, Make it click, Help me explain it, Help me use it, or Give me the big picture?
->
-> **Audience:** You, a sales teammate, a stakeholder, engineering, or someone else? A reply like "HTML page, Make it click, for sales" is enough.
+**User reply:** "b, 2, a"
 
-**Why this fits:** The referent is visible, format comes first, Like I'm five stays first among modes, and one reply can settle the setup. The response ends here and waits; it does not append an explanation. If no current topic exists, include "What would you like explained?" in the setup instead of inventing a referent.
+**Next action:** Create a single-page visual explanation using Make it click for the user. The equivalent reply "1B, 2:2, 3A" resolves the same choices. Do not ask for confirmation or reinterpret mode 2 as a request to answer question 2 later.
+
+**Why this fits:** The referent is visible, format comes first, and all choices can be supplied in one short reply. Wait after presenting the menu; do not append the explanation. If no current topic exists, ask what to explain without inventing a topic or a recommendation about it.
 
 ## A named topic still needs setup
 
@@ -43,11 +43,30 @@ These are complete short examples and annotated choices, not required templates.
 
 > For caching, I'll keep it brief:
 >
-> **Format:** Text in chat, a visual HTML page/artifact, or an interactive walkthrough?
+> **1. Format**
 >
-> **Approach:** Like I'm five, Make it click, Help me explain it, Help me use it, or Give me the big picture?
+> - **A.** Text in chat **(Recommended)** — quickest way to get the core idea
+> - **B.** Single-page HTML/artifact
+> - **C.** Interactive explainer
+> - **D.** My own answer
 >
-> **Audience:** You, a nontechnical teammate, an engineer new to caching, or someone else?
+> **2. Approach**
+>
+> - **1.** Like I'm five
+> - **2.** Make it click **(Recommended)** — explain what caching does and why
+> - **3.** Help me explain it
+> - **4.** Help me use it
+> - **5.** Give me the big picture
+> - **D.** My own answer
+>
+> **3. Audience** — I need your choice here.
+>
+> - **A.** You
+> - **B.** A nontechnical teammate
+> - **C.** An engineer new to caching
+> - **D.** Someone else — describe them
+>
+> Reply like **"A, 2, A"** or **"1A, 2:2, 3D: my manager"**.
 
 **Why this fits:** The topic and pace are known, but format, approach, and recipient are not. "Quickly" keeps setup concise; it does not select chat. Wait for the reply rather than supplying a brief explanation followed by an offer to make a page.
 
@@ -57,9 +76,16 @@ These are complete short examples and annotated choices, not required templates.
 
 **Example first response:**
 
-> I'll use Like I'm five with adult-appropriate language for sales. Would you like **text in chat**, a **visual HTML page/artifact**, or an **interactive walkthrough**?
+> I'll use Like I'm five with adult-appropriate language for sales. Choose a format:
+>
+> - **A.** Text in chat **(Recommended)** — an easy version to use in conversation
+> - **B.** Single-page HTML/artifact
+> - **C.** Interactive explainer
+> - **D.** My own answer
+>
+> Reply **A**, **B**, **C**, or **D: your answer**.
 
-**User reply:** "An HTML artifact."
+**User reply:** "b"
 
 **Next action:** Create the visual explanation using the visual-delivery reference. Use an available native artifact workspace or a self-contained HTML file. Do not ask for the mode or audience again, and do not substitute a chat-only explanation for the selected artifact.
 
@@ -67,19 +93,115 @@ These are complete short examples and annotated choices, not required templates.
 
 ## A partial answer preserves earlier choices
 
-**Context:** The topic is caching. The first response offered format, approach, and audience choices.
+**Context:** The topic is caching. The first response used the three numbered questions above.
 
-**User reply:** "Interactive, for me."
+**User reply:** "1C, 3A"
 
 **Example next response:**
 
-> An interactive walkthrough of caching for you. Which approach: **Like I'm five**, **Make it click**, **Help me explain it**, **Help me use it**, or **Give me the big picture**? I'd suggest Make it click.
+> An interactive explainer of caching for you. Just **2. Approach** remains:
+>
+> - **1.** Like I'm five
+> - **2.** Make it click **(Recommended)** — connect the controls to how caching works
+> - **3.** Help me explain it
+> - **4.** Help me use it
+> - **5.** Give me the big picture
+> - **D.** My own answer
+>
+> Reply with a number or **D: your answer**.
 
-**User reply:** "Yes, Make it click."
+**User reply:** "2"
 
 **Next action:** Build the walkthrough. Use general examples unless relevant background is known; do not require another audience form. Keep the chosen topic, audience, and format for follow-up edits.
 
 **Why this fits:** Only the unresolved approach is requested. A recommendation is visible and the user can accept it naturally; it does not become a silent default before they reply.
+
+## Custom and ambiguous selections
+
+**Context:** The three-question caching setup above is awaiting a reply.
+
+| Reply | Next action |
+|---|---|
+| "1B, 2:4, 3D: my spouse, who is new to this" | Build the HTML page in Help me use it mode for the stated recipient. Treat 4 as the numbered mode, not D. |
+| "1B, 2:2, 3D" | Preserve HTML and Make it click. Ask only who the custom audience is; a free-text answer is now necessary. |
+| "B" | Ask whether B means format B (HTML) or audience B (nontechnical teammate), with labeled choices and D for a different answer. Do not choose either silently. |
+| "Use your recommendations, for me" | Use chat and Make it click from this menu's recommendations, and the user as audience. Do not ask again. |
+| "HTML, help me use it, for my team" | Accept the natural-language choices without requiring codes. |
+
+**Why this fits:** Labels make replies shorter without becoming a rigid command syntax. Unambiguous choices stand; only unresolved meaning prompts a follow-up. Preserve the original mappings when referring back to them.
+
+## A later clarification uses the same convention
+
+**Context:** The user chose chat and received a conceptual explanation of a rule. They now ask, "Help me choose a better way to understand it."
+
+**Example response:**
+
+> Which route would help most?
+>
+> - **A.** A worked example **(Recommended)** — follow one case through the rule
+> - **B.** An analogy — connect it to something familiar
+> - **C.** A shorter overview — focus on the main idea
+> - **D.** My own answer
+>
+> Reply with a letter, or tell me what you have in mind.
+
+**User reply:** "A"
+
+**Next action:** Give the worked example in the already-selected chat format. Do not restart topic, audience, or format setup.
+
+**Why this fits:** Later clarification uses the same labels, grounded recommendation, and custom-answer route. It does not add a questionnaire to an already clear revision request.
+
+## A guided start becomes a visual brief
+
+**Request:** "/eli guide caching"
+
+**Example first response:**
+
+> Let's set up your caching explainer, starting with the audience.
+>
+> **1. Who is it for?**
+>
+> - **A.** You
+> - **B.** A colleague or team
+> - **C.** A customer
+> - **D.** Someone else — describe them
+>
+> **2. What age/language level should I aim for?**
+>
+> - **1.** Around five
+> - **2.** Around ten
+> - **3.** Around fifteen
+> - **4.** Adult plain language
+> - **D.** My own age or reading preference
+>
+> I need your choices for these. You can reply **"1A, 2:4"**.
+
+**Continuation:** Present only the current round's options, using the guided-interview reference linked from SKILL.md. The following is a trace of the exchange, not one large menu to show upfront.
+
+| User reply | Next action |
+|---|---|
+| "1A, 2:4" | Keep recipient = user and language = adult. Ask question 3 about familiarity and question 4 about purpose; recommend Make it click for general understanding. |
+| "3A, 4:2" | Keep beginner-friendly treatment and Make it click. Ask question 5 about format and question 6 about depth. Recommend an interactive explanation if the planned cache example gives the learner a meaningful input to change, and standard depth. |
+| "5C, 6B" | Keep interactive and standard depth. Ask question 7 about visual style and question 8 about motion. Recommend Academy illustration and learner-controlled steps. |
+| "7A, 8B" | Summarize the brief in one sentence and build. Use a light interface, a large SVG scene explaining cache hits/misses, and useful step controls. Ground the actual caching model or label it as a simplified teaching example. Do not request another confirmation. |
+
+**Why this fits:** The user makes short selections through four small rounds. Each choice changes the eventual explainer. Age affects wording, familiarity affects prerequisites, and the large SVG shows the relationship rather than acting as decoration. The request does not create a native slash command or authorize publishing.
+
+## Guide shortcuts and completed choices
+
+| Request or reply | Expected behavior |
+|---|---|
+| "ELI guide" with no current topic | Ask what to explain first. Do not invent topical choices or assume the subject is the ELI skill. |
+| "ELI guide caching for sales, adult beginners, Make it click, HTML, three minutes" | Skip known audience, age, familiarity, purpose, format, and depth. Start with the two visual questions. |
+| "ELI guide the supplied rule, for adult beginners, text in chat, Make it click, two paragraphs" | The brief is complete and visual questions do not apply. Explain in chat without asking about colors or SVG motion. |
+| "D: for a ten-year-old who already codes" | Preserve both age ten and coding experience; ask only for background relevant to the actual topic if still unknown. Do not infer they are an absolute beginner. |
+| "Use your recommendations, for adult beginners" during a visual interview | Fill remaining preferences with the relevant recommendations/defaults, state the resulting brief, and create the visual. Preserve earlier source, format, and audience choices. |
+| "Build it, no more questions, HTML" | Resolve remaining preferences with the light Academy default, standard depth, and Make it click unless already chosen; build once the topic is clear. |
+| "C" for motion after choosing interactive | Keep useful controls and instant state changes; create a static visual treatment without animation. |
+| "D: match my supplied dark brand guide" | Honor the explicit style override. The light default does not override the user's chosen brand. |
+| "Make it click for adult beginners in HTML, no interview" | Use the ordinary complete-request route and light visual defaults. Do not force guide mode or add style questions. |
+
+**Why this fits:** Guide mode adds useful choices when wanted, while short requests and explicit delegation still work. No optional companion skill, logo package, external font, animation library, or brand-kit download is required to produce the default standalone result.
 
 ## Explicit delegation skips setup
 

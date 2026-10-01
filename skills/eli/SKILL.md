@@ -6,12 +6,15 @@ description: >-
   and everyday situations. Use for ELI, ELI5, "explain like I'm", "make it click",
   "help me explain this", audience-targeted explanations, and "break this down"
   or "walk me through" when the intent is understanding. Starts with clarification
-  and a choice of chat, an HTML page/artifact, or an interactive walkthrough
-  before explaining. Combines five audience-aware modes. Uses available visual
-  workspaces or standalone HTML. Do not hijack implementation-only or
+  and labeled choices of chat, an HTML page/artifact, or an interactive walkthrough
+  before explaining. Use "/eli guide", "ELI guide", or "guide me through an
+  explainer" for a short interview about audience, age, background, purpose,
+  presentation, and visual style. Defaults to polished light visual pages with
+  large explanatory SVGs. Combines five audience-aware modes. Uses available
+  visual workspaces or standalone HTML. Do not hijack implementation-only or
   unrelated writing requests; complete explicitly requested combined tasks.
 metadata:
-  version: "1.2.1"
+  version: "1.3.0"
   author: "Jake Rains"
   category: "learning-and-communication"
   tags: "explanation, teaching, enablement, plain-language, visual-learning"
@@ -28,6 +31,16 @@ This is one portable skill package. Its references are bundled Markdown, not ext
 
 ## 1. Clarify, offer choices, and wait
 
+### Guided start: `/eli guide`
+
+For **`/eli guide [topic]`**, **`ELI guide [topic]`**, or a request to be interviewed about an explainer, read [guided interview](references/guided-interview.md) and start its first unresolved round. Treat these as request phrases; actual slash-command registration belongs to the host. The plain-language form works wherever the skill can be invoked. Do not install a command or claim a slash menu was registered by editing this skill.
+
+The guide replaces the ordinary setup menu with a few short conversational rounds: **audience and age → background and purpose → format and depth → look and motion**. Ask at most two questions at a time, skip known choices, and wait between rounds. Include lettered/numbered options, recommendations where grounded, and D for a custom answer. Age, expertise, role, learning goal, and appearance are separate choices. Selecting an age or ELI5 does not require childish artwork.
+
+An explicit guide request includes choosing the visual treatment even if topic, format, mode, and audience are already known. Skip visual questions for chat output. Accept "use your recommendations" or "build it" to finish the remaining preferences with stated defaults, preserving supplied choices. Once the brief is resolved, summarize it in one sentence and create the result without another approval step. A request to edit the guide itself is skill authoring, not an invocation of the interview.
+
+### Ordinary ELI setup
+
 Follow this flow: **resolve the topic → collect missing choices → wait for the reply → explain or build → check and deliver**. Setup is the first part of an explanation request, including one that already names a topic. Do not reserve it for a bare "ELI."
 
 Track four choices: **topic/source**, **format**, **mode or learning goal**, and **recipient and relevant background**. Reuse explicit instructions and relevant current-conversation choices. A known topic alone does not make the request complete; the fact that the user typed in chat does not select chat output.
@@ -36,20 +49,49 @@ Track four choices: **topic/source**, **format**, **mode or learning goal**, and
 
 1. **Topic:** Name the clear current referent briefly. If none exists, ask what to explain; if materially different referents remain, ask which one. Do not invent a topic.
 2. **Format:** Unless already chosen, visibly offer **Text in chat / Visual HTML page or artifact / Interactive walkthrough**. Describe the page as a visual explanation and the walkthrough as a guided experience with useful controls. Use a native artifact workspace when available, otherwise a standalone HTML file. A larger site is an option when requested, not the default.
-3. **Approach:** Unless the learning goal is already clear, offer **Like I'm five / Make it click / Help me explain it / Help me use it / Give me the big picture**, in that order. Recommend **Make it click** when useful, but do not silently select it to bypass setup. Accept a natural-language goal without requiring its preset name.
-4. **Audience:** Unless known, ask who the explanation is for and any relevant background. Suggest two to four audiences from the current topic plus **someone else**; do not display the full audience catalog or inspect unrelated private records. "For me" resolves the recipient; ask about expertise only when it would materially change the explanation.
+3. **Approach:** Unless the learning goal is already clear, offer **1. Like I'm five / 2. Make it click / 3. Help me explain it / 4. Help me use it / 5. Give me the big picture**, followed by **D. My own answer**. Recommend **Make it click** when useful, but do not silently select it to bypass setup. Accept a natural-language goal without requiring its preset name.
+4. **Audience:** Unless known, ask who the explanation is for and any relevant background. Suggest up to three audiences from the current topic as **A–C**, plus **D. Someone else — describe them**; do not display the full audience catalog or inspect unrelated private records. "For me" resolves the recipient; ask about expertise only when it would materially change the explanation.
 
-Use an available choice interface or ordinary text. Show only the missing choices. For example, with a known topic and no other choices:
+### Make every clarification easy to answer
+
+Apply this convention to setup and later clarification about scope, sources, ambiguity, depth, or revisions whenever useful choices exist:
+
+- Give each option a visible label on its own line. Normally use **A, B, C** for up to three useful options and reserve **D. My own answer — tell me** for free text. Do not invent filler options just to reach C. For longer menus, use numbered choices and still append **D. My own answer**; keep all five teaching modes available.
+- Mark one suitable choice **(Recommended)** and give a short reason tied to the current request. Keep labels and menu order stable rather than moving the recommendation to the top. For format, always use **A. Text in chat / B. Single-page HTML or artifact / C. Interactive explainer / D. My own answer**. Recommend chat for a quick verbal explanation, a page for a visual overview, or interaction when changing something helps reveal the concept. A recommendation is not a selection.
+- Recommend a preference when context supports one, not an unknown fact. Do not recommend which document is authoritative, who the recipient is, or what a number means without evidence. If there is no sound basis, omit the recommendation and say briefly that the choice depends on the user. If no useful choices can be grounded, ask one concise free-text question rather than inventing options.
+- When bundling questions, number the questions and name each field. Show a short reply example using the actual labels, such as **"1B, 2:2, 3A"** or **"B, 2, A"** for format B, approach 2, audience A. For a single question, **"B"** or a displayed number is enough. Accept lowercase, natural-language answers, combinations, and **"use your recommendations"** as well.
+- Match selections to the displayed question and labels. An ordered answer can resolve the whole bundle; a lone label with several unresolved questions needs clarification only when its target is ambiguous. Preserve question numbers and option mappings on follow-up. Never apply one bare letter to every question or silently reinterpret a numeric mode choice as a question number.
+- Accept **"D: [custom answer]"** or free text directly. If the user sends only D, ask for their answer for that field without repeating its menu. Ask only about what remains missing or ambiguous. Do not ask users to confirm an unambiguous selection.
+- Use a choice interface when it supports this interaction and the host permits it; otherwise use ordinary text. Follow host limits on option count, ordering, and built-in free-text choices. Do not rely on hidden UI labels: keep a clear text mapping for short replies when needed.
+
+Show only the missing choices. For example, with a known topic and no other choices:
 
 > For the course checkpoint we're discussing:
 >
-> **Format:** Text in chat, a visual HTML page/artifact, or an interactive walkthrough?
+> **1. Format**
 >
-> **Approach:** Like I'm five, Make it click, Help me explain it, Help me use it, or Give me the big picture?
+> - **A.** Text in chat
+> - **B.** Single-page HTML/artifact **(Recommended)** — show how the checkpoint fits the learner's route
+> - **C.** Interactive explainer
+> - **D.** My own answer
 >
-> **Audience:** You, a sales teammate, a stakeholder, or someone else?
+> **2. Approach**
 >
-> A reply like "HTML page, Make it click, for sales" is enough.
+> - **1.** Like I'm five
+> - **2.** Make it click **(Recommended)** — connect the checkpoint to its purpose
+> - **3.** Help me explain it
+> - **4.** Help me use it
+> - **5.** Give me the big picture
+> - **D.** My own answer
+>
+> **3. Audience** — choose who it's for; I don't have enough context to recommend one yet.
+>
+> - **A.** You
+> - **B.** A sales teammate
+> - **C.** A stakeholder
+> - **D.** Someone else — describe them
+>
+> Reply like **"B, 2, A"**, or **"1B, 2:2, 3D: new hires"**.
 
 **After asking, wait.** Do not append the explanation, start creating an artifact, or select defaults while awaiting the user's answer. Accept a combined answer without another form or confirmation. If the answer leaves a choice unresolved, ask only for that choice. Reuse the choices for follow-ups about the same explanation; do not restart the menu each turn. Offering an HTML version after already giving the explanation does not satisfy this setup step.
 
@@ -65,7 +107,7 @@ Proceed directly once setup is resolved or explicitly waived. Read only the refe
 
 ## 2. Choose the mode and audience
 
-Preserve this menu order. These modes are combinable shortcuts, not limits:
+Preserve this menu order and use choices 1–5 when asking; append D for a custom answer. These modes are combinable shortcuts, not limits:
 
 | Mode | Intended result |
 |---|---|
@@ -118,6 +160,8 @@ When a substantial explanation needs a teaching approach, consult [explanation p
 
 **Format is the learning experience. Workspace is where it appears.** Check the capabilities actually exposed in this session, not the product name. HTML can appear inside a native workspace or as a standalone file.
 
+**Default visual direction for all ELI pages and walkthroughs:** clean, polished, light, and spacious, close to ElevenLabs and Eleven Academy's Balanced treatment. Use white/off-white surfaces, graphite type, restrained accents, large purposeful SVG illustrations, and clear controls. Keep the explanation visually led rather than surrounding paragraphs with small icons. Do not default to dark mode, an overall beige wash, neon gradients, or a dense dashboard. Follow explicit style choices and supplied branding; do not infer a dark theme from the device setting.
+
 | Requested experience | Action |
 |---|---|
 | **Text in chat** | Explain directly. Do not create an unsolicited file. |
@@ -125,7 +169,7 @@ When a substantial explanation needs a teaching approach, consult [explanation p
 | **Interactive walkthrough** | Create a guided single-page experience in which actions reveal the concept, using a suitable workspace or standalone HTML. |
 | **Larger site/application** | Use the available site/app workflow only when requested; respect the project's existing stack. Building is not the same as public deployment. |
 
-Follow any design guidance or helper skill the chosen host exposes and requires. For example, use `artifact-design` only where it is supplied and the workflow calls for it. It is not a required ELI dependency. Do not invent a tool, demand a particular companion skill, or switch platforms unasked.
+Use available **svg-animation** guidance for meaningful vector motion and **SVG Logo Designer** guidance for simple, distinctive symbols when relevant; an explainer does not require a logo package. For actual ElevenLabs or Academy work, use available **elevenlabs-brand** and **academy-illustrations** guidance and the project's real assets/components. Keep brand identities intact. The bundled visual reference supplies a portable default if those helpers are unavailable; never require their installation. Follow other design guidance the chosen host requires, such as `artifact-design` where supplied. Do not invent a tool or switch platforms unasked.
 
 Without a suitable workspace, create and attach a **self-contained HTML file** with embedded styles, scripts, and visuals and no required network access or installation by default. A requested advanced feature may justify libraries, but disclose their requirements rather than calling an online-dependent result offline-ready. Without file creation, provide complete HTML code with brief save/open instructions. Claim previews, files, URLs, and publishing only after successful tool results.
 
@@ -133,14 +177,14 @@ For visual or interactive work, read [visual patterns and delivery](references/v
 
 ## 6. Use the bundled references selectively
 
-The four references above are the complete resource set. Read only relevant files or sections, using the host's file-reading or skill-resource interface. Resolve their paths from this skill's directory, not the working project's directory. No external download is needed to read the bundle. If a host cannot expose supporting files, continue from this core and disclose any material limitation rather than claiming to have read them.
+The five bundled references cover the guided interview, explanation patterns, source grounding, visual delivery, and worked examples. Read only relevant files or sections, using the host's file-reading or skill-resource interface. Resolve their paths from this skill's directory, not the working project's directory. No external download is needed to read the bundle. If a host cannot expose supporting files, continue from this core and disclose any material limitation rather than claiming to have read them.
 
 References add examples and conditional detail; they do not override the user's request or the essential rules here. Test prompts and authoring machinery are not prerequisites for using ELI.
 
 ## 7. Check and hand off
 
-Check that setup was resolved or explicitly waived before producing the explanation. Check that the result matches the actual topic, recipient, goal, length, and selected format; that the learner gets the real concept rather than only a metaphor; and that comparisons, calculations, causal claims, and citations are supported. Do not claim learning was achieved without learner evidence.
+Check that clarification choices were labeled, included a custom-answer route and a grounded recommendation when possible, and that short replies were mapped correctly. Check that setup was resolved or explicitly waived before producing the explanation. Check that the result matches the actual topic, recipient, goal, length, and selected format; that the learner gets the real concept rather than only a metaphor; and that comparisons, calculations, causal claims, and citations are supported. Do not claim learning was achieved without learner evidence.
 
-For visuals, review the learning path, labels, mobile layout, keyboard access, motion alternatives, and meaningful state changes. Render and exercise the output when suitable tools are available. Otherwise identify code inspection as inspection, not runtime testing. Verify that an output described as self-contained has no required external assets or calls.
+For visuals, review the selected design brief, light default, prominent teaching artwork, learning path, readable labels, responsive layout, keyboard access, motion alternatives, and meaningful state changes. Prioritize desktop and tablet for Academy/SCORM work. Render and exercise the output when suitable tools are available; inspect animated start, middle, settled, replay, and reduced-motion states. Otherwise identify code inspection as inspection, not runtime testing. Verify that an output described as self-contained has no required external assets or calls.
 
 Deliver the explanation or artifact, not the internal checklist. After a visual, give a short handoff with the actual file/workspace reference and essential limitations, not a duplicate full explanation in chat.
