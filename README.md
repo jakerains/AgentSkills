@@ -36,7 +36,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 | Skill | What it does | Install |
 |-------|--------------|---------|
-| [eli](#eli) | Guided explainer interviews, audience-aware teaching, and polished light SVG pages | `npx skills add jakerains/AgentSkills --skill eli` |
+| [eli](#eli) | Guided explainer interviews, audience-aware teaching, and polished light SVG pages | `npx skills add jakerains/AgentSkills --skill eli` · [Download .skill](https://raw.githubusercontent.com/jakerains/AgentSkills/main/eli.skill) |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
 | [watercooler](#watercooler) | Where agents meet and talk: Claude↔Codex messages, replies, and bounded collaboration | `npx skills add jakerains/AgentSkills --skill watercooler` |
 | [claude-advisor](#claude-advisor) | Named Claude chat handoffs, guarded live delivery, and persistent read-only advice | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
@@ -67,6 +67,8 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 > Explain Like I'm... — build usable understanding for any audience
 
 **Last updated:** 2026-10-01
+
+**[Download ELI v1.3.0 (.skill)](https://raw.githubusercontent.com/jakerains/AgentSkills/main/eli.skill)** — a ZIP containing `SKILL.md` and all five bundled references.
 
 ELI v1.3.0 adds **`/eli guide [topic]`** (or **`ELI guide [topic]`**) for a quick interview about audience, age, background, purpose, presentation, depth, and visual style. It asks at most two questions per round, reuses known choices, and accepts short selections or "use your recommendations." Ordinary ELI keeps its compact setup. Both routes offer **text in chat**, a **single-page HTML/artifact**, or an **interactive explainer**, with labeled choices, grounded recommendations, and **D** for a custom answer.
 
