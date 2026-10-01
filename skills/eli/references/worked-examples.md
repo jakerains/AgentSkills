@@ -2,6 +2,8 @@
 
 These are complete short examples and annotated choices, not required templates. All policies, prices, services, organizations, and numerical scenarios in this file are **fictional teaching fixtures**. Their rule labels are local references to the fixture text, not external citations. Never transfer their details into a real explanation as product facts.
 
+**The chat menus below illustrate text fallback.** When the host exposes a permitted native question picker, ask the same unresolved choices through it, adapting option counts, grouping, recommendations, and custom input. Do not copy these menus into chat instead of using an available picker. See the question-interface reference linked directly from SKILL.md for platform mappings and review scenarios. Native selected IDs/labels settle choices without requiring the user to repeat these letter/number codes.
+
 ## Contents
 
 - [Bare invocation](#bare-invocation)

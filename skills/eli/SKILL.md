@@ -6,7 +6,7 @@ description: >-
   and everyday situations. Use for ELI, ELI5, "explain like I'm", "make it click",
   "help me explain this", audience-targeted explanations, and "break this down"
   or "walk me through" when the intent is understanding. Starts with clarification
-  and labeled choices of chat, an HTML page/artifact, or an interactive walkthrough
+  and native question pickers (labeled text fallback) for chat, an HTML page/artifact, or an interactive walkthrough
   before explaining. Use "/eli guide", "ELI guide", or "guide me through an
   explainer" for a short interview about audience, age, background, purpose,
   presentation, and visual style. Defaults to polished light visual pages with
@@ -14,7 +14,7 @@ description: >-
   visual workspaces or standalone HTML. Do not hijack implementation-only or
   unrelated writing requests; complete explicitly requested combined tasks.
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   author: "Jake Rains"
   category: "learning-and-communication"
   tags: "explanation, teaching, enablement, plain-language, visual-learning"
@@ -35,7 +35,7 @@ This is one portable skill package. Its references are bundled Markdown, not ext
 
 For **`/eli guide [topic]`**, **`ELI guide [topic]`**, or a request to be interviewed about an explainer, read [guided interview](references/guided-interview.md) and start its first unresolved round. Treat these as request phrases; actual slash-command registration belongs to the host. The plain-language form works wherever the skill can be invoked. Do not install a command or claim a slash menu was registered by editing this skill.
 
-The guide replaces the ordinary setup menu with a few short conversational rounds: **audience and age → background and purpose → format and depth → look and motion**. Ask at most two questions at a time, skip known choices, and wait between rounds. Include lettered/numbered options, recommendations where grounded, and D for a custom answer. Age, expertise, role, learning goal, and appearance are separate choices. Selecting an age or ELI5 does not require childish artwork.
+The guide replaces the ordinary setup menu with a few short conversational rounds: **audience and age → background and purpose → format and depth → look and motion**. Ask at most two questions at a time, skip known choices, and wait between rounds. Use the host's native question picker as described below, with grounded recommendations and a custom-answer path. Use lettered/numbered options and D for custom answers in text fallback. Age, expertise, role, learning goal, and appearance are separate choices. Selecting an age or ELI5 does not require childish artwork.
 
 An explicit guide request includes choosing the visual treatment even if topic, format, mode, and audience are already known. Skip visual questions for chat output. Accept "use your recommendations" or "build it" to finish the remaining preferences with stated defaults, preserving supplied choices. Once the brief is resolved, summarize it in one sentence and create the result without another approval step. A request to edit the guide itself is skill authoring, not an invocation of the interview.
 
@@ -45,16 +45,27 @@ Follow this flow: **resolve the topic → collect missing choices → wait for t
 
 Track four choices: **topic/source**, **format**, **mode or learning goal**, and **recipient and relevant background**. Reuse explicit instructions and relevant current-conversation choices. A known topic alone does not make the request complete; the fact that the user typed in chat does not select chat output.
 
-### Collect the missing choices in one compact turn
+### Collect the missing choices compactly within the host's limits
 
 1. **Topic:** Name the clear current referent briefly. If none exists, ask what to explain; if materially different referents remain, ask which one. Do not invent a topic.
 2. **Format:** Unless already chosen, visibly offer **Text in chat / Visual HTML page or artifact / Interactive walkthrough**. Describe the page as a visual explanation and the walkthrough as a guided experience with useful controls. Use a native artifact workspace when available, otherwise a standalone HTML file. A larger site is an option when requested, not the default.
-3. **Approach:** Unless the learning goal is already clear, offer **1. Like I'm five / 2. Make it click / 3. Help me explain it / 4. Help me use it / 5. Give me the big picture**, followed by **D. My own answer**. Recommend **Make it click** when useful, but do not silently select it to bypass setup. Accept a natural-language goal without requiring its preset name.
-4. **Audience:** Unless known, ask who the explanation is for and any relevant background. Suggest up to three audiences from the current topic as **A–C**, plus **D. Someone else — describe them**; do not display the full audience catalog or inspect unrelated private records. "For me" resolves the recipient; ask about expertise only when it would materially change the explanation.
+3. **Approach:** Unless the learning goal is already clear, offer **Like I'm five / Make it click / Help me explain it / Help me use it / Give me the big picture**, plus a custom-answer path. Use grouped questions if the picker cannot fit all five; use **1–5, then D** in text fallback. Recommend **Make it click** when useful, but do not silently select it to bypass setup. Accept a natural-language goal without requiring its preset name.
+4. **Audience:** Unless known, ask who the explanation is for and any relevant background. Suggest up to three audiences from the current topic, plus a custom-answer path; use **A–C, then D. Someone else — describe them** in text fallback. Do not display the full audience catalog or inspect unrelated private records. "For me" resolves the recipient; ask about expertise only when it would materially change the explanation.
+
+### Prefer the host's native question picker
+
+For setup, the guide, and later clarifications, **use an available, permitted native structured question or user-input tool** without waiting for the user to request it. Inspect the tools and schemas exposed in this session; tool names belong to the harness, not the model provider. Examples include Claude Code's `AskUserQuestion`, Cursor's `AskQuestion`, Codex's `request_user_input` / `request_user_input_async`, and other hosts' equivalents. Read [question interfaces](references/question-interface.md) for platform mappings and adaptation rules. Never call an example name unless it is actually available.
+
+- Follow the actual schema and host rules for question count, option count, ordering, custom input, and current-mode availability. Keep guide rounds at two questions or fewer even if the tool permits more. Group longer menus into short follow-ups so every choice remains reachable; do not abandon a usable native picker just because one menu is too long.
+- Use the native custom/free-text entry when provided; do not add a duplicate **D/Other** option. Otherwise provide a custom-answer option and a supported way to enter it. Label recommendations where grounded, and put them first if the host requires that. Native selection IDs or returned labels determine the answer, not the fallback menu's positions.
+- Use multi-select only when both the schema and question allow combinations. Use option previews for visual choices only when the current tool supports them. Do not invent `multiSelect`, `preview`, or other fields, assume identical CLI/desktop rendering, or change modes/install tools to obtain a picker.
+- Do not duplicate the native form in chat or require users to retype a clicked selection. An asynchronous request remains pending until an answer arrives; continue only independent work. Never treat a highlighted default or elapsed time as an answer. Respect the host's skip/cancel/no-answer behavior; if it directs proceeding on optional preferences, state assumptions instead of claiming they were chosen. Still resolve a missing topic.
+
+If no suitable native tool is available or allowed, use the text convention below and wait for a reply. Do not build a custom question UI as part of the interview. The selected explainer's final format is independent of the interface used to ask questions.
 
 ### Make every clarification easy to answer
 
-Apply this convention to setup and later clarification about scope, sources, ambiguity, depth, or revisions whenever useful choices exist:
+In text fallback, apply this convention to setup and later clarification about scope, sources, ambiguity, depth, or revisions whenever useful choices exist. Ground recommendations and accept natural-language answers in either interface:
 
 - Give each option a visible label on its own line. Normally use **A, B, C** for up to three useful options and reserve **D. My own answer — tell me** for free text. Do not invent filler options just to reach C. For longer menus, use numbered choices and still append **D. My own answer**; keep all five teaching modes available.
 - Mark one suitable choice **(Recommended)** and give a short reason tied to the current request. Keep labels and menu order stable rather than moving the recommendation to the top. For format, always use **A. Text in chat / B. Single-page HTML or artifact / C. Interactive explainer / D. My own answer**. Recommend chat for a quick verbal explanation, a page for a visual overview, or interaction when changing something helps reveal the concept. A recommendation is not a selection.
@@ -62,9 +73,9 @@ Apply this convention to setup and later clarification about scope, sources, amb
 - When bundling questions, number the questions and name each field. Show a short reply example using the actual labels, such as **"1B, 2:2, 3A"** or **"B, 2, A"** for format B, approach 2, audience A. For a single question, **"B"** or a displayed number is enough. Accept lowercase, natural-language answers, combinations, and **"use your recommendations"** as well.
 - Match selections to the displayed question and labels. An ordered answer can resolve the whole bundle; a lone label with several unresolved questions needs clarification only when its target is ambiguous. Preserve question numbers and option mappings on follow-up. Never apply one bare letter to every question or silently reinterpret a numeric mode choice as a question number.
 - Accept **"D: [custom answer]"** or free text directly. If the user sends only D, ask for their answer for that field without repeating its menu. Ask only about what remains missing or ambiguous. Do not ask users to confirm an unambiguous selection.
-- Use a choice interface when it supports this interaction and the host permits it; otherwise use ordinary text. Follow host limits on option count, ordering, and built-in free-text choices. Do not rely on hidden UI labels: keep a clear text mapping for short replies when needed.
+- If the user replies with a letter or number to a native form, map it only to labels actually shown by that form. Clarify an ambiguous reply; never import the text fallback's ordering into a reordered native picker.
 
-Show only the missing choices. For example, with a known topic and no other choices:
+Show only the missing choices. This is a **text fallback example** with a known topic and no other choices; prefer the native picker when available:
 
 > For the course checkpoint we're discussing:
 >
@@ -93,7 +104,7 @@ Show only the missing choices. For example, with a known topic and no other choi
 >
 > Reply like **"B, 2, A"**, or **"1B, 2:2, 3D: new hires"**.
 
-**After asking, wait.** Do not append the explanation, start creating an artifact, or select defaults while awaiting the user's answer. Accept a combined answer without another form or confirmation. If the answer leaves a choice unresolved, ask only for that choice. Reuse the choices for follow-ups about the same explanation; do not restart the menu each turn. Offering an HTML version after already giving the explanation does not satisfy this setup step.
+**After asking, wait.** Do not append the explanation, start creating an artifact, or select defaults while awaiting the user's answer. Follow native skip/cancel/no-answer handling above when applicable. Accept a combined answer without another form or confirmation. If the answer leaves a choice unresolved, ask only for that choice. Reuse the choices for follow-ups about the same explanation; do not restart the menu each turn. Offering an HTML version after already giving the explanation does not satisfy this setup step.
 
 ### Recognize choices and explicit shortcuts
 
@@ -107,7 +118,7 @@ Proceed directly once setup is resolved or explicitly waived. Read only the refe
 
 ## 2. Choose the mode and audience
 
-Preserve this menu order and use choices 1–5 when asking; append D for a custom answer. These modes are combinable shortcuts, not limits:
+Preserve this menu order with choices 1–5 and D for a custom answer in text fallback. Adapt native questions to the host's limits and ordering while preserving these meanings. These modes are combinable shortcuts, not limits:
 
 | Mode | Intended result |
 |---|---|
@@ -177,13 +188,13 @@ For visual or interactive work, read [visual patterns and delivery](references/v
 
 ## 6. Use the bundled references selectively
 
-The five bundled references cover the guided interview, explanation patterns, source grounding, visual delivery, and worked examples. Read only relevant files or sections, using the host's file-reading or skill-resource interface. Resolve their paths from this skill's directory, not the working project's directory. No external download is needed to read the bundle. If a host cannot expose supporting files, continue from this core and disclose any material limitation rather than claiming to have read them.
+The six bundled references cover question interfaces, the guided interview, explanation patterns, source grounding, visual delivery, and worked examples. Read only relevant files or sections, using the host's file-reading or skill-resource interface. Resolve their paths from this skill's directory, not the working project's directory. No external download is needed to read the bundle. If a host cannot expose supporting files, continue from this core and disclose any material limitation rather than claiming to have read them.
 
 References add examples and conditional detail; they do not override the user's request or the essential rules here. Test prompts and authoring machinery are not prerequisites for using ELI.
 
 ## 7. Check and hand off
 
-Check that clarification choices were labeled, included a custom-answer route and a grounded recommendation when possible, and that short replies were mapped correctly. Check that setup was resolved or explicitly waived before producing the explanation. Check that the result matches the actual topic, recipient, goal, length, and selected format; that the learner gets the real concept rather than only a metaphor; and that comparisons, calculations, causal claims, and citations are supported. Do not claim learning was achieved without learner evidence.
+Check that clarification used a permitted native picker when available, respected its schema, included a custom-answer route and a grounded recommendation when possible, and mapped selections correctly. Otherwise check the labeled text fallback. Check that setup was resolved, explicitly waived, or handled under the host's optional no-answer policy before producing the explanation. Check that the result matches the actual topic, recipient, goal, length, and selected format; that the learner gets the real concept rather than only a metaphor; and that comparisons, calculations, causal claims, and citations are supported. Do not claim learning was achieved without learner evidence.
 
 For visuals, review the selected design brief, light default, prominent teaching artwork, learning path, readable labels, responsive layout, keyboard access, motion alternatives, and meaningful state changes. Prioritize desktop and tablet for Academy/SCORM work. Render and exercise the output when suitable tools are available; inspect animated start, middle, settled, replay, and reduced-motion states. Otherwise identify code inspection as inspection, not runtime testing. Verify that an output described as self-contained has no required external assets or calls.
 
