@@ -22,8 +22,8 @@ Documentation checked **2026-10-01**. Names, availability, and rendering can cha
 ## Adapt the interview, not the task
 
 1. Resolve only missing information. Use the permitted question tool for that information; keep guide rounds at **at most two questions**, or one if the host requires it. Do not switch operating modes to unlock a tool.
-2. Use concise, distinct option labels with short explanations where supported. Mark one grounded recommendation; obey any required ordering. Preserve semantic choices separately from display positions. Never call an RPC event, approval tool, or guessed alias as though it were a question tool.
-3. Preserve custom answers. Omit D/Other when the UI already adds a text entry. Otherwise offer “My own answer” if the schema allows it, then collect the actual text through the host's supported free-text question or chat. Do not treat the literal word “Other” as the requested audience or format.
+2. Use concise, distinct option labels with short explanations where supported. Mark one grounded recommendation; obey any required ordering. Preserve semantic choices separately from display positions. Keep the native interface's own numbering/lettering without adding competing prefixes; if supplying choice labels yourself, use letters throughout. Never call an RPC event, approval tool, or guessed alias as though it were a question tool.
+3. Preserve custom answers. Omit a custom/Other option when the UI already adds a text entry. Otherwise offer “My own answer” if the schema allows it, then collect the actual text through the host's supported free-text question or chat. Do not treat the literal word “Other” as the requested audience or format.
 4. Fit long menus with grouped questions. Do not truncate choices, pack several selectable goals into one ambiguous option, or exceed a tool's cap. For a three-option cap with built-in custom text, ask **Understand it** versus **Explain or apply it**, then offer the corresponding modes: **Like I'm five / Make it click / Give me the big picture**, or **Help me explain it / Help me use it**. Include a custom path at each step. If custom input requires an explicit option, reserve a slot and split groups further as needed. State these are groups, not final modes.
 5. Apply the same approach to age/language choices if needed: **Very simple / Teen-level / Adult plain language**, then distinguish **Around five / Around ten** when Very simple is selected. Preserve a custom age or education preference without forcing it into a preset. Grouping may add a round; skip it when the answer is already known.
 6. Use multi-select only for compatible choices, such as combining teaching goals. Format and reading level ordinarily require one choice. If multi-select is unavailable, accept a combination through free text. Never invent a field to enable it.
@@ -38,7 +38,7 @@ Claude's SDK documents opt-in `toolConfig.askUserQuestion.previewFormat` with Ma
 
 ## Text fallback
 
-When a native picker is unavailable, forbidden for this question, or fails with an unavailable-capability error, use the core's A–C options plus **D. My own answer**; use 1–5 plus D for the five modes. Mark a grounded recommendation and show a short reply example. If no useful options exist, ask one free-text question. Preserve prior answers when changing interfaces and ask only what remains unresolved. Do not retry a rejected tool indefinitely or build a replacement questionnaire app.
+When a native picker is unavailable, forbidden for this question, or fails with an unavailable-capability error, use letters for all answer options and put **My own answer** last with the next unused letter: A–C plus D for three presets, A–D plus E for age/language, and A–E plus F for the five modes. Question numbers identify questions only; a reply such as **1B, 2D** means question 1 option B and question 2 option D. Never mix numeric and lettered answer options. Mark a grounded recommendation and show a short reply example. If no useful options exist, ask one free-text question. Preserve prior answers when changing interfaces and ask only what remains unresolved. Do not retry a rejected tool indefinitely or build a replacement questionnaire app.
 
 ## Review scenarios
 
@@ -49,7 +49,7 @@ These are expected behaviors for reviewing this skill, not claims of executed pl
 | `ELI guide caching` in a host with a native picker | Ask the first unresolved round through that picker; do not paste the whole guide into chat. |
 | Claude model in Cursor with only `AskQuestion` exposed | Use `AskQuestion`, never invent `AskUserQuestion`. |
 | Three-option cap; five teaching modes | Use grouped questions; all five modes and custom answers remain reachable. |
-| Native UI supplies Other | Send only real choices; no duplicate D/Other. |
+| Native UI supplies Other | Send only real choices; no duplicate custom/Other option. |
 | HTML recommended and required to appear first | Put HTML first; its returned identity selects HTML, regardless of fallback B. |
 | User enters a custom audience | Record it directly; do not require a preset or repeat the form. |
 | No `preview` or multi-select field in the schema | Use supported labels/descriptions and custom text; do not send unsupported fields. |

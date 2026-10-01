@@ -14,7 +14,7 @@ description: >-
   visual workspaces or standalone HTML. Do not hijack implementation-only or
   unrelated writing requests; complete explicitly requested combined tasks.
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
   author: "Jake Rains"
   category: "learning-and-communication"
   tags: "explanation, teaching, enablement, plain-language, visual-learning"
@@ -35,7 +35,7 @@ This is one portable skill package. Its references are bundled Markdown, not ext
 
 For **`/eli guide [topic]`**, **`ELI guide [topic]`**, or a request to be interviewed about an explainer, read [guided interview](references/guided-interview.md) and start its first unresolved round. Treat these as request phrases; actual slash-command registration belongs to the host. The plain-language form works wherever the skill can be invoked. Do not install a command or claim a slash menu was registered by editing this skill.
 
-The guide replaces the ordinary setup menu with a few short conversational rounds: **audience and age → background and purpose → format and depth → look and motion**. Ask at most two questions at a time, skip known choices, and wait between rounds. Use the host's native question picker as described below, with grounded recommendations and a custom-answer path. Use lettered/numbered options and D for custom answers in text fallback. Age, expertise, role, learning goal, and appearance are separate choices. Selecting an age or ELI5 does not require childish artwork.
+The guide replaces the ordinary setup menu with a few short conversational rounds: **audience and age → background and purpose → format and depth → look and motion**. Ask at most two questions at a time, skip known choices, and wait between rounds. Use the host's native question picker as described below, with grounded recommendations and a custom-answer path. Use letters for all answer options in text fallback, with the custom answer last. Age, expertise, role, learning goal, and appearance are separate choices. Selecting an age or ELI5 does not require childish artwork.
 
 An explicit guide request includes choosing the visual treatment even if topic, format, mode, and audience are already known. Skip visual questions for chat output. Accept "use your recommendations" or "build it" to finish the remaining preferences with stated defaults, preserving supplied choices. Once the brief is resolved, summarize it in one sentence and create the result without another approval step. A request to edit the guide itself is skill authoring, not an invocation of the interview.
 
@@ -49,15 +49,16 @@ Track four choices: **topic/source**, **format**, **mode or learning goal**, and
 
 1. **Topic:** Name the clear current referent briefly. If none exists, ask what to explain; if materially different referents remain, ask which one. Do not invent a topic.
 2. **Format:** Unless already chosen, visibly offer **Text in chat / Visual HTML page or artifact / Interactive walkthrough**. Describe the page as a visual explanation and the walkthrough as a guided experience with useful controls. Use a native artifact workspace when available, otherwise a standalone HTML file. A larger site is an option when requested, not the default.
-3. **Approach:** Unless the learning goal is already clear, offer **Like I'm five / Make it click / Help me explain it / Help me use it / Give me the big picture**, plus a custom-answer path. Use grouped questions if the picker cannot fit all five; use **1–5, then D** in text fallback. Recommend **Make it click** when useful, but do not silently select it to bypass setup. Accept a natural-language goal without requiring its preset name.
-4. **Audience:** Unless known, ask who the explanation is for and any relevant background. Suggest up to three audiences from the current topic, plus a custom-answer path; use **A–C, then D. Someone else — describe them** in text fallback. Do not display the full audience catalog or inspect unrelated private records. "For me" resolves the recipient; ask about expertise only when it would materially change the explanation.
+3. **Approach:** Unless the learning goal is already clear, offer **Like I'm five / Make it click / Help me explain it / Help me use it / Give me the big picture**, plus a custom-answer path. Use grouped questions if the picker cannot fit all five; use **A–E, then F. My own answer** in text fallback. Recommend **Make it click** when useful, but do not silently select it to bypass setup. Accept a natural-language goal without requiring its preset name.
+4. **Audience:** Unless known, ask who the explanation is for and any relevant background. Suggest up to three audiences from the current topic, plus a custom-answer path; for three presets, use **A–C, then D. Someone else — describe them** in text fallback. With fewer presets, use consecutive letters and the next letter for the custom answer. Do not display the full audience catalog or inspect unrelated private records. "For me" resolves the recipient; ask about expertise only when it would materially change the explanation.
 
 ### Prefer the host's native question picker
 
 For setup, the guide, and later clarifications, **use an available, permitted native structured question or user-input tool** without waiting for the user to request it. Inspect the tools and schemas exposed in this session; tool names belong to the harness, not the model provider. Examples include Claude Code's `AskUserQuestion`, Cursor's `AskQuestion`, Codex's `request_user_input` / `request_user_input_async`, and other hosts' equivalents. Read [question interfaces](references/question-interface.md) for platform mappings and adaptation rules. Never call an example name unless it is actually available.
 
 - Follow the actual schema and host rules for question count, option count, ordering, custom input, and current-mode availability. Keep guide rounds at two questions or fewer even if the tool permits more. Group longer menus into short follow-ups so every choice remains reachable; do not abandon a usable native picker just because one menu is too long.
-- Use the native custom/free-text entry when provided; do not add a duplicate **D/Other** option. Otherwise provide a custom-answer option and a supported way to enter it. Label recommendations where grounded, and put them first if the host requires that. Native selection IDs or returned labels determine the answer, not the fallback menu's positions.
+- Use the native custom/free-text entry when provided; do not add a duplicate **My own answer/Other** option. Otherwise provide a custom-answer option and a supported way to enter it. Label recommendations where grounded, and put them first if the host requires that. Native selection IDs or returned labels determine the answer, not the fallback menu's positions.
+- Keep one option-label scheme within the native interface. If the host automatically supplies numbers or letters, use those controls without adding competing prefixes. If adding choice labels yourself, use letters consistently. Numbered question headings identify questions, not answer options.
 - Use multi-select only when both the schema and question allow combinations. Use option previews for visual choices only when the current tool supports them. Do not invent `multiSelect`, `preview`, or other fields, assume identical CLI/desktop rendering, or change modes/install tools to obtain a picker.
 - Do not duplicate the native form in chat or require users to retype a clicked selection. An asynchronous request remains pending until an answer arrives; continue only independent work. Never treat a highlighted default or elapsed time as an answer. Respect the host's skip/cancel/no-answer behavior; if it directs proceeding on optional preferences, state assumptions instead of claiming they were chosen. Still resolve a missing topic.
 
@@ -67,12 +68,12 @@ If no suitable native tool is available or allowed, use the text convention belo
 
 In text fallback, apply this convention to setup and later clarification about scope, sources, ambiguity, depth, or revisions whenever useful choices exist. Ground recommendations and accept natural-language answers in either interface:
 
-- Give each option a visible label on its own line. Normally use **A, B, C** for up to three useful options and reserve **D. My own answer — tell me** for free text. Do not invent filler options just to reach C. For longer menus, use numbered choices and still append **D. My own answer**; keep all five teaching modes available.
+- Use **letters for every answer list**: A, B, C, and onward, with each option on its own line. Put **My own answer** last with the next unused letter: D after three presets, E after four age/language presets, or F after all five teaching modes. Do not add filler options or switch longer menus to numbers. Use numbers only to identify questions, never as answer-option labels in text fallback.
 - Mark one suitable choice **(Recommended)** and give a short reason tied to the current request. Keep labels and menu order stable rather than moving the recommendation to the top. For format, always use **A. Text in chat / B. Single-page HTML or artifact / C. Interactive explainer / D. My own answer**. Recommend chat for a quick verbal explanation, a page for a visual overview, or interaction when changing something helps reveal the concept. A recommendation is not a selection.
 - Recommend a preference when context supports one, not an unknown fact. Do not recommend which document is authoritative, who the recipient is, or what a number means without evidence. If there is no sound basis, omit the recommendation and say briefly that the choice depends on the user. If no useful choices can be grounded, ask one concise free-text question rather than inventing options.
-- When bundling questions, number the questions and name each field. Show a short reply example using the actual labels, such as **"1B, 2:2, 3A"** or **"B, 2, A"** for format B, approach 2, audience A. For a single question, **"B"** or a displayed number is enough. Accept lowercase, natural-language answers, combinations, and **"use your recommendations"** as well.
-- Match selections to the displayed question and labels. An ordered answer can resolve the whole bundle; a lone label with several unresolved questions needs clarification only when its target is ambiguous. Preserve question numbers and option mappings on follow-up. Never apply one bare letter to every question or silently reinterpret a numeric mode choice as a question number.
-- Accept **"D: [custom answer]"** or free text directly. If the user sends only D, ask for their answer for that field without repeating its menu. Ask only about what remains missing or ambiguous. Do not ask users to confirm an unambiguous selection.
+- When bundling questions, number the questions and name each field. Show a short reply example using the actual labels, such as **"1B, 2B, 3A"** or **"B, B, A"** for format B, approach B, audience A. Explain that numbers identify questions and letters select answers. For a single question, **"B"** is enough. Accept lowercase, natural-language answers, combinations, and **"use your recommendations"** as well.
+- Match selections to the displayed question and labels. An ordered answer can resolve the whole bundle; a lone label with several unresolved questions needs clarification only when its target is ambiguous. Preserve question numbers and option mappings on follow-up. Never apply one bare letter to every question or invent a numeric option mapping that was not displayed.
+- Accept the displayed custom letter with text, such as **"D: [custom format]"** or **"F: [custom goal]"**, or free text directly. If the user sends only that custom letter, ask for their answer for that field without repeating its menu. D is an ordinary preset in longer lists; never treat it as custom unless the displayed menu says so. Ask only about what remains missing or ambiguous. Do not ask users to confirm an unambiguous selection.
 - If the user replies with a letter or number to a native form, map it only to labels actually shown by that form. Clarify an ambiguous reply; never import the text fallback's ordering into a reordered native picker.
 
 Show only the missing choices. This is a **text fallback example** with a known topic and no other choices; prefer the native picker when available:
@@ -88,12 +89,12 @@ Show only the missing choices. This is a **text fallback example** with a known 
 >
 > **2. Approach**
 >
-> - **1.** Like I'm five
-> - **2.** Make it click **(Recommended)** — connect the checkpoint to its purpose
-> - **3.** Help me explain it
-> - **4.** Help me use it
-> - **5.** Give me the big picture
-> - **D.** My own answer
+> - **A.** Like I'm five
+> - **B.** Make it click **(Recommended)** — connect the checkpoint to its purpose
+> - **C.** Help me explain it
+> - **D.** Help me use it
+> - **E.** Give me the big picture
+> - **F.** My own answer
 >
 > **3. Audience** — choose who it's for; I don't have enough context to recommend one yet.
 >
@@ -102,7 +103,7 @@ Show only the missing choices. This is a **text fallback example** with a known 
 > - **C.** A stakeholder
 > - **D.** Someone else — describe them
 >
-> Reply like **"B, 2, A"**, or **"1B, 2:2, 3D: new hires"**.
+> Reply like **"B, B, A"**, or **"1B, 2B, 3D: new hires"**. Numbers identify questions; letters select answers.
 
 **After asking, wait.** Do not append the explanation, start creating an artifact, or select defaults while awaiting the user's answer. Follow native skip/cancel/no-answer handling above when applicable. Accept a combined answer without another form or confirmation. If the answer leaves a choice unresolved, ask only for that choice. Reuse the choices for follow-ups about the same explanation; do not restart the menu each turn. Offering an HTML version after already giving the explanation does not satisfy this setup step.
 
@@ -118,7 +119,7 @@ Proceed directly once setup is resolved or explicitly waived. Read only the refe
 
 ## 2. Choose the mode and audience
 
-Preserve this menu order with choices 1–5 and D for a custom answer in text fallback. Adapt native questions to the host's limits and ordering while preserving these meanings. These modes are combinable shortcuts, not limits:
+Preserve this menu order with choices A–E and F for a custom answer in text fallback. Adapt native questions to the host's limits and ordering while preserving these meanings. These modes are combinable shortcuts, not limits:
 
 | Mode | Intended result |
 |---|---|

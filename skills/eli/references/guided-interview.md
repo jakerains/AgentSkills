@@ -2,16 +2,16 @@
 
 Use this route for `/eli guide [topic]`, `ELI guide [topic]`, or an explicit request for help choosing an explainer's audience, approach, and appearance. This is a conversation, not a form to build or a new application. The guide replaces ordinary setup; do not run both menus.
 
-**Use the native question picker first**, following the question-interface reference linked from SKILL.md. The menus below define the choices; their A–D/number layouts are text fallbacks. Adapt question counts, option ordering, custom input, and long menus to the exposed tool. Do not copy a five-option menu into a tool capped at three or add D when the UI already supplies free text. Keep every choice reachable through short grouped follow-ups.
+**Use the native question picker first**, following the question-interface reference linked from SKILL.md. The menus below define the choices; their lettered answer lists are text fallbacks. Adapt question counts, option ordering, custom input, and long menus to the exposed tool. Do not copy a five-option menu into a tool capped at three or add a custom option when the UI already supplies free text. Keep every choice reachable through short grouped follow-ups.
 
 ## Keep the interview quick
 
 - Resolve the topic from the current conversation or supplied topic. If missing, ask what to explain first. Offer actual current referents when available; otherwise use one free-text question. Do not recommend an invented subject.
 - Usually use three or four small rounds, at most two questions per reply. Skip questions already answered and omit whole rounds that do not apply. Show only the current round, with a short label such as "Audience" or "Presentation". Do not promise a fixed turn count.
-- For text fallback, number questions consecutively as they are first shown. Keep each question's number and option mapping on follow-up. Give an example such as "1A, 2:4" using the actual displayed labels. For native forms, use their returned question/option mappings without asking the user to repeat selections. Accept ordinary language too.
-- Mark a grounded recommendation and give a few words of reason; do not recommend personal facts such as someone's age or identity without evidence. Use the native custom entry, or the core's lettered choices and D in text fallback.
+- For text fallback, number questions consecutively as they are first shown. Keep each question's number and option mapping on follow-up. Give an example such as "1A, 2D" using the actual displayed labels. For native forms, use their returned question/option mappings without asking the user to repeat selections. Accept ordinary language too.
+- Mark a grounded recommendation and give a few words of reason; do not recommend personal facts such as someone's age or identity without evidence. Use the native custom entry, or the core's lettered choices with the next unused letter for custom answers in text fallback.
 - Collect a working brief internally: topic/source, recipient, age or reading preference, subject familiarity, purpose/mode, format, depth, visual direction, and motion. Record user choices separately from delegated defaults. No file or template is required for this brief.
-- A choice is answered once. Ask a narrow follow-up only for a consequential ambiguity. For D alone, request the custom answer for that field. Do not reset the interview after a correction or require personal information that is unnecessary to the explanation.
+- A choice is answered once. Ask a narrow follow-up only for a consequential ambiguity. For the displayed custom letter alone, request the custom answer for that field. Do not reset the interview after a correction or require personal information that is unnecessary to the explanation.
 - "Use your recommendations", "you choose the rest", or "build it" ends preference gathering. Preserve explicit choices; use the defaults below for the rest. Still clarify a missing topic, inaccessible essential source, or ambiguity that would change what gets explained.
 
 ## Round 1: Audience and age
@@ -20,28 +20,28 @@ Ask who receives the explanation, not just who is preparing it. Tailor up to thr
 
 Ask the preferred age/language level separately when unknown. Offer:
 
-- **1.** Around five — very concrete language
-- **2.** Around ten — simple examples with a little more detail
-- **3.** Around fifteen — accessible language with useful terms
-- **4.** Adult — plain language without talking down
-- **D.** My own age, education level, or reading preference
+- **A.** Around five — very concrete language
+- **B.** Around ten — simple examples with a little more detail
+- **C.** Around fifteen — accessible language with useful terms
+- **D.** Adult — plain language without talking down
+- **E.** My own age, education level, or reading preference
 
-These are explanation settings, not claims about a real person's age. Accept "adult, explain very simply", "college level", or "for my ten-year-old" naturally. ELI5 already selects the simplest language; ask age only if the actual recipient's age would change the result. Do not equate fifth grade with age five, education with expertise, or an adult beginner with a child. A "young adult" or "mature adult" preference remains available through natural language or D.
+These are explanation settings, not claims about a real person's age. Accept "adult, explain very simply", "college level", or "for my ten-year-old" naturally. ELI5 already selects the simplest language; ask age only if the actual recipient's age would change the result. Do not equate fifth grade with age five, education with expertise, or an adult beginner with a child. A "young adult" or "mature adult" preference remains available through natural language or E.
 
 ## Round 2: Background and purpose
 
 For subject familiarity, offer **A. New to this / B. Know the basics / C. Comfortable with the topic; need depth / D. My own answer**. Reuse demonstrated or stated background. Avoid an arbitrary recommendation when familiarity is unknown.
 
-For purpose, keep all five modes available; the core's stable numbering applies to text fallback:
+For purpose, keep all five modes available; the core's stable A–E lettering applies to text fallback:
 
-- **1.** Like I'm five — the simplest useful explanation
-- **2.** Make it click — understand how it works and why it matters
-- **3.** Help me explain it — prepare to explain it to someone else
-- **4.** Help me use it — apply it to a practical situation
-- **5.** Give me the big picture — see the main parts and relationships
-- **D.** My own goal or a combination
+- **A.** Like I'm five — the simplest useful explanation
+- **B.** Make it click — understand how it works and why it matters
+- **C.** Help me explain it — prepare to explain it to someone else
+- **D.** Help me use it — apply it to a practical situation
+- **E.** Give me the big picture — see the main parts and relationships
+- **F.** My own goal or a combination
 
-Recommend 2 for general understanding, 3 for a stated communication task, 4 for a practical task, or 5 for orientation. Preserve an already clear goal. If the user chooses an age-five reading level and Make it click, combine them: simplest language, mechanism, and a useful changed example. Do not force age to determine mode.
+Recommend B for general understanding, C for a stated communication task, D for a practical task, or E for orientation. Preserve an already clear goal. If the user chooses an age-five reading level and Make it click, combine them: simplest language, mechanism, and a useful changed example. Do not force age to determine mode.
 
 ## Round 3: Presentation and depth
 
