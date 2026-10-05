@@ -56,6 +56,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [vercel-workflow](#vercel-workflow) | Durable, long-running workflows with Vercel Workflow DevKit | `npx skills add jakerains/AgentSkills --skill vercel-workflow` |
 | [codex-app-server](#codex-app-server) | Embed Codex into rich apps with the Codex App Server | `npx skills add jakerains/AgentSkills --skill codex-app-server` |
 | [shot-list](#shot-list) | Generate professional shot lists from screenplays | `npx skills add jakerains/AgentSkills --skill shot-list` |
+| [video-director](#video-director) | Guide agent-made films through story, motion, sound, and frame-level review with any renderer | `npx skills add jakerains/AgentSkills --skill video-director` |
 | [nextstep-tours](#nextstep-tours) | Product tours & onboarding with NextStep v2 for Next.js | `npx skills add jakerains/AgentSkills --skill nextstep-tours` |
 | [driverjs-tours](#driverjs-tours) | Product tours, highlights & feature hints with Driver.js (any framework) | `npx skills add jakerains/AgentSkills --skill driverjs-tours` |
 | [sam3](#sam3) | Meta SAM 3 open-vocabulary image & video segmentation | `npx skills add jakerains/AgentSkills --skill sam3` |
@@ -371,6 +372,21 @@ This one is definitely a "Jake skill." I do video production work and needed a w
 
 ```bash
 npx skills add jakerains/AgentSkills --skill shot-list
+```
+
+---
+
+### video-director
+> Direct agent-made videos with deliberate story, visual identity, motion, sound, and rendered evidence
+
+**Last updated:** 2026-10-04
+
+Use **`video-director guide`** for a short creative walkthrough, or pair it with HyperFrames, Remotion, or an existing video workflow. It carries a film from the viewer's takeaway through real assets, reference analysis, state-based shot lists, representative frames, shared picture/audio cues, and targeted repairs. Includes motion and finishing guidance, four production templates, a worked example, renderer integration notes, and a Python helper that extracts timestamped contact sheets and transition frames from an existing video. The helper requires Pillow, FFmpeg, and ffprobe. Review checkpoints preserve existing authorization and distinguish preview, encode, visual, listening, and owner acceptance evidence.
+
+**Use for:** Product films, UI demos, launch videos, course explainers, motion graphics, creative direction, less generic agent videos, sound and motion polish, contact-sheet critique, requested aspect-ratio variants
+
+```bash
+npx skills add jakerains/AgentSkills --skill video-director
 ```
 
 ---
