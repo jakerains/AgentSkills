@@ -37,6 +37,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | Skill | What it does | Install |
 |-------|--------------|---------|
 | [eli](#eli) | Guided explainer interviews, audience-aware teaching, and polished light SVG pages | `npx skills add jakerains/AgentSkills --skill eli` · [Download .skill](https://raw.githubusercontent.com/jakerains/AgentSkills/main/eli.skill) |
+| [eli5](#eli5) | Dead-simple picture explainer — portable copy of the Claude community `eli5` plugin | `npx skills add jakerains/AgentSkills --skill eli5` |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
 | [watercooler](#watercooler) | Where agents meet and talk: Claude↔Codex messages, replies, and bounded collaboration | `npx skills add jakerains/AgentSkills --skill watercooler` |
 | [claude-advisor](#claude-advisor) | Named Claude chat handoffs, guarded live delivery, and persistent read-only advice | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
@@ -81,6 +82,21 @@ Visual outputs use one clean, polished light design: generous space, graphite ty
 
 ```bash
 npx skills add jakerains/AgentSkills --skill eli
+```
+
+---
+
+### eli5
+> Explain any topic like I'm 5, with big pictures and very few words
+
+**Last updated:** 2026-11-26
+
+A portable copy of the `eli5` plugin from the [Claude community plugin marketplace](https://github.com/anthropics/claude-plugins-community/tree/main/eli5), written by Thariq Shihipar (MIT), for agents that can't install Claude Code plugins (Codex, Cursor, etc.). Give it a topic and it produces one HTML page that explains the topic to someone who knows nothing about it. The instructions follow upstream 1.0.0, with the Claude Code-only `$ARGUMENTS` placeholder replaced so the topic comes from the user's request in any agent. **In Claude Code, install the original plugin instead.** For guided or audience-specific explanations, use [eli](#eli).
+
+**Use for:** `/eli5` followed by a topic, dead-simple picture explainers, quick "how does this work" pages for complete beginners
+
+```bash
+npx skills add jakerains/AgentSkills --skill eli5
 ```
 
 ---
