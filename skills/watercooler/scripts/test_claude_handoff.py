@@ -269,7 +269,7 @@ class SendTests(unittest.TestCase):
     def test_resume_never_broadens_an_advisor(self):
         with patch.object(bridge, "run_cli") as run:
             with self.assertRaisesRegex(bridge.HandoffError, "read-only advisor"):
-                bridge.resume_local(local(name="claude-advisor:opus:review", live=False), "body", 30)
+                bridge.resume_local(local(name="watercooler:opus:review", live=False), "body", 30)
             state = bridge.state_root().parent / "threads" / "project" / "opus" / "review.json"
             bridge.write_json(state, {"session_id": SID})
             with self.assertRaisesRegex(bridge.HandoffError, "read-only advisor"):

@@ -5,12 +5,12 @@ set -euo pipefail
 umask 077
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=claude-advisor-state.sh
-source "$SCRIPT_DIR/claude-advisor-state.sh"
+# shellcheck source=advisor-state.sh
+source "$SCRIPT_DIR/advisor-state.sh"
 
 if ! command -v claude >/dev/null 2>&1; then
   cat >&2 <<'ERR'
-claude-advisor: error — the `claude` CLI was not found on PATH.
+watercooler: error — the `claude` CLI was not found on PATH.
 
 Install Claude Code and ensure `claude` is on PATH, then retry. This skill does not
 install or configure Claude Code itself.
@@ -19,12 +19,12 @@ ERR
 fi
 
 if ! command -v jq >/dev/null 2>&1; then
-  echo "claude-advisor: error — jq is required to verify the responding model and extract the report." >&2
+  echo "watercooler: error — jq is required to verify the responding model and extract the report." >&2
   exit 127
 fi
 
 if [ "$#" -lt 1 ]; then
-  echo "claude-advisor: internal error — no model lane was supplied." >&2
+  echo "watercooler: internal error — no model lane was supplied." >&2
   exit 2
 fi
 
@@ -51,7 +51,7 @@ case "$MODEL" in
     REPORT_PREFIX="advisory"
     ;;
   *)
-    echo "claude-advisor: internal error — unsupported model lane: $MODEL" >&2
+    echo "watercooler: internal error — unsupported model lane: $MODEL" >&2
     exit 2
     ;;
 esac
@@ -107,7 +107,7 @@ if [ "$MODE" = "conversation" ] && [ -z "$THREAD_NAME" ]; then
     THREAD_NAME="codex-${CODEX_THREAD_ID}"
   else
     cat >&2 <<ERR
-claude-advisor: no Codex conversation ID is available for the persistent binding.
+watercooler: no Codex conversation ID is available for the persistent binding.
 
 Run from Codex/ChatGPT desktop, set CLAUDE_ADVISOR_THREAD, or pass an explicit
 binding with: consult-${MODEL}.sh --thread <name> "<advisor prompt>"
@@ -136,7 +136,7 @@ TURN_NUMBER=0
 MAX_THREAD_TURNS="${CLAUDE_ADVISOR_MAX_THREAD_TURNS:-6}"
 
 if [[ ! "$MAX_THREAD_TURNS" =~ ^[1-9][0-9]*$ ]]; then
-  printf 'claude-advisor: CLAUDE_ADVISOR_MAX_THREAD_TURNS must be a positive integer.\n' >&2
+  printf 'watercooler: CLAUDE_ADVISOR_MAX_THREAD_TURNS must be a positive integer.\n' >&2
   exit 2
 fi
 
@@ -161,12 +161,12 @@ case "$MODE" in
     if [ -e "$STATE_FILE" ]; then
       advisor_require_state_file "$STATE_FILE"
       if [ "$(jq -r '.status' "$STATE_FILE")" != "active" ]; then
-        printf 'claude-advisor: conversation thread %s/%s is closed; pass --thread with a new name or fork it intentionally.\n' "$MODEL" "$THREAD_NAME" >&2
+        printf 'watercooler: conversation thread %s/%s is closed; pass --thread with a new name or fork it intentionally.\n' "$MODEL" "$THREAD_NAME" >&2
         exit 1
       fi
       prior_turn_count="$(jq -r '.turn_count' "$STATE_FILE")"
       if [ "$prior_turn_count" -ge "$MAX_THREAD_TURNS" ]; then
-        printf 'claude-advisor: conversation thread %s/%s reached its %s-turn budget; fork or start a new bounded thread.\n' "$MODEL" "$THREAD_NAME" "$MAX_THREAD_TURNS" >&2
+        printf 'watercooler: conversation thread %s/%s reached its %s-turn budget; fork or start a new bounded thread.\n' "$MODEL" "$THREAD_NAME" "$MAX_THREAD_TURNS" >&2
         exit 1
       fi
       SESSION_ID="$(jq -r '.session_id' "$STATE_FILE")"
@@ -184,7 +184,7 @@ case "$MODE" in
     advisor_acquire_lock "$STATE_FILE"
     advisor_recover_thread_state "$STATE_FILE"
     if [ -e "$STATE_FILE" ]; then
-      printf 'claude-advisor: thread %s/%s already exists for this project; use --continue-thread or choose a new name.\n' "$MODEL" "$THREAD_NAME" >&2
+      printf 'watercooler: thread %s/%s already exists for this project; use --continue-thread or choose a new name.\n' "$MODEL" "$THREAD_NAME" >&2
       exit 1
     fi
     TURN_NUMBER=1
@@ -196,12 +196,12 @@ case "$MODE" in
     advisor_recover_thread_state "$STATE_FILE"
     advisor_require_state_file "$STATE_FILE"
     if [ "$(jq -r '.status' "$STATE_FILE")" != "active" ]; then
-      printf 'claude-advisor: thread %s/%s is closed; start a new thread or fork it under a new name.\n' "$MODEL" "$THREAD_NAME" >&2
+      printf 'watercooler: thread %s/%s is closed; start a new thread or fork it under a new name.\n' "$MODEL" "$THREAD_NAME" >&2
       exit 1
     fi
     prior_turn_count="$(jq -r '.turn_count' "$STATE_FILE")"
     if [ "$prior_turn_count" -ge "$MAX_THREAD_TURNS" ]; then
-      printf 'claude-advisor: thread %s/%s reached its %s-turn budget; close it or fork/start a new bounded thread.\n' "$MODEL" "$THREAD_NAME" "$MAX_THREAD_TURNS" >&2
+      printf 'watercooler: thread %s/%s reached its %s-turn budget; close it or fork/start a new bounded thread.\n' "$MODEL" "$THREAD_NAME" "$MAX_THREAD_TURNS" >&2
       exit 1
     fi
     SESSION_ID="$(jq -r '.session_id' "$STATE_FILE")"
@@ -219,7 +219,7 @@ case "$MODE" in
     advisor_recover_thread_state "$SOURCE_STATE_FILE"
     advisor_require_state_file "$SOURCE_STATE_FILE"
     if [ -e "$STATE_FILE" ]; then
-      printf 'claude-advisor: target thread %s/%s already exists; choose a new name.\n' "$MODEL" "$THREAD_NAME" >&2
+      printf 'watercooler: target thread %s/%s already exists; choose a new name.\n' "$MODEL" "$THREAD_NAME" >&2
       exit 1
     fi
     SESSION_ID="$(jq -r '.session_id' "$SOURCE_STATE_FILE")"
@@ -290,48 +290,48 @@ CLAUDE_ARGS=(
 
 if [ "$MODE" = "continue" ]; then
   if ! claude agents --json > "$JSON_TMP"; then
-    printf 'claude-advisor: cannot check live sessions before resuming; no advisory turn started.\n' >&2
+    printf 'watercooler: cannot check live sessions before resuming; no advisory turn started.\n' >&2
     exit 1
   fi
   if ! jq -e --arg sid "$SESSION_ID" 'type == "array" and ([.[] | select(.sessionId == $sid and ((.pid // 0) > 0))] | length == 0)' "$JSON_TMP" >/dev/null; then
-    printf 'claude-advisor: this Claude session is already live, or its live state is unavailable. Finish the Terminal turn before using the advisor wrapper.\n' >&2
+    printf 'watercooler: this Claude session is already live, or its live state is unavailable. Finish the Terminal turn before using the advisor wrapper.\n' >&2
     exit 1
   fi
 fi
 
 case "$MODE" in
   start)
-    CLAUDE_ARGS+=(--name "claude-advisor:${MODEL}:${THREAD_NAME}")
+    CLAUDE_ARGS+=(--name "watercooler:${MODEL}:${THREAD_NAME}")
     ;;
   continue)
     CLAUDE_ARGS+=(--resume "$SESSION_ID")
     ;;
   fork)
-    CLAUDE_ARGS+=(--resume "$SESSION_ID" --fork-session --name "claude-advisor:${MODEL}:${THREAD_NAME}")
+    CLAUDE_ARGS+=(--resume "$SESSION_ID" --fork-session --name "watercooler:${MODEL}:${THREAD_NAME}")
     ;;
 esac
 
 if claude "${CLAUDE_ARGS[@]}" > "$JSON_TMP"
 then
   if ! jq -e '.type == "result" and .subtype == "success" and .is_error == false and (.result | type == "string" and length > 0)' "$JSON_TMP" >/dev/null; then
-    printf 'claude-advisor: %s returned an invalid or empty structured result; treat the consultation as unavailable.\n' "$DISPLAY_NAME" >&2
+    printf 'watercooler: %s returned an invalid or empty structured result; treat the consultation as unavailable.\n' "$DISPLAY_NAME" >&2
     exit 1
   fi
 
   if ! jq -e --arg prefix "$VERIFIED_MODEL_PREFIX" '.modelUsage | keys | any(startswith($prefix))' "$JSON_TMP" >/dev/null; then
-    printf 'claude-advisor: model verification failed; requested %s but the structured response did not identify that model. No report was accepted.\n' "$CLAUDE_MODEL" >&2
+    printf 'watercooler: model verification failed; requested %s but the structured response did not identify that model. No report was accepted.\n' "$CLAUDE_MODEL" >&2
     exit 1
   fi
   RESOLVED_MODEL="$(jq -r --arg prefix "$VERIFIED_MODEL_PREFIX" '.modelUsage | keys | map(select(startswith($prefix))) | first' "$JSON_TMP")"
 
   if ! jq -e '.session_id | type == "string" and length > 0' "$JSON_TMP" >/dev/null; then
-    printf 'claude-advisor: %s did not return a resumable session ID; no named-thread state or report was accepted.\n' "$DISPLAY_NAME" >&2
+    printf 'watercooler: %s did not return a resumable session ID; no named-thread state or report was accepted.\n' "$DISPLAY_NAME" >&2
     exit 1
   fi
 
   jq -r '.result' "$JSON_TMP" > "$REPORT_TMP"
   if [ ! -s "$REPORT_TMP" ]; then
-    printf 'claude-advisor: %s returned an empty report; treat the consultation as unavailable.\n' "$DISPLAY_NAME" >&2
+    printf 'watercooler: %s returned an empty report; treat the consultation as unavailable.\n' "$DISPLAY_NAME" >&2
     exit 1
   fi
 
@@ -398,22 +398,22 @@ then
     REPORT_TMP=""
     if ! advisor_atomic_write_json "$STATE_FILE" "$STATE_TMP"; then
       cat "$REPORT"
-      printf 'claude-advisor: warning — the verified report was saved, but binding state could not be advanced. Recovery will be attempted from %s on the next thread operation.\n' "$RECOVERY_FILE" >&2
+      printf 'watercooler: warning — the verified report was saved, but binding state could not be advanced. Recovery will be attempted from %s on the next thread operation.\n' "$RECOVERY_FILE" >&2
       exit 1
     fi
     rm -f "$RECOVERY_FILE"
     cat "$REPORT"
-    printf 'claude-advisor: verified %s (%s) thread %s turn %s/%s saved to %s\n' "$DISPLAY_NAME" "$RESOLVED_MODEL" "$THREAD_NAME" "$TURN_NUMBER" "$MAX_THREAD_TURNS" "$REPORT" >&2
+    printf 'watercooler: verified %s (%s) thread %s turn %s/%s saved to %s\n' "$DISPLAY_NAME" "$RESOLVED_MODEL" "$THREAD_NAME" "$TURN_NUMBER" "$MAX_THREAD_TURNS" "$REPORT" >&2
   else
     if [ -n "$RECOVERY_FILE" ]; then rm -f "$RECOVERY_FILE"; fi
     SURVIVING_REPORT="$REPORT_TMP"
     REPORT_TMP=""
     cat "$SURVIVING_REPORT"
-    printf 'claude-advisor: warning — the verified %s report was delivered above but could not be saved to %s. The temporary report remains at %s; named-thread state was not advanced.\n' "$DISPLAY_NAME" "$REPORT" "$SURVIVING_REPORT" >&2
+    printf 'watercooler: warning — the verified %s report was delivered above but could not be saved to %s. The temporary report remains at %s; named-thread state was not advanced.\n' "$DISPLAY_NAME" "$REPORT" "$SURVIVING_REPORT" >&2
     exit 1
   fi
 else
   status=$?
-  printf 'claude-advisor: the %s consultation failed (claude exited %s); no report was written.\n' "$DISPLAY_NAME" "$status" >&2
+  printf 'watercooler: the %s consultation failed (claude exited %s); no report was written.\n' "$DISPLAY_NAME" "$status" >&2
   exit "$status"
 fi

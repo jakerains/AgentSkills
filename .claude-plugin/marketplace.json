@@ -14,161 +14,184 @@
       "source": "./skills/aeo-audit",
       "description": "Run a repeatable AEO/GEO audit of AI citations, recommendations, crawler access, and coding-agent readiness across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews",
       "version": "1.0.0",
-      "tags": ["aeo", "geo", "llm-visibility", "ai-search", "citations", "robots-txt", "crawlers", "share-of-voice"]
-    },
-    {
-      "name": "apple-foundation-models",
-      "source": "./skills/apple-foundation-models",
-      "description": "Build Apple Intelligence features with Foundation Models and Image Playground on iOS, iPadOS, macOS, and visionOS",
-      "version": "1.0.0",
-      "tags": ["apple", "ios", "macos", "ai", "foundation-models"]
-    },
-    {
-      "name": "claude-advisor",
-      "source": "./skills/claude-advisor",
-      "description": "From Codex or ChatGPT desktop, consult Claude through persistent conversation-bound, resumable, read-only Claude Code threads, using Opus by default or pinned Fable 5.1 when requested.",
-      "version": "1.3.0",
-      "tags": ["claude", "opus", "fable", "codex", "chatgpt", "advisor", "second-opinion", "code-review", "read-only", "cli", "resume", "sessions"]
+      "tags": [
+        "aeo",
+        "geo",
+        "llm-visibility",
+        "ai-search",
+        "citations",
+        "robots-txt",
+        "crawlers",
+        "share-of-voice"
+      ]
     },
     {
       "name": "codex-handoff",
       "source": "./skills/codex-handoff",
       "description": "From Claude Code, send an explicitly authorized, provenance-labelled result or work handoff into a specific existing Codex Desktop task through codex queue.",
       "version": "1.0.0",
-      "tags": ["claude", "codex", "handoff", "queue", "desktop", "cli", "cross-agent", "provenance"]
-    },
-    {
-      "name": "codex-app-server",
-      "source": "./skills/codex-app-server",
-      "description": "Build rich Codex integrations with the Codex App Server across Electron, Swift, Next.js, and other host apps",
-      "version": "1.0.0",
-      "tags": ["codex", "app-server", "electron", "swift", "nextjs", "auth", "streaming"]
+      "tags": [
+        "claude",
+        "codex",
+        "handoff",
+        "queue",
+        "desktop",
+        "cli",
+        "cross-agent",
+        "provenance"
+      ]
     },
     {
       "name": "design-explorer",
       "source": "./skills/design-explorer",
       "description": "Explore design directions as preview-only HTML mockups reviewed in a local no-model voting carousel with pins, drawings, ballots, and full page capture",
       "version": "1.0.0",
-      "tags": ["design", "mockups", "ui", "layout", "design-review", "annotations", "carousel", "html"]
+      "tags": [
+        "design",
+        "mockups",
+        "ui",
+        "layout",
+        "design-review",
+        "annotations",
+        "carousel",
+        "html"
+      ]
     },
     {
       "name": "docxmakebetter",
       "source": "./skills/docxmakebetter",
       "description": "Create, edit, and analyze Word documents (.docx) with tracked changes, comments, formatting, and text extraction",
       "version": "1.0.0",
-      "tags": ["docx", "word", "documents", "office"]
-    },
-    {
-      "name": "driverjs-tours",
-      "source": "./skills/driverjs-tours",
-      "description": "Build product tours, onboarding walkthroughs, feature spotlights, and pulsing hint beacons with Driver.js (v1.8) in any framework",
-      "version": "1.0.0",
-      "tags": ["driverjs", "product-tours", "onboarding", "walkthrough", "highlights", "hints", "coach-marks", "javascript"]
+      "tags": [
+        "docx",
+        "word",
+        "documents",
+        "office"
+      ]
     },
     {
       "name": "eli",
       "source": "./skills/eli",
       "description": "Explain any subject through five audience-aware modes with text, visual pages, or interactive walkthroughs, supported by bundled source-grounding and teaching references.",
       "version": "1.2.0",
-      "tags": ["explanation", "teaching", "enablement", "plain-language", "visual-learning"]
+      "tags": [
+        "explanation",
+        "teaching",
+        "enablement",
+        "plain-language",
+        "visual-learning"
+      ]
     },
     {
       "name": "jake-speak",
       "source": "./skills/jake-speak",
       "description": "Explain technical or complicated subjects and decisions to Jake in clear, high-level language",
       "version": "1.1.0",
-      "tags": ["communication", "plain-english", "explanations", "decisions", "jake-speak"]
+      "tags": [
+        "communication",
+        "plain-english",
+        "explanations",
+        "decisions",
+        "jake-speak"
+      ]
     },
     {
       "name": "kain-personality",
       "source": "./skills/kain-personality",
       "description": "Invoke the Kain Jares / GenAIAlien personality for writing, product reactions, parody concepts, and image prompts",
       "version": "1.0.0",
-      "tags": ["persona", "writing", "social", "image-prompts", "kain", "genaialien"]
+      "tags": [
+        "persona",
+        "writing",
+        "social",
+        "image-prompts",
+        "kain",
+        "genaialien"
+      ]
     },
     {
       "name": "macos-dmg-builder",
       "source": "./skills/macos-dmg-builder",
       "description": "Build, sign, notarize, and package native macOS apps into distributable DMGs",
       "version": "1.0.0",
-      "tags": ["macos", "dmg", "notarize", "codesign", "distribution"]
-    },
-    {
-      "name": "nextjs-pwa",
-      "source": "./skills/nextjs-pwa",
-      "description": "Build Progressive Web Apps with Next.js: service workers, offline support, caching, push notifications, and install prompts",
-      "version": "1.0.0",
-      "tags": ["nextjs", "pwa", "service-worker", "offline", "push-notifications"]
-    },
-    {
-      "name": "nextstep-tours",
-      "source": "./skills/nextstep-tours",
-      "description": "Build product tours, onboarding flows, and interactive tutorials in Next.js with NextStep v2",
-      "version": "1.0.0",
-      "tags": ["nextjs", "nextstep", "onboarding", "product-tours", "tutorials"]
-    },
-    {
-      "name": "onnx-webgpu-converter",
-      "source": "./skills/onnx-webgpu-converter",
-      "description": "Convert HuggingFace transformer models to ONNX format for browser inference with Transformers.js and WebGPU",
-      "version": "1.0.0",
-      "tags": ["onnx", "webgpu", "transformers", "ml", "browser-inference"]
+      "tags": [
+        "macos",
+        "dmg",
+        "notarize",
+        "codesign",
+        "distribution"
+      ]
     },
     {
       "name": "plaud",
       "source": "./skills/plaud",
       "description": "Install and use Plaud's CLI and MCP surfaces for voice recordings, transcripts, summaries, and meeting workflows",
       "version": "1.0.0",
-      "tags": ["plaud", "voice", "recordings", "transcripts", "mcp", "cli"]
+      "tags": [
+        "plaud",
+        "voice",
+        "recordings",
+        "transcripts",
+        "mcp",
+        "cli"
+      ]
     },
     {
       "name": "prompt-scheduler",
       "source": "./skills/prompt-scheduler",
       "description": "Schedule local Claude, Codex, or agent terminal prompts to run later in Warp with launchd. Creates one-time macOS launchd jobs, Warp .command files, tags jobs, and provides verification/cleanup.",
       "version": "1.0.0",
-      "tags": ["scheduling", "launchd", "warp", "claude", "codex", "local", "macos", "resume"]
-    },
-    {
-      "name": "sam3",
-      "source": "./skills/sam3",
-      "description": "Create and work with Meta SAM 3 for open-vocabulary image and video segmentation",
-      "version": "1.0.0",
-      "tags": ["sam3", "segmentation", "computer-vision", "huggingface", "video", "image"]
+      "tags": [
+        "scheduling",
+        "launchd",
+        "warp",
+        "claude",
+        "codex",
+        "local",
+        "macos",
+        "resume"
+      ]
     },
     {
       "name": "shot-list",
       "source": "./skills/shot-list",
       "description": "Generate professional shot lists from screenplays and scripts for production planning",
       "version": "1.0.0",
-      "tags": ["screenplay", "shot-list", "film", "production"]
-    },
-    {
-      "name": "skill-seekers",
-      "source": "./skills/skill-seekers",
-      "description": "Convert documentation websites, GitHub repos, and PDFs into Claude AI skills",
-      "version": "1.0.0",
-      "tags": ["skills", "documentation", "scraping", "conversion"]
+      "tags": [
+        "screenplay",
+        "shot-list",
+        "film",
+        "production"
+      ]
     },
     {
       "name": "update-changelog",
       "source": "./skills/update-changelog",
       "description": "Automate changelog management, version bumping, release entries, prereleases, tags, and publish workflows",
       "version": "1.0.0",
-      "tags": ["changelog", "versioning", "release-notes", "semver", "github-release"]
-    },
-    {
-      "name": "vercel-workflow",
-      "source": "./skills/vercel-workflow",
-      "description": "Build durable workflows with Vercel Workflow DevKit using 'use workflow' and 'use step' directives",
-      "version": "1.0.0",
-      "tags": ["vercel", "workflow", "durable", "background-jobs"]
+      "tags": [
+        "changelog",
+        "versioning",
+        "release-notes",
+        "semver",
+        "github-release"
+      ]
     },
     {
       "name": "worktree-bootstrap",
       "source": "./skills/worktree-bootstrap",
-      "description": "Provision a freshly-created git worktree so its dev server runs like the main checkout: copies gitignored env files from the main checkout, installs node_modules with the repo's package manager (pnpm/npm/yarn/bun), and — for Next.js — checks the Turbopack workspace-root pin that prevents nested-worktree dev-server freezes. Works for any JS/TS repo.",
+      "description": "Provision a freshly-created git worktree so its dev server runs like the main checkout: copies gitignored env files from the main checkout, installs node_modules with the repo's package manager (pnpm/npm/yarn/bun), and \u2014 for Next.js \u2014 checks the Turbopack workspace-root pin that prevents nested-worktree dev-server freezes. Works for any JS/TS repo.",
       "version": "1.0.0",
-      "tags": ["git", "worktree", "monorepo", "pnpm", "nextjs", "turbopack", "dev-server", "bootstrap"]
+      "tags": [
+        "git",
+        "worktree",
+        "monorepo",
+        "pnpm",
+        "nextjs",
+        "turbopack",
+        "dev-server",
+        "bootstrap"
+      ]
     }
   ]
 }

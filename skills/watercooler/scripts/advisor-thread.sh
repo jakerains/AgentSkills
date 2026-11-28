@@ -5,8 +5,8 @@ set -euo pipefail
 umask 077
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=claude-advisor-state.sh
-source "$SCRIPT_DIR/claude-advisor-state.sh"
+# shellcheck source=advisor-state.sh
+source "$SCRIPT_DIR/advisor-state.sh"
 
 usage() {
   cat >&2 <<'EOF'
@@ -51,7 +51,7 @@ case "$COMMAND" in
     if [ "$COMMAND" = "unlock" ]; then
       LOCK_DIR="${STATE_FILE}.lock"
       if [ ! -d "$LOCK_DIR" ]; then
-        printf 'claude-advisor: no lock exists for %s/%s.\n' "$MODEL" "$NAME"
+        printf 'watercooler: no lock exists for %s/%s.\n' "$MODEL" "$NAME"
         exit 0
       fi
       owner_pid=""
@@ -59,15 +59,15 @@ case "$COMMAND" in
         owner_pid="$(sed -n '1p' "$LOCK_DIR/pid")"
       fi
       if [[ "$owner_pid" =~ ^[1-9][0-9]*$ ]] && kill -0 "$owner_pid" 2>/dev/null; then
-        printf 'claude-advisor: refusing to unlock %s/%s because process %s is still running.\n' "$MODEL" "$NAME" "$owner_pid" >&2
+        printf 'watercooler: refusing to unlock %s/%s because process %s is still running.\n' "$MODEL" "$NAME" "$owner_pid" >&2
         exit 1
       fi
       rm -f "$LOCK_DIR/pid"
       if ! rmdir "$LOCK_DIR"; then
-        printf 'claude-advisor: could not clear lock safely; inspect it manually: %s\n' "$LOCK_DIR" >&2
+        printf 'watercooler: could not clear lock safely; inspect it manually: %s\n' "$LOCK_DIR" >&2
         exit 1
       fi
-      printf 'claude-advisor: cleared stale lock for %s/%s.\n' "$MODEL" "$NAME"
+      printf 'watercooler: cleared stale lock for %s/%s.\n' "$MODEL" "$NAME"
       exit 0
     fi
     if [ "$COMMAND" = "show" ]; then
@@ -85,14 +85,14 @@ case "$COMMAND" in
     advisor_recover_thread_state "$STATE_FILE"
     advisor_require_state_file "$STATE_FILE"
     if [ "$(jq -r '.status' "$STATE_FILE")" = "closed" ]; then
-      printf 'claude-advisor: thread %s/%s is already closed.\n' "$MODEL" "$NAME" >&2
+      printf 'watercooler: thread %s/%s is already closed.\n' "$MODEL" "$NAME" >&2
       exit 0
     fi
     JSON_TMP="$(mktemp)"
     now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     jq --arg now "$now" '.status = "closed" | .closed_at = $now | .updated_at = $now' "$STATE_FILE" > "$JSON_TMP"
     advisor_atomic_write_json "$STATE_FILE" "$JSON_TMP"
-    printf 'claude-advisor: closed %s thread %s for %s; Claude transcript was not deleted.\n' "$MODEL" "$NAME" "$(advisor_project_path)"
+    printf 'watercooler: closed %s thread %s for %s; Claude transcript was not deleted.\n' "$MODEL" "$NAME" "$(advisor_project_path)"
     ;;
   *)
     usage
