@@ -10,6 +10,13 @@
   },
   "plugins": [
     {
+      "name": "aeo-audit",
+      "source": "./skills/aeo-audit",
+      "description": "Run a repeatable AEO/GEO audit of AI citations, recommendations, crawler access, and coding-agent readiness across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews",
+      "version": "1.0.0",
+      "tags": ["aeo", "geo", "llm-visibility", "ai-search", "citations", "robots-txt", "crawlers", "share-of-voice"]
+    },
+    {
       "name": "apple-foundation-models",
       "source": "./skills/apple-foundation-models",
       "description": "Build Apple Intelligence features with Foundation Models and Image Playground on iOS, iPadOS, macOS, and visionOS",
