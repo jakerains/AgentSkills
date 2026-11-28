@@ -36,6 +36,7 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 
 | Skill | What it does | Install |
 |-------|--------------|---------|
+| [aeo-audit](#aeo-audit) | Answer engine optimization audit — AI visibility, citations, crawler access, coding-agent readiness | `npx skills add jakerains/AgentSkills --skill aeo-audit` |
 | [eli](#eli) | Guided explainer interviews, audience-aware teaching, and polished light SVG pages | `npx skills add jakerains/AgentSkills --skill eli` · [Download .skill](https://raw.githubusercontent.com/jakerains/AgentSkills/main/eli.skill) |
 | [eli5](#eli5) | Dead-simple picture explainer — portable copy of the Claude community `eli5` plugin | `npx skills add jakerains/AgentSkills --skill eli5` |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
@@ -62,6 +63,21 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [driverjs-tours](#driverjs-tours) | Product tours, highlights & feature hints with Driver.js (any framework) | `npx skills add jakerains/AgentSkills --skill driverjs-tours` |
 | [sam3](#sam3) | Meta SAM 3 open-vocabulary image & video segmentation | `npx skills add jakerains/AgentSkills --skill sam3` |
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
+
+---
+
+### aeo-audit
+> Repeatable AEO / GEO audit for AI citations, recommendations, and crawler access
+
+**Last updated:** 2026-11-28
+
+Run a full answer-engine optimization loop: scope the product and competitors, mine buyer questions (not just Google keywords), build branded vs unbranded prompt matrices, sample ChatGPT / Claude / Gemini / Perplexity / Google AI Overviews, score mentions vs citations vs recommendations, analyze cited domains, check robots.txt and JS-free content for AI crawlers, then prioritize content and technical fixes. Includes a coding-agent readiness track for SDKs and docs. Bundled stdlib Python helpers fetch robots.txt, probe non-JS HTML, and grep access logs for known AI bot user agents.
+
+**Use for:** AEO, GEO, LLM visibility, AI share of voice, getting recommended or cited by ChatGPT/Claude/Gemini/Perplexity/AI Overviews, AI crawler access, fixing wrong AI answers about a product, agent-readable docs
+
+```bash
+npx skills add jakerains/AgentSkills --skill aeo-audit
+```
 
 ---
 
