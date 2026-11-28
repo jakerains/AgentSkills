@@ -70,7 +70,7 @@ def state_root():
     elif sys.platform == "darwin":
         root = Path.home() / "Library/Application Support/ClaudeAdvisor"
     else:
-        root = Path(os.environ.get("XDG_STATE_HOME", str(Path.home() / ".local/state"))) / "claude-advisor"
+        root = Path(os.environ.get("XDG_STATE_HOME", str(Path.home() / ".local/state"))) / "watercooler"
     return root / "handoffs"
 
 
@@ -419,7 +419,7 @@ def send_cloud(target, message, timeout):
 def resume_local(target, message, timeout):
     # Advisor tool restrictions are invocation flags, not durable permissions on
     # a transcript. Do not accidentally turn an advisor into a worker on resume.
-    advisor_owned = (target.get("name") or "").startswith("claude-advisor:")
+    advisor_owned = (target.get("name") or "").startswith("watercooler:")
     for binding in (state_root().parent / "threads").glob("*/*/*.json"):
         try:
             advisor_owned |= json.loads(binding.read_text()).get("session_id") == target["session_id"]

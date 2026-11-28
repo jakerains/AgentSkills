@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-28
+
+### Repository
+
+- Retired 10 stale skills (out of date and unused, per owner): `vercel-workflow`, `sam3`, `skill-seekers`, `driverjs-tours`, `apple-foundation-models`, `onnx-webgpu-converter`, `nextjs-pwa`, `codex-app-server`, `nextstep-tours`, `claude-advisor`.
+- Removed their `skills/<name>/` trees, README catalog rows/sections, and matching `.claude-plugin/marketplace.json` plugin entries.
+- Dropped corresponding `skills-lock.json` entries where present (8 of 10; `claude-advisor` and `driverjs-tours` were already absent from the lockfile).
+- Reworded dangling catalog/docs references in `README.md`, `skills/watercooler/SKILL.md`, and `docs/project-map.md`.
+- In `watercooler`, renamed leftover `claude-advisor` runtime identifiers (state helper filename, default state dir, session-name prefix, log prefixes) to `watercooler` / `advisor-state.sh` so the retired skill name no longer appears outside this changelog. `CLAUDE_ADVISOR_*` env overrides are unchanged.
+
 ## 2026-07-30
 
 ### driverjs-tours

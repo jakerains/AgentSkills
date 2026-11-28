@@ -41,27 +41,17 @@ Click a skill to jump to its details below (each section has a one-click-copy in
 | [eli5](#eli5) | Dead-simple picture explainer — portable copy of the Claude community `eli5` plugin | `npx skills add jakerains/AgentSkills --skill eli5` |
 | [design-explorer](#design-explorer) | Explore layout directions as HTML mockups in a local voting & annotation carousel | `npx skills add jakerains/AgentSkills --skill design-explorer` |
 | [watercooler](#watercooler) | Where agents meet and talk: Claude↔Codex messages, replies, and bounded collaboration | `npx skills add jakerains/AgentSkills --skill watercooler` |
-| [claude-advisor](#claude-advisor) | Named Claude chat handoffs, guarded live delivery, and persistent read-only advice | `npx skills add jakerains/AgentSkills --skill claude-advisor` |
 | [codex-handoff](#codex-handoff) | Claude Code→an existing Codex Desktop task via `codex queue` | `npx skills add jakerains/AgentSkills --skill codex-handoff` |
 | [prompt-scheduler](#prompt-scheduler) | Schedule local Claude/Codex terminal prompts in Warp via launchd | `npx skills add jakerains/AgentSkills --skill prompt-scheduler` |
 | [plaud](#plaud) | Search, transcribe & summarize Plaud voice recordings (CLI + MCP) | `npx skills add jakerains/AgentSkills --skill plaud` |
 | [simplify](#simplify) | Clean up changed code — portable clone of Claude Code's /simplify | `npx skills add jakerains/AgentSkills --skill simplify` |
-| [skill-seekers](#skill-seekers) | Turn any documentation into an installable skill | `npx skills add jakerains/AgentSkills --skill skill-seekers` |
 | [kain-personality](#kain-personality) | The Kain Jares / GenAIAlien persona for writing & image prompts | `npx skills add jakerains/AgentSkills --skill kain-personality` |
 | [jake-speak](#jake-speak) | Make technical or complicated subjects and decisions easy to understand | `npx skills add jakerains/AgentSkills --skill jake-speak` |
 | [docxmakebetter](#docxmakebetter) | Create/edit Word docs — tracked changes, comments, redlining | `npx skills add jakerains/AgentSkills --skill docxmakebetter` |
-| [nextjs-pwa](#nextjs-pwa) | Build Progressive Web Apps with Next.js | `npx skills add jakerains/AgentSkills --skill nextjs-pwa` |
 | [update-changelog](#update-changelog) | Changelog management, version bumping & release publishing | `npx skills add jakerains/AgentSkills --skill update-changelog` |
-| [onnx-webgpu-converter](#onnx-webgpu-converter) | Convert HuggingFace models to ONNX for the browser (Transformers.js + WebGPU) | `npx skills add jakerains/AgentSkills --skill onnx-webgpu-converter` |
-| [apple-foundation-models](#apple-foundation-models) | Apple Intelligence / Foundation Models on iOS 26+, macOS 26+, visionOS 26+ | `npx skills add jakerains/AgentSkills --skill apple-foundation-models` |
 | [macos-dmg-builder](#macos-dmg-builder) | Build, sign, notarize & package macOS apps into DMGs | `npx skills add jakerains/AgentSkills --skill macos-dmg-builder` |
-| [vercel-workflow](#vercel-workflow) | Durable, long-running workflows with Vercel Workflow DevKit | `npx skills add jakerains/AgentSkills --skill vercel-workflow` |
-| [codex-app-server](#codex-app-server) | Embed Codex into rich apps with the Codex App Server | `npx skills add jakerains/AgentSkills --skill codex-app-server` |
 | [shot-list](#shot-list) | Generate professional shot lists from screenplays | `npx skills add jakerains/AgentSkills --skill shot-list` |
 | [video-director](#video-director) | Guide agent-made films through story, motion, sound, and frame-level review with any renderer | `npx skills add jakerains/AgentSkills --skill video-director` |
-| [nextstep-tours](#nextstep-tours) | Product tours & onboarding with NextStep v2 for Next.js | `npx skills add jakerains/AgentSkills --skill nextstep-tours` |
-| [driverjs-tours](#driverjs-tours) | Product tours, highlights & feature hints with Driver.js (any framework) | `npx skills add jakerains/AgentSkills --skill driverjs-tours` |
-| [sam3](#sam3) | Meta SAM 3 open-vocabulary image & video segmentation | `npx skills add jakerains/AgentSkills --skill sam3` |
 | [worktree-bootstrap](#worktree-bootstrap) | Make a new git worktree run its dev server like main | `npx skills add jakerains/AgentSkills --skill worktree-bootstrap` |
 
 ---
@@ -147,25 +137,6 @@ Persistent collaboration uses the existing WaterCooler service for tickets, inbo
 npx skills add jakerains/AgentSkills --skill watercooler
 ```
 
-The older `claude-advisor` and `codex-handoff` packages remain available for existing installations. WaterCooler includes its own helpers and does not require those packages.
-
----
-
-### claude-advisor
-> Consult Claude or send a provenance-labelled handoff to a named existing Claude Code conversation
-
-**Last updated:** 2026-09-06
-
-Use natural requests such as “send these findings to Claude chat 'claude test'” without tagging the skill. The helper resolves local sessions across project folders, binds exact destinations to the current Codex task, and sends through a guarded live Claude courier, explicit headless continuation for stopped sessions, or the existing-cloud-session queue. Private receipts distinguish transport acknowledgement from completed work and prevent automatic duplicate sends. One explicitly requested reply can return through the reciprocal `codex-handoff` skill. Requires authenticated Claude Code and Python 3.10+ for handoffs; historical name lookup optionally uses the official Python Agent SDK.
-
-Read-only advisory work remains available through the existing Opus and Fable wrappers, with persistent conversation/project/model bindings, restricted Read/Grep/Glob access, no MCP, and inbound peer messages refused. Opus is the broad default; pinned Fable 5.1 is reserved for explicit requests or rare frontier judgments. Advisory wrappers require bash and jq. Live courier delivery is implemented for macOS/Linux; other-machine discovery and MCP channels are outside this skill's transport.
-
-**Use for:** Named Claude chat handoffs, findings and work relays, existing-session continuation, one-reply round trips, second opinions, adversarial review, architecture, debugging, product and content judgment
-
-```bash
-npx skills add jakerains/AgentSkills --skill claude-advisor
-```
-
 ---
 
 ### codex-handoff
@@ -173,7 +144,7 @@ npx skills add jakerains/AgentSkills --skill claude-advisor
 
 **Last updated:** 2026-09-01
 
-Designed to be the receiving-side counterpart to `claude-advisor`. When the user explicitly asks Claude to pass work to Codex and supplies either a raw task UUID or a `codex://threads/...` link, the skill writes a compact provenance-labelled handoff and sends it through the installed Codex CLI's **`codex queue`** command. A bundled Python helper validates the target, preserves multiline text without shell evaluation, supports dry runs, and surfaces the real queue result. It never guesses a recent task, starts a separate Codex run, or treats the handoff as owner approval. A matching global Codex instruction teaches receiving tasks how to interpret `[Claude handoff]` submissions.
+When the user explicitly asks Claude to pass work to Codex and supplies either a raw task UUID or a `codex://threads/...` link, the skill writes a compact provenance-labelled handoff and sends it through the installed Codex CLI's **`codex queue`** command. A bundled Python helper validates the target, preserves multiline text without shell evaluation, supports dry runs, and surfaces the real queue result. It never guesses a recent task, starts a separate Codex run, or treats the handoff as owner approval. A matching global Codex instruction teaches receiving tasks how to interpret `[Claude handoff]` submissions.
 
 **Use for:** Claude→Codex findings, one-time task updates, status relays, decision handoffs, passing terminal research into a visible Codex Desktop task
 
@@ -228,21 +199,6 @@ npx skills add jakerains/AgentSkills --skill simplify
 
 ---
 
-### skill-seekers
-> Turn any documentation into an installable agent skill
-
-**Last updated:** 2026-03-31
-
-If you find yourself wishing a skill existed for some library or tool, this skill helps you make one from the docs. Probably the most meta thing in here.
-
-**Use for:** Converting docs sites, GitHub repos, and PDFs into skills
-
-```bash
-npx skills add jakerains/AgentSkills --skill skill-seekers
-```
-
----
-
 ### kain-personality
 > Invoke the Kain Jares / GenAIAlien personality for writing, product reactions, parody concepts, and image prompts
 
@@ -288,21 +244,6 @@ npx skills add jakerains/AgentSkills --skill docxmakebetter
 
 ---
 
-### nextjs-pwa
-> Build Progressive Web Apps with Next.js
-
-**Last updated:** 2026-02-01
-
-PWA setup with Next.js has a lot of gotchas. This skill covers service workers, offline support, caching, push notifications, and install prompts without the agent guessing wrong.
-
-**Use for:** PWA setup, Serwist/next-pwa config, service workers, offline support, caching strategies
-
-```bash
-npx skills add jakerains/AgentSkills --skill nextjs-pwa
-```
-
----
-
 ### update-changelog
 > Automated changelog management, version bumping, and release publishing
 
@@ -314,36 +255,6 @@ I got tired of manually maintaining changelogs. This skill handles the whole flo
 
 ```bash
 npx skills add jakerains/AgentSkills --skill update-changelog
-```
-
----
-
-### onnx-webgpu-converter
-> Convert HuggingFace models to ONNX for browser inference with Transformers.js + WebGPU
-
-**Last updated:** 2026-02-10
-
-This is pretty niche but if you're doing on-device ML in the browser, it's a lifesaver. Covers the full pipeline from HuggingFace model to quantized ONNX running in WebGPU.
-
-**Use for:** ONNX conversion, optimum-cli export, model quantization (fp16/q8/q4), Transformers.js, WebGPU inference
-
-```bash
-npx skills add jakerains/AgentSkills --skill onnx-webgpu-converter
-```
-
----
-
-### apple-foundation-models
-> Build Apple Intelligence features with Foundation Models on iOS 26+, macOS 26+, and visionOS 26+
-
-**Last updated:** 2026-03-17
-
-This one is very new — Apple's on-device models are bleeding edge and the docs are still sparse. I built this so the agent actually knows the API surface instead of hallucinating Swift code.
-
-**Use for:** SystemLanguageModel, streaming, guided generation with @Generable, tool calling, safety/guardrails, ImagePlayground
-
-```bash
-npx skills add jakerains/AgentSkills --skill apple-foundation-models
 ```
 
 ---
@@ -362,34 +273,6 @@ npx skills add jakerains/AgentSkills --skill macos-dmg-builder
 ```
 
 ---
-
-### vercel-workflow
-> Build durable, long-running workflows with Vercel's Workflow DevKit
-
-**Last updated:** 2026-01-25
-
-Useful if you're building background jobs, AI agent pipelines, or anything that needs retry logic and multi-step flows on Vercel.
-
-**Use for:** Background jobs, AI agents, webhooks, scheduled tasks, retry logic, multi-step workflows
-
-```bash
-npx skills add jakerains/AgentSkills --skill vercel-workflow
-```
-
----
-
-### codex-app-server
-> Embed Codex into rich apps with the Codex App Server
-
-**Last updated:** 2026-03-31
-
-Pretty specific to building apps that integrate OpenAI's Codex. If that's your thing, this covers Electron, Swift, Next.js clients, auth flows, and streaming events.
-
-**Use for:** Codex client integration, ChatGPT/API-key login, streamed events, approvals
-
-```bash
-npx skills add jakerains/AgentSkills --skill codex-app-server
-```
 
 ---
 
@@ -419,51 +302,6 @@ Use **`video-director guide`** for a short creative walkthrough, or pair it with
 
 ```bash
 npx skills add jakerains/AgentSkills --skill video-director
-```
-
----
-
-### nextstep-tours
-> Product tours and onboarding with NextStep v2 for Next.js
-
-**Last updated:** 2026-04-05
-
-Built this for a specific project. If you're using NextStep for guided tours and onboarding flows, this is exactly what you need. Otherwise you probably won't reach for it.
-
-**Use for:** Guided tours, onboarding flows, feature walkthroughs, interactive tutorials
-
-```bash
-npx skills add jakerains/AgentSkills --skill nextstep-tours
-```
-
----
-
-### driverjs-tours
-> Product tours, single-element highlights, and pulsing feature hints with Driver.js
-
-**Last updated:** 2026-07-30
-
-The framework-agnostic counterpart to nextstep-tours. Driver.js is a ~5kb, dependency-free library that dims the page, spotlights an element, and shows a popover — works in vanilla JS, React, Next.js, Vue, Svelte, or Angular. This skill is scraped straight from the driver.js docs and **verified against v1.8.0**: full config/API/state type reference (including `advanceOnClick`, `waitForElement`, `skipMissingElement`, and the `index` hook option), theming (CSS classes + variables, dark mode, `onPopoverRender`), and copy-paste recipes for click-driven tours, multi-page resumable tours, confirm-on-exit, async navigation, and the separate hints/beacon module.
-
-**Use for:** Guided product tours, onboarding walkthroughs, coach marks, feature spotlights, "what's new" callouts, feature hints/beacons, styling/theming Driver.js popovers and overlays
-
-```bash
-npx skills add jakerains/AgentSkills --skill driverjs-tours
-```
-
----
-
-### sam3
-> Meta SAM 3 for open-vocabulary image and video segmentation
-
-**Last updated:** 2026-02-26
-
-Another niche one. If you're working with Meta's Segment Anything Model 3, this covers setup, checkpoint auth, segmentation workflows, and fine-tuning. Built it when I was experimenting with SAM3 and the agent kept getting the setup wrong.
-
-**Use for:** SAM3 setup, HuggingFace checkpoint auth, image/video segmentation, fine-tuning
-
-```bash
-npx skills add jakerains/AgentSkills --skill sam3
 ```
 
 ---
@@ -519,7 +357,7 @@ skills/your-skill/
 └── references/           # Optional: detailed docs loaded on-demand
 ```
 
-See [CLAUDE.md](CLAUDE.md) for the full creation guide, or use the `skill-seekers` skill to generate one from existing docs.
+See [CLAUDE.md](CLAUDE.md) for the full creation guide.
 
 ---
 

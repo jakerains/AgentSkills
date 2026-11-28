@@ -13,14 +13,14 @@ advisor_state_root() {
   elif [ "$(uname -s)" = "Darwin" ]; then
     printf '%s\n' "${HOME}/Library/Application Support/ClaudeAdvisor"
   else
-    printf '%s\n' "${XDG_STATE_HOME:-${HOME}/.local/state}/claude-advisor"
+    printf '%s\n' "${XDG_STATE_HOME:-${HOME}/.local/state}/watercooler"
   fi
 }
 
 advisor_validate_thread_name() {
   local name="${1:-}"
   if [[ ! "$name" =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$ ]]; then
-    printf 'claude-advisor: invalid thread name %q; use 1-64 letters, digits, dots, underscores, or hyphens, beginning with a letter or digit.\n' "$name" >&2
+    printf 'watercooler: invalid thread name %q; use 1-64 letters, digits, dots, underscores, or hyphens, beginning with a letter or digit.\n' "$name" >&2
     return 2
   fi
 }
@@ -48,11 +48,11 @@ advisor_thread_file() {
 advisor_require_state_file() {
   local file="${1:?state file required}"
   if [ ! -f "$file" ]; then
-    printf 'claude-advisor: named thread not found for this project: %s\n' "$file" >&2
+    printf 'watercooler: named thread not found for this project: %s\n' "$file" >&2
     return 1
   fi
   if ! jq -e '.schema_version == 1 and (.session_id | type == "string" and length > 0)' "$file" >/dev/null 2>&1; then
-    printf 'claude-advisor: named thread state is invalid: %s\n' "$file" >&2
+    printf 'watercooler: named thread state is invalid: %s\n' "$file" >&2
     return 1
   fi
 }
@@ -90,10 +90,10 @@ advisor_acquire_lock() {
     owner_pid="$(sed -n '1p' "$candidate_lock_dir/pid")"
   fi
   if [[ "$owner_pid" =~ ^[1-9][0-9]*$ ]] && kill -0 "$owner_pid" 2>/dev/null; then
-    printf 'claude-advisor: thread is already in use by process %s; wait for that turn to finish.\n' "$owner_pid" >&2
+    printf 'watercooler: thread is already in use by process %s; wait for that turn to finish.\n' "$owner_pid" >&2
     return 1
   fi
-  printf 'claude-advisor: stale or incomplete thread lock detected; after confirming no turn is running, clear it with advisor-thread.sh unlock: %s\n' "$candidate_lock_dir" >&2
+  printf 'watercooler: stale or incomplete thread lock detected; after confirming no turn is running, clear it with advisor-thread.sh unlock: %s\n' "$candidate_lock_dir" >&2
   return 1
 }
 
@@ -124,15 +124,15 @@ advisor_recover_thread_state() {
   [ -f "$recovery_file" ] || return 0
 
   if ! jq -e '.schema_version == 1 and (.session_id | type == "string" and length > 0) and (.last_report | type == "string" and length > 0)' "$recovery_file" >/dev/null 2>&1; then
-    printf 'claude-advisor: pending recovery record is invalid; inspect it before continuing: %s\n' "$recovery_file" >&2
+    printf 'watercooler: pending recovery record is invalid; inspect it before continuing: %s\n' "$recovery_file" >&2
     return 1
   fi
   report_path="$(jq -r '.last_report' "$recovery_file")"
   if [ ! -f "$report_path" ]; then
-    printf 'claude-advisor: a prior turn was interrupted before its report was published; inspect the recovery record before continuing: %s\n' "$recovery_file" >&2
+    printf 'watercooler: a prior turn was interrupted before its report was published; inspect the recovery record before continuing: %s\n' "$recovery_file" >&2
     return 1
   fi
   advisor_atomic_write_json "$state_file" "$recovery_file"
   rm -f "$recovery_file"
-  printf 'claude-advisor: recovered named-thread state from the previously saved report: %s\n' "$report_path" >&2
+  printf 'watercooler: recovered named-thread state from the previously saved report: %s\n' "$report_path" >&2
 }

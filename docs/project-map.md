@@ -14,17 +14,15 @@ Personal agent skills library (`skills/`), installable via `npx skills add jaker
 
 ## Skills
 
-### claude-advisor
+### watercooler
 
-Cross-vendor advisor bridge for **Codex / ChatGPT desktop**:
+Shared Claude Code ↔ Codex messaging and collaboration skill:
 
-- Host agent runs bundled bash wrappers
-- Wrappers invoke local Claude Code via `claude -p` (print / non-interactive mode)
-- Lanes: `consult-opus.sh` (default) and `consult-fable.sh` (rare frontier)
-- Shared runner: `scripts/consult-claude-model.sh`
-- Reports saved under `docs/opus/` or `docs/fable/` in the active project
+- One-off sends via bundled Python helpers and authenticated local CLIs
+- Persistent tickets, inboxes, results, and completion tracking via the WaterCooler service
+- Bundled restricted advisor wrappers for read-only Claude second opinions
 
-See `skills/claude-advisor/SKILL.md`.
+See `skills/watercooler/SKILL.md`.
 
 ### codex-handoff
 

@@ -11,8 +11,7 @@ metadata:
 Keep messages useful, destinations exact, and each agent responsible for its work.
 
 Resolve `$SKILL_DIR` to this skill's directory. Run scripts from the source project.
-The bundled helpers work independently of the older `claude-advisor` and
-`codex-handoff` installations.
+The bundled helpers are self-contained; a separate advisor package is not required.
 
 ## Choose the conversation
 
